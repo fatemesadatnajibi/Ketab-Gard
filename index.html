@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نجوای قلم | گنجینه شاهکارهای ادبی</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+
+    <div class="auth-bar" style="margin-top: 15px; z-index: 10;">
+        <div id="auth-guest">
+            <button class="btn style-mini" onclick="openAuthModal()">ورود / ثبت‌نام</button>
+        </div>
+        <div id="auth-user" style="display: none;">
+            <span id="user-email" style="color: #cbd5e0; margin-left: 10px;"></span>
+            <button class="btn btn-secondary style-mini" onclick="logout()">خروج</button>
+        </div>
+    </div>
+    <div class="site-name">
+        گنجینه پارسی
+    </div>
+    <div class="genre-container">
+        <button class="genre-btn active" onclick="changeGenre('all', this)">همه آثار</button>
+        <button class="genre-btn" onclick="changeGenre('عاشقانه', this)">عاشقانه</button>
+        <button class="genre-btn" onclick="changeGenre('عرفانی', this)">عرفانی و سلوک</button>
+        <button class="genre-btn" onclick="changeGenre('فلسفی', this)">عمیق و فلسفی</button>
+        <button class="genre-btn" onclick="changeGenre('حکمت', this)">پند و حکمت</button>
+        <button class="genre-btn" onclick="changeGenre('اجتماعی', this)">اجتماعی و حماسی</button>
+        <button class="genre-btn" onclick="changeGenre('طنز', this)">طنز و انتقادی</button>
+        <button class="genre-btn" id="fav-genre-btn" style="display: none; border-color: #ff4757; color: #ff4757;"
+            onclick="showFavorites(this)">❤️ محبوب‌های من</button>
+    </div>
+
+    <div class="main-wrapper">
+        <div class="shamseh-bg"></div>
+
+        <div class="card">
+            <button id="love-btn" onclick="toggleFavorite()"
+                style="position: absolute; top: 20px; left: 20px; background: none; border: none; font-size: 1.6rem; cursor: pointer; z-index: 6; display: none;">🤍</button>
+
+            <div class="quote-icon">”</div>
+
+            <div id="poem-content-wrapper">
+                <div class="text" id="quote-text">در حال فراخوانی شاهکارهای ادبی...</div>
+                <div class="source" id="quote-source">...</div>
+            </div>
+
+            <div class="info-box" id="info-box" style="display: none;">
+                <h3 style="color: #d4af37; margin-bottom: 15px; font-size: 1.4rem;">درباره این اثر</h3>
+                <p id="info-content"></p>
+                <div style="text-align: center; margin-top: 25px;">
+                    <a id="quote-link" href="#" target="_blank" class="btn"
+                        style="font-size: 1rem; padding: 8px 20px;">مطالعه کامل ↗</a>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="btn" id="next-btn" onclick="nextRandomQuote()">بعدی</button>
+                <button class="btn btn-secondary" id="toggle-btn" onclick="toggleInfo()">درباره اثر</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="auth-modal"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 100; justify-content: center; align-items: center;">
+        <div class="card" style="max-width: 380px; padding: 30px 20px;">
+            <h3 id="modal-title" style="color: #d4af37; margin-bottom: 20px;">ورود به حساب</h3>
+
+            <div id="login-fields">
+                <input type="text" id="login-identifier" placeholder="ایمیل یا نام کاربری"
+                    style="width:100%; padding:10px; margin-bottom:15px; background:#030710; border:1px solid rgba(212, 175, 55, 0.4); border-radius:8px; color:#fff; text-align:right; direction: ltr;">
+
+                <div class="password-wrapper" style="margin-bottom: 15px;">
+                    <input type="password" id="login-password" placeholder="رمز عبور">
+                    <div id="toggle-password-container-login">
+                        <img id="login-eye-img" class="toggle-eye-btn" src="Icons8/icons8-eye-48.png"
+                            onclick="togglePasswordVisibility('login-password', 'login-eye-img')" alt="نمایش رمز">
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: left; margin-bottom: 15px;">
+                <a href="#" onclick="forgotPassword()" style="color:#d4af37; font-size:0.9rem; text-decoration:none;">
+                    رمز عبور را فراموش کرده‌ام
+                </a>
+            </div>
+
+            <div id="signup-fields" style="display: none; width: 100%;">
+                <input type="text" id="auth-username" placeholder="نام کاربری (انگلیسی)"
+                    style="width:100%; padding:10px; margin-bottom:15px; background:#030710; border:1px solid rgba(212, 175, 55, 0.4); border-radius:8px; color:#fff; text-align:right; direction: ltr;">
+
+                <input type="email" id="auth-email" placeholder="آدرس ایمیل"
+                    style="width:100%; padding:10px; margin-bottom:15px; background:#030710; border:1px solid rgba(212, 175, 55, 0.4); border-radius:8px; color:#fff; text-align:right; direction: ltr;">
+
+                <div class="password-wrapper" style="margin-bottom: 15px;">
+                    <input type="password" id="auth-password" placeholder="رمز عبور جدید (حداقل ۶ کاراکتر)">
+                    <div id="toggle-password-container-signup">
+                        <img id="signup-eye-img" class="toggle-eye-btn" src="Icons8/icons8-eye-48.png"
+                            onclick="togglePasswordVisibility('auth-password', 'signup-eye-img')" alt="نمایش رمز">
+                    </div>
+                </div>
+            </div>
+
+            <div class="actions-auth">
+                <button class="btn" id="main-auth-btn" onclick="handleAuth()">ورود</button>
+                <button class="btn btn-secondary" onclick="closeAuthModal()">انصراف</button>
+            </div>
+            <p id="toggle-auth-mode" onclick="switchAuthMode()"
+                style="color:#a0aec0; margin-top:20px; font-size:0.9rem; cursor:pointer;">حساب ندارید؟ ثبت‌نام کنید</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

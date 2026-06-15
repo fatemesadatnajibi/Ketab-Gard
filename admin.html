@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پنل مدیریت ابری | گنجینه شاهکارها</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        body {
+            display: block !important;
+            overflow-y: auto !important;
+            padding: 40px 10px !important;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+        .admin-form {
+            background-color: #070f1e;
+            padding: 30px;
+            border-radius: 20px;
+            border: 2px solid #d4af37;
+            width: 95%;
+            max-width: 600px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            font-family: "B Nazanin", "Tanha", sans-serif;
+            margin: 0 auto;
+        }
+        .form-group { margin-bottom: 20px; text-align: right; }
+        .form-group label { display: block; margin-bottom: 8px; color: #d4af37; font-size: 1.2rem; font-weight: bold; }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%; padding: 12px; background-color: #030710; border: 1px solid rgba(212, 175, 55, 0.4);
+            border-radius: 8px; color: #f1ebd9; font-family: inherit; font-size: 1.1rem; box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="admin-form">
+        <h2 style="text-align: center; color: #d4af37; margin-bottom: 25px; font-size: 1.8rem;">ارسال مستقیم شاهکار به سرور ابری</h2>
+        
+        <div class="form-group">
+            <label for="quoteText">متن شعر یا سخن (با دکمه Enter به خط بعد بروید):</label>
+            <textarea id="quoteText" rows="4" placeholder="گر ز می افشان کنی زلف چلیپا را ز هم..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="quoteSource">صاحب اثر (شاعر/نویسنده):</label>
+            <input type="text" id="quoteSource" placeholder="حافظ شیرازی">
+        </div>
+
+        <div class="form-group">
+            <label for="quoteGenre">ژانر / دسته‌بندی:</label>
+            <select id="quoteGenre">
+                <option value="عاشقانه">عاشقانه</option>
+                <option value="عرفانی">عرفانی و سلوک</option>
+                <option value="فلسفی">عمیق و فلسفی</option>
+                <option value="حکمت">پند و حکمت</option>
+                <option value="اجتماعی">اجتماعی و حماسی</option>
+                <option value="طنز">طنز و انتقادی</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="quoteInfo">توضیحات و تفسیر پشت اثر:</label>
+            <textarea id="quoteInfo" rows="3" placeholder="توضیحاتی درباره این بیت..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="quoteLink">لینک منبع:</label>
+            <input type="url" id="quoteLink" placeholder="https://ganjoor.net/...">
+        </div>
+
+        <button class="btn" style="width: 100%; margin-top: 15px; padding: 12px; font-size: 1.3rem; display: block;" onclick="sendToCloud()">ثبت آنی در دیتابیس ابری 🚀</button>
+    </div>
+
+    <script>
+        // 📌 ۱. ابتدا مشخصات اصلی تعریف می‌شوند
+        const SUPABASE_URL = 'https://shnuggkkwvyixdmlnugl.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_Lih64HUZIiKkxniY28yOPA_NL7Hz7km';
+        
+        // 📌 ۲. سپس کلاینت کاملاً ساخته و آماده‌سازی (Initialize) می‌شود
+        const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // 📌 ۳. در نهایت تابع اصلی که قرار است از کلاینت استفاده کند نوشته می‌شود
+        async function sendToCloud() {
+            console.log("دکمه ثبت کلیک شد...");
+            
+            const text = document.getElementById('quoteText').value.trim();
+            const source = document.getElementById('quoteSource').value.trim();
+            const genre = document.getElementById('quoteGenre').value;
+            const info = document.getElementById('quoteInfo').value.trim();
+            let link = document.getElementById('quoteLink').value.trim() || "https://ganjoor.net";
+
+            if(!text || !source) {
+                alert('لطفاً متن شعر و نام شاعر را وارد کنید.');
+                return;
+            }
+
+            try {
+                // ارسال مستقیم داده به جدول بدون نیاز به رمز عبور ادمین
+                const { data, error } = await client
+                    .from('quotes')
+                    .insert([{ 
+                        text: text, 
+                        source: source, 
+                        genre: genre, 
+                        info: info, 
+                        link: link 
+                    }]);
+
+                if (error) {
+                    alert('خطا از سمت سرور سوپابیس: ' + error.message);
+                    console.error("جزئیات خطا:", error);
+                    return;
+                }
+
+                alert('با موفقیت در سرور ابری ذخیره شد! 🎉');
+                
+                // پاک کردن فرم برای ورودی بعدی
+                document.getElementById('quoteText').value = '';
+                document.getElementById('quoteInfo').value = '';
+                document.getElementById('quoteLink').value = '';
+                document.getElementById('quoteSource').value = '';
+                
+            } catch (error) {
+                alert('خطای داخلی مرورگر: ' + error.message);
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+</html>
