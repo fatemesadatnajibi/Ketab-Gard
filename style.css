@@ -480,23 +480,13 @@ button, a {
 }
 .auth-bar{
     position: absolute;
-    top: 10px;
+    top: 30px;
     left: 25px;
     z-index: 9999;
     font-family: "B Nazanin", "Tanha", sans-serif;
     font-size: 1rem;
 }
-.site-name{
-    position: absolute;
-     top: 22px;
-    right: 35px;
-text-shadow: 0 2px 10px rgba(0,0,0,0.8);
-    color:#d4af37;
-    font-size:2rem;
-    font-family:"B Nazanin","B Lotus",serif;
-    font-weight:bold;
-z-index: 9999;
-}
+
 
 body::before{
     content:"";
@@ -635,7 +625,7 @@ body::before {
 
 /* 📌 اصلاح موقعیت متون هدر برای هماهنگی با طرح جدید عمق‌دار */
 .site-name {
-    top: 25px !important;
+    top: 15px !important;
     right: 35px !important;
     text-shadow: 0 2px 10px rgba(0,0,0,0.8);
 }
@@ -664,4 +654,56 @@ body::before {
     .genre-container {
         margin-top: 115px !important;
     }
+    .site-name::before {
+        width: 32px;
+        height: 32px;
+    }
+}
+/* کانتینر والد برای موقعیت‌دهی دقیق */
+.header-wrapper {
+    position: relative;
+    width: 100%;
+    height: 0; /* فقط برای موقعیت‌دهی */
+    z-index: 99999;
+    pointer-events: none;
+}
+
+/* تنظیمات نهایی و قطعی نام سایت */
+.site-name {
+    position: absolute !important;
+    top: 20px !important;
+    right: 40px !important;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.8) !important;
+    color: #d4af37 !important;
+    font-size: 2rem !important;
+    font-family: "B Nazanin", "B Lotus", serif !important;
+    font-weight: bold !important;
+    z-index: 99999 !important;
+    
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    pointer-events: auto !important;
+}
+
+/* اضافه کردن طرح اسلیمی گرد به سمت راست */
+.site-name::before {
+    content: "" !important;
+    display: inline-block !important;
+    width: 40px !important;
+    height: 40px !important;
+    background-image: url('8.png') !important;
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    
+    /* فیلتر طلایی */
+filter: invert(89%) sepia(87%) saturate(1100%) hue-rotate(352deg) brightness(108%) contrast(92%);    
+    animation: eslimiGlow 4s ease-in-out infinite !important;
+    flex-shrink: 0 !important;
+}
+
+@keyframes eslimiGlow {
+    0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.8; }
+    50% { transform: scale(1.08) rotate(180deg); opacity: 1; }
 }
