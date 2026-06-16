@@ -1,32 +1,33 @@
+// 📌 حتماً آدرس و کلید اصلی خودتان را اینجا بگذارید
 const SUPABASE_URL = 'https://shnuggkkwvyixdmlnugl.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_Lih64HUZIiKkxniY28yOPA_NL7Hz7km';
 
-const client = supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-);
+const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 async function updatePassword() {
-
-    const newPassword =
-        document.getElementById('new-password').value;
+    const newPassword = document.getElementById('new-password').value.trim();
 
     if (newPassword.length < 6) {
-        alert("رمز باید حداقل 6 کاراکتر باشد");
+        alert("رمز عبور جدید باید حداقل ۶ کاراکتر باشد.");
         return;
     }
 
-    const { error } =
-        await client.auth.updateUser({
+    try {
+        const { error } = await client.auth.updateUser({
             password: newPassword
         });
 
-    if (error) {
-        alert(error.message);
-        return;
+        if (error) {
+            alert("خطا در تغییر رمز: " + error.message);
+            return;
+        }
+
+        alert("رمز عبور شما با موفقیت تغییر کرد! 🎉 اکنون وارد حساب خود می‌شوید.");
+        
+        // هدایت مستقیم به صفحه اصلی پروژه روی همان پورت یا دامنه
+        window.location.href = "index.html";
+        
+    } catch (err) {
+        alert("خطای غیرمنتظره: " + err.message);
     }
-
-    alert("رمز عبور با موفقیت تغییر کرد");
-
-    window.location.href = "index.html";
 }
