@@ -1,0 +1,97 @@
+/* استایل‌های اختصاصی صفحه بازیابی رمز عبور */
+
+.reset-card {
+    max-width: 400px;
+    width: 90%;
+    background: rgba(7, 15, 30, 0.95);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    border-radius: 25px;
+    padding: 40px 30px;
+    margin: 80px auto;
+    box-sizing: border-box;
+    text-align: center;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+}
+
+.reset-title {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: #d4af37;
+    font-weight: bold;
+}
+
+.reset-description {
+    color: #cbd5e0;
+    font-size: 0.95rem;
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+.reset-input-container {
+    width: 100%;
+    margin: 0 auto 20px auto;
+}
+
+/* کانتینر سفارشی و بدون تداخل برای کادر رمز عبور */
+.reset-password-wrapper {
+    position: relative !important;
+    width: 100% !important;
+    display: block !important;
+    box-sizing: border-box;
+}
+
+.reset-password-wrapper input[type="password"],
+.reset-password-wrapper input[type="text"] {
+    width: 100% !important;
+    height: 46px !important;
+    padding: 10px 15px 10px 45px !important; /* پدینگ چپ برای چشم */
+    background-color: #030710 !important;
+    border: 2px solid #d4af37 !important;
+    border-radius: 12px !important;
+    color: #f1ebd9 !important;
+    box-sizing: border-box !important;
+    text-align: right !important;
+    direction: rtl !important;
+    font-size: 1rem;
+    letter-spacing: 1px;
+}
+
+/* تنظیم جایگاه چشم کاملاً مستقل از فایل style.css */
+.reset-eye-container {
+    position: absolute !important;
+    left: 12px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important; /* تراز عمودی کاملاً دقیق در وسط کادر مشکی */
+    display: flex !important;
+    align-items: center !important;
+    z-index: 99 !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.reset-eye-container img {
+    width: 22px !important;
+    height: 22px !important;
+    cursor: pointer !important;
+    display: block !important;
+}
+
+/* کانتینر دکمه‌ها */
+.reset-actions {
+    display: flex !important;
+    gap: 12px !important;
+    justify-content: center !important;
+    margin-top: 30px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.reset-actions .btn {
+    flex: 1 !important;
+    padding: 12px !important;
+    font-size: 1rem !important;
+    border-radius: 50px !important;
+    cursor: pointer !important;
+    box-sizing: border-box !important;
+}
