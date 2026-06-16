@@ -221,6 +221,9 @@ function switchAuthMode() {
     const modalTitle = document.getElementById('modal-title');
     const mainBtn = document.getElementById('main-auth-btn');
     const toggleTxt = document.getElementById('toggle-auth-mode');
+    
+    // 📌 ۱. گرفتن المنت دکمه فراموشی رمز عبور
+    const forgotBtn = document.getElementById('forgot-password-btn');
 
     if (isSignUpMode) {
         loginFields.style.display = 'none';
@@ -228,12 +231,18 @@ function switchAuthMode() {
         modalTitle.innerText = 'ساخت حساب کاربری';
         mainBtn.innerText = 'ثبت‌نام';
         toggleTxt.innerText = 'قبلاً ثبت‌نام کرده‌اید؟ وارد شوید';
+        
+        // 📌 ۲. مخفی کردن دکمه فراموشی رمز در حالت ثبت‌نام
+        if (forgotBtn) forgotBtn.style.display = 'none';
     } else {
         loginFields.style.display = 'block';
         signupFields.style.display = 'none';
         modalTitle.innerText = 'ورود به حساب';
         mainBtn.innerText = 'ورود';
         toggleTxt.innerText = 'حساب ندارید؟ ثبت‌نام کنید';
+        
+        // 📌 ۳. نمایش مجدد دکمه فراموشی رمز در حالت ورود
+        if (forgotBtn) forgotBtn.style.display = 'block';
     }
 }
 
