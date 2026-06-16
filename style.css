@@ -443,6 +443,21 @@ button, a {
     box-sizing: border-box !important;
 }
 
+#toggle-password-container-signup {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 12px;
+    display: flex;
+    align-items: center;
+}
+
+.toggle-eye-btn {
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+}
+
 /* کانتینر چشم که در گوشه سمت چپ قرار می‌گیرد */
 .password-wrapper div[id^="toggle-password-container"] {
     position: absolute !important;
@@ -492,4 +507,15 @@ body::before{
     background:#d4af37;
 
     z-index:999;
+}
+
+.auth-container {
+    width: 450px;
+    margin: 80px auto;
+    background: rgba(3, 7, 16, 0.9);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    border-radius: 25px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
 }
