@@ -216,33 +216,33 @@ function closeAuthModal() { document.getElementById('auth-modal').style.display 
 
 function switchAuthMode() {
     isSignUpMode = !isSignUpMode;
+    const modalTitle = document.getElementById('modal-title');
+    const mainAuthBtn = document.getElementById('main-auth-btn');
+    const toggleAuthModeBtn = document.getElementById('toggle-auth-mode');
     const loginFields = document.getElementById('login-fields');
     const signupFields = document.getElementById('signup-fields');
-    const modalTitle = document.getElementById('modal-title');
-    const mainBtn = document.getElementById('main-auth-btn');
-    const toggleTxt = document.getElementById('toggle-auth-mode');
     
-    // 📌 ۱. گرفتن المنت دکمه فراموشی رمز عبور
-    const forgotBtn = document.getElementById('forgot-password-btn');
+    // 🌟 خط جدید: گرفتن کانتینر لینک فراموشی رمز
+    const forgotPasswordContainer = document.getElementById('forgot-password-container'); 
 
     if (isSignUpMode) {
+        modalTitle.innerText = 'ثبت‌نام حساب کاربری';
+        mainAuthBtn.innerText = 'ثبت‌نام';
+        toggleAuthModeBtn.innerText = 'قبلاً ثبت‌نام کرده‌اید؟ وارد شوید';
         loginFields.style.display = 'none';
         signupFields.style.display = 'block';
-        modalTitle.innerText = 'ساخت حساب کاربری';
-        mainBtn.innerText = 'ثبت‌نام';
-        toggleTxt.innerText = 'قبلاً ثبت‌نام کرده‌اید؟ وارد شوید';
         
-        // 📌 ۲. مخفی کردن دکمه فراموشی رمز در حالت ثبت‌نام
-        if (forgotBtn) forgotBtn.style.display = 'none';
+        // 🌟 خط جدید: مخفی کردن دکمه فراموشی رمز در حالت ثبت‌نام
+        if (forgotPasswordContainer) forgotPasswordContainer.style.display = 'none'; 
     } else {
+        modalTitle.innerText = 'ورود به حساب کاربری';
+        mainAuthBtn.innerText = 'ورود';
+        toggleAuthModeBtn.innerText = 'حساب کاربری ندارید؟ ثبت‌نام کنید';
         loginFields.style.display = 'block';
         signupFields.style.display = 'none';
-        modalTitle.innerText = 'ورود به حساب';
-        mainBtn.innerText = 'ورود';
-        toggleTxt.innerText = 'حساب ندارید؟ ثبت‌نام کنید';
         
-        // 📌 ۳. نمایش مجدد دکمه فراموشی رمز در حالت ورود
-        if (forgotBtn) forgotBtn.style.display = 'block';
+        // 🌟 خط جدید: نمایش مجدد دکمه فراموشی رمز در حالت ورود
+        if (forgotPasswordContainer) forgotPasswordContainer.style.display = 'block'; 
     }
 }
 
