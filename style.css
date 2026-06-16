@@ -693,17 +693,26 @@ body::before {
     width: 40px !important;
     height: 40px !important;
     background-image: url('8.png') !important;
-    background-size: contain !important;
+    background-size: 45px !important;
     background-repeat: no-repeat !important;
     background-position: center !important;
     
     /* فیلتر طلایی */
-filter: invert(89%) sepia(87%) saturate(1100%) hue-rotate(352deg) brightness(108%) contrast(92%);    
-    animation: eslimiGlow 4s ease-in-out infinite !important;
+    filter: brightness(0) saturate(100%) invert(68%) sepia(85%) saturate(950%) hue-rotate(354deg) brightness(95%) contrast(90%);    
+    
+    /* اتصال انیمیشن اصلاح شده */
+    animation: eslimiMiniRotate 10s linear infinite;
+    
+    /* 🌟 کمک به مرورگر برای پردازش فوق‌العاده نرم انیمیشن بدون لرزش لبه‌ها */
+    will-change: transform; 
     flex-shrink: 0 !important;
 }
 
-@keyframes eslimiGlow {
-    0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.8; }
-    50% { transform: scale(1.08) rotate(180deg); opacity: 1; }
+@keyframes eslimiMiniRotate {
+from { 
+        transform: rotate(0deg); 
+    }
+    to { 
+        transform: rotate(360deg); 
+    }
 }

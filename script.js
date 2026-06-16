@@ -210,9 +210,33 @@ function toggleInfo() {
     }
 }
 
-// مدیریت فرم‌های ورود و ثبت‌نام (Auth)
-function openAuthModal() { document.getElementById('auth-modal').style.display = 'flex'; }
-function closeAuthModal() { document.getElementById('auth-modal').style.display = 'none'; }
+// ۱. تابع باز کردن مودال ورود و ثبت‌نام
+function openAuthModal() {
+    const modal = document.getElementById('auth-modal');
+    if (modal) {
+        modal.style.display = 'flex'; // باز شدن پاپ‌آپ
+    }
+    
+    // 🌟 پنهان کردن دکمه ورود/ثبت‌نام بالا سمت چپ به محض باز شدن فرم
+    const authBar = document.querySelector('.auth-bar');
+    if (authBar && !currentUser) { 
+        authBar.style.display = 'none';
+    }
+}
+
+// ۲. تابع بسته شدن مودال (انصراف یا زدن دکمه ضربدر)
+function closeAuthModal() {
+    const modal = document.getElementById('auth-modal');
+    if (modal) {
+        modal.style.display = 'none'; // بسته شدن پاپ‌آپ
+    }
+    
+    // 🌟 برگرداندن و ظاهر کردن دوباره دکمه بالا سمت چپ (اگر کاربر لاگین نکرده باشد)
+    const authBar = document.querySelector('.auth-bar');
+    if (authBar && !currentUser) {
+        authBar.style.display = 'block';
+    }
+}
 
 function switchAuthMode() {
     isSignUpMode = !isSignUpMode;
@@ -246,12 +270,11 @@ function switchAuthMode() {
     }
 }
 
-// 📌 مدیریت کامل عملیات ورود دوگانه (Username/Email) یا ثبت‌نام
 async function handleAuth() {
     try {
         if (isSignUpMode) {
             // ==========================================
-            // ۱. حالت ثبت‌نام کاربر جدید
+            // ۱. حالت ثبت‌نام کاربر جدید + ورود مستقیم
             // ==========================================
             const username = document.getElementById('auth-username').value.trim();
             const email = document.getElementById('auth-email').value.trim();
@@ -267,41 +290,52 @@ async function handleAuth() {
                 return;
             }
 
-            const { data: authData, error: signUpError } =
-await client.auth.signUp({
-    email: email,
-    password: password,
-    options: {
-        data: {
-            username: username
-        }
-    }
-});
+            // ثبت‌نام در Supabase Auth
+            const { data: authData, error: signUpError } = await client.auth.signUp({
+                email: email,
+                password: password,
+                options: {
+                    data: {
+                        username: username
+                    }
+                }
+            });
 
-if (signUpError) {
-    console.error(signUpError);
-    throw signUpError;
-}
+            if (signUpError) {
+                console.error("Sign Up Error:", signUpError);
+                throw signUpError;
+            }
 
-if (!authData.user) {
-    throw new Error("User was not created");
-}
+            if (!authData || !authData.user) {
+                throw new Error("کاربر ساخته نشد.");
+            }
 
-const { error: profileInsertError } = await client
-    .from('profiles')
-    .insert({
-        id: authData.user.id,
-        username: username,
-        email: email
-    });
+            // ثبت اطلاعات تکمیلی در جدول profiles
+            const { error: profileInsertError } = await client
+                .from('profiles')
+                .insert({
+                    id: authData.user.id,
+                    username: username,
+                    email: email
+                });
 
-if (profileInsertError) {
-    console.error("Profile Insert Error:", profileInsertError);
-    throw profileInsertError;
-}
+            if (profileInsertError) {
+                console.error("Profile Insert Error:", profileInsertError);
+                throw profileInsertError;
+            }
 
-alert('ثبت‌نام با موفقیت انجام شد! 🎉');
-switchAuthMode();
+            alert('ثبت‌نام و ورود با موفقیت انجام شد! 🎉 خوش آمدید.');
+            
+            // ذخیره دیتای کاربر جدید در متغیر عمومی برای مدیریت دکمه هدر
+            currentUser = authData.user;
+            
+            // بستن مودال بدون بازگشت دکمه ورود در هدر
+            closeAuthModal();
+            
+            // ریلود صفحه جهت فعال‌سازی بخش محبوب‌ها و گنجینه اشعار شخصی
+            location.reload();
+            
+            return; // توقف کامل اجرای تابع بعد از ثبت‌نام موفق
 
         } else {
             // ==========================================
@@ -317,14 +351,14 @@ switchAuthMode();
 
             let emailToLogin = inputLogin;
 
-            // 🔍 بررسی هوشمند: اگر فیلد ورودی شامل کاراکتر @ نباشد، یعنی کاربر Username وارد کرده است
+            // 🔍 بررسی هوشمند: اگر ورودی شامل @ نباشد، یعنی کاربر نام کاربری وارد کرده است
             if (!inputLogin.includes('@')) {
-                // جستجوی ایمیل واقعی بر اساس نام کاربری از جدول عمومی profiles
+                // پیدا کردن ایمیل متناظر با نام کاربری از جدول profiles
                 const { data: profile, error: profileError } = await client
                     .from('profiles')
                     .select('email')
                     .eq('username', inputLogin)
-                    .maybeSingle(); // استفاده از maybeSingle برای جلوگیری از ایجاد خطا در صورت پیدا نشدن
+                    .maybeSingle(); 
 
                 if (profileError) {
                     console.error("خطا در بررسی نام کاربری:", profileError.message);
@@ -335,12 +369,12 @@ switchAuthMode();
                     return;
                 }
 
-                // جایگزینی ایمیلِ کشف شده به جای نام کاربری
+                // جایگزینی ایمیلِ پیدا شده به جای نام کاربری برای ورود به سوپابیس
                 emailToLogin = profile.email;
             }
 
-            // ورود نهایی به بخش احراز هویت Supabase با ایمیل به دست آمده
-            const { error: signInError } = await client.auth.signInWithPassword({
+            // ورود نهایی به بخش احراز هویت Supabase با ایمیل مشخص شده
+            const { data: signInData, error: signInError } = await client.auth.signInWithPassword({
                 email: emailToLogin,
                 password: password
             });
@@ -348,14 +382,22 @@ switchAuthMode();
             if (signInError) throw signInError;
 
             alert('خوش آمدید! 🎉');
+            
+            // ذخیره اطلاعات کاربر لاگین شده در متغیر عمومی سایت
+            if (signInData && signInData.user) {
+                currentUser = signInData.user;
+            }
+
+            // بستن مودال و مخفی ماندن دکمه ورود هدر
             closeAuthModal();
+            
+            // ریلود نهایی صفحه
             location.reload();
         }
     } catch (error) {
-    console.error(error);
-
-    alert(error.message);
-}
+        console.error("Auth Error:", error);
+        alert(error.message || 'خطایی در فرآیند احراز هویت رخ داد.');
+    }
 }
 
 async function logout() {
