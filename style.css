@@ -623,15 +623,6 @@ body::before {
     display: block;
 }
 
-/* 📌 اصلاح موقعیت متون هدر برای هماهنگی با طرح جدید عمق‌دار */
-.site-name {
-    top: 15px !important;
-    right: 35px !important;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.8);
-}
-
-
-
 /* دکمه‌های ژانر را کمی پایین‌تر می‌آوریم تا از کادر موج هدر فاصله مناسبی داشته باشند */
 .genre-container {
     margin-top: 150px !important; 
@@ -642,11 +633,7 @@ body::before {
     .luxury-islamic-header {
         height: 120px; /* کمتر شدن ارتفاع هدر در موبایل */
     }
-    .site-name {
-        font-size: 1.5rem !important;
-        top: 15px !important;
-        right: 20px !important;
-    }
+
     .auth-bar {
         top: 15px !important;
         left: 20px !important;
@@ -654,10 +641,7 @@ body::before {
     .genre-container {
         margin-top: 115px !important;
     }
-    .site-name::before {
-        width: 32px;
-        height: 32px;
-    }
+  
 }
 /* کانتینر والد برای موقعیت‌دهی دقیق */
 .header-wrapper {
@@ -666,24 +650,6 @@ body::before {
     height: 0; /* فقط برای موقعیت‌دهی */
     z-index: 99999;
     pointer-events: none;
-}
-
-/* تنظیمات نهایی و قطعی نام سایت */
-.site-name {
-    position: absolute !important;
-    top: 20px !important;
-    right: 40px !important;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.8) !important;
-    color: #d4af37 !important;
-    font-size: 2rem !important;
-    font-family: "B Nazanin", "B Lotus", serif !important;
-    font-weight: bold !important;
-    z-index: 99999 !important;
-    
-    display: flex !important;
-    align-items: center !important;
-    gap: 12px !important;
-    pointer-events: auto !important;
 }
 
 /* اضافه کردن طرح اسلیمی گرد به سمت راست */
@@ -696,7 +662,7 @@ body::before {
     background-size: 45px !important;
     background-repeat: no-repeat !important;
     background-position: center !important;
-    
+    margin-left: -150px !important;
     /* فیلتر طلایی */
     filter: brightness(0) saturate(100%) invert(68%) sepia(85%) saturate(950%) hue-rotate(354deg) brightness(95%) contrast(90%);    
     
@@ -714,5 +680,52 @@ from {
     }
     to { 
         transform: rotate(360deg); 
+    }
+}
+/* ===== کانتینر اصلی اسم سایت ===== */
+.site-name {
+    position: absolute;
+    top: -160px;
+    right: 30px;
+    z-index: 99999;
+    
+    /* مهم: با flex هر دو رو هم‌تراز کن */
+    display: flex;
+    align-items: center;  /* عمودی وسط */
+    justify-content: center;
+    gap: 0px;  /* فاصله بین طرح اسلیمی و لوگو */
+    
+    pointer-events: none;
+}
+
+/* ===== عکس لوگو (نغمه قلم) ===== */
+.logo-img {
+    display: block;
+    width: 400px;    /* ← اینجا عرض رو کم و زیاد کن */
+    height: auto;
+    pointer-events: auto;
+    filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.3));
+    transition: all 0.3s ease;
+}
+
+.logo-img:hover {
+    filter: drop-shadow(0 0 40px rgba(212, 175, 55, 0.6));
+    transform: scale(1.05);
+}
+
+
+/* ===== موبایل ===== */
+@media (max-width: 580px) {
+    .site-name {
+        top: 10px;
+        right: 15px;
+        gap: 10px;
+    }
+    .eslimi-icon {
+        width: 30px;
+        height: 30px;
+    }
+    .logo-img {
+        height: 35px;
     }
 }
