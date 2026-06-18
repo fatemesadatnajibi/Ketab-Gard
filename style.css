@@ -1,58 +1,156 @@
-/* متصل کردن یک فونت کلاسیک، کتابی و اصیل از وب برای پشتیبانی کامل */
+/* ============================================
+   فونت‌ها و تنظیمات پایه
+   ============================================ */
 @import url('https://cdn.jsdelivr.net/gh/rastikerdar/tanha-font@v0.9.2/dist/font-face.css');
 
-/* پس‌زمینه عمیق سورمه‌ای با کنتراست بالا برای جلوه خطوط طلایی */
+/* ============================================
+   بدنه اصلی
+   ============================================ */
 body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     background-color: #030710;
     background-image: radial-gradient(circle at 50% 50%, #091224 0%, #030710 100%);
-    
-    /* اعمال فونت ب نازنین برای کل بدنه سایت */
     font-family: "B Nazanin", "B Lotus", "Tanha", "Tahoma", sans-serif;
-    
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* شروع از بالای صفحه برای باز شدن فضا در اسکرول */
+    justify-content: flex-start;
     align-items: center;
     min-height: 100vh;
     color: #f1ebd9;
-    overflow-x: hidden; /* جلوگیری از اسکرول خوردن زشت به چپ و راست */
-    overflow-y: auto;   /* آزاد کردن اسکرول عمودی برای متن‌های طولانی */
+    overflow-x: hidden;
+    overflow-y: auto;
     font-size: 1.1rem;
 }
 
-/* 📌 اصلاح کانتینر دکمه‌های ژانر برای حل باگ نصفه افتادن در لپ‌تاپ */
+/* ============================================
+   هدر لوکس (موج‌های طلایی)
+   ============================================ */
+.luxury-islamic-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 160px;
+    overflow: hidden;
+    z-index: 99;
+    pointer-events: none;
+}
+
+.gold-wave-stripes {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.gold-wave-stripes svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    filter: drop-shadow(0px 4px 8px rgba(212, 175, 55, 0.4));
+}
+
+.navy-wave-body {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.navy-wave-body svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* ============================================
+   نوار احراز هویت (ورود/ثبت‌نام)
+   ============================================ */
+.auth-bar {
+    position: absolute;
+    top: 30px;
+    left: 25px;
+    z-index: 9999;
+    font-family: "B Nazanin", "Tanha", sans-serif;
+    font-size: 1rem;
+}
+
+.style-mini {
+    padding: 6px 15px !important;
+    font-size: 0.95rem !important;
+    border-radius: 15px !important;
+}
+
+/* ============================================
+   نام سایت (نغمه قلم)
+   ============================================ */
+.site-name {
+    position: absolute;
+    top: -160px;
+    right: 30px;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0px;
+    pointer-events: none;
+}
+
+/* طرح اسلیمی گردان */
+.site-name::before {
+    content: "" !important;
+    display: inline-block !important;
+    width: 40px !important;
+    height: 40px !important;
+    background-image: url('8.png') !important;
+    background-size: 45px !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    margin-left: -150px !important;
+    filter: brightness(0) saturate(100%) invert(68%) sepia(85%) saturate(950%) hue-rotate(354deg) brightness(95%) contrast(90%);
+    animation: eslimiMiniRotate 10s linear infinite;
+    will-change: transform;
+    flex-shrink: 0 !important;
+}
+
+@keyframes eslimiMiniRotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* عکس لوگو */
+.logo-img {
+    display: block;
+    width: 400px;
+    height: auto;
+    pointer-events: auto;
+    filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.3));
+    transition: all 0.3s ease;
+}
+
+.logo-img:hover {
+    filter: drop-shadow(0 0 40px rgba(212, 175, 55, 0.6));
+    transform: scale(1.05);
+}
+
+/* ============================================
+   دکمه‌های ژانر
+   ============================================ */
 .genre-container {
-    margin: 25px auto 15px auto;
+    margin: 150px auto 15px auto;
     display: flex;
     gap: 10px;
     z-index: 10;
     width: 100%;
-    max-width: 750px; /* افزایش فضا برای جا شدن دکمه‌های جدید */
+    max-width: 750px;
     padding: 10px 15px;
     box-sizing: border-box;
-    margin-top: 110px;
-    /* حل باگ: در دسکتاپ دکمه‌ها بدون اسکرول وسط‌چین می‌شوند، در موبایل اسکرول می‌خورند */
-    justify-content: center; 
-    flex-wrap: wrap; /* در لپ‌تاپ اجازه می‌دهد دکمه‌ها اگر جا نشدند بروند خط بعد */
-}
-
-/* 📱 مدیا کوئری مخصوص گوشی‌ها: در موبایل دکمه‌ها خط بعدی نروند، بلکه اسکرول افقی بخورند */
-@media (max-width: 600px) {
-    .genre-container {
-        justify-content: flex-start; /* شروع از راست برای اسکرول درست حروف فارسی */
-        flex-wrap: nowrap; /* ممانعت از شکستن خط */
-        overflow-x: auto;
-        white-space: nowrap;
-        -webkit-overflow-scrolling: touch;
-    }
-}
-
-/* مخفی کردن نوار اسکرول */
-.genre-container::-webkit-scrollbar {
-    display: none;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 .genre-btn {
@@ -67,17 +165,61 @@ body {
     font-weight: normal;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    flex-shrink: 0; 
+    flex-shrink: 0;
 }
-/* حالت فعال یا هوور دکمه‌ها */
-.genre-btn.active, .genre-btn:hover {
+
+.genre-btn.active,
+.genre-btn:hover {
     background-color: #d4af37;
     color: #030710;
     border-color: #ffffff;
     box-shadow: 0 0 18px rgba(212, 175, 55, 0.5);
 }
 
-/* 📌 کانتینر اصلی کاملاً ریسپانسیو بدون قفل ارتفاع */
+/* دکمه محبوب‌های من */
+.genre-btn.fav-gold-btn {
+    background-color: rgba(7, 15, 30, 0.8) !important;
+    border: 1px solid rgba(212, 175, 55, 0.6) !important;
+    color: #e2c275 !important;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(212, 175, 55, 0.1);
+}
+
+.genre-btn.fav-gold-btn .heart-icon {
+    display: inline-block;
+    margin-left: 6px;
+    transition: transform 0.3s ease;
+    color: #d4af37;
+}
+
+.genre-btn.fav-gold-btn:hover {
+    background-color: #d4af37 !important;
+    color: #030710 !important;
+    border-color: #ffffff !important;
+    box-shadow: 0 0 25px rgba(212, 175, 55, 0.65) !important;
+}
+
+.genre-btn.fav-gold-btn:hover .heart-icon {
+    transform: scale(1.2) rotate(10deg);
+    color: #030710 !important;
+}
+
+.genre-btn.fav-gold-btn.active {
+    background: linear-gradient(135deg, #d4af37 0%, #d4af37 100%) !important;
+    color: #030710 !important;
+    border-color: #ffffff !important;
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.8) !important;
+}
+
+.genre-btn.fav-gold-btn.active .heart-icon {
+    color: #030710 !important;
+    transform: scale(1.25);
+}
+
+/* ============================================
+   بخش اصلی و کارت شعر
+   ============================================ */
 .main-wrapper {
     position: relative;
     display: flex;
@@ -87,16 +229,16 @@ body {
     max-width: 800px;
     padding: 20px;
     box-sizing: border-box;
-    flex-grow: 1; /* پر کردن فضای باقی‌مانده عمودی */
+    flex-grow: 1;
 }
 
-/* 📌 تنظیمات عکس شمسه کاملاً سیال و هماهنگ با ابعاد صفحه */
+/* شمسه گردان */
 .shamseh-bg {
     position: absolute;
     width: 100%;
-    max-width: 750px; /* جلوگیری از بیش از حد بزرگ شدن در مانیتور */
+    max-width: 750px;
     height: auto;
-    aspect-ratio: 1 / 1; /* حفظ شکل مربع شمسه در هر حالتی */
+    aspect-ratio: 1 / 1;
     background-image: url('Eslimi_Design_Surah.svg.png');
     background-size: contain;
     background-repeat: no-repeat;
@@ -105,7 +247,7 @@ body {
     pointer-events: none;
     filter: invert(1) sepia(1) saturate(7) hue-rotate(5deg) brightness(0.9) opacity(0.35);
     transform-origin: center center;
-    animation: slowRotate 140s linear infinite; 
+    animation: slowRotate 140s linear infinite;
 }
 
 @keyframes slowRotate {
@@ -113,9 +255,9 @@ body {
     to { transform: rotate(360deg); }
 }
 
-/* 📌 کارت اصلی با پدینگ و عرض منعطف مخصوص دسکتاپ و موبایل */
+/* کارت اصلی */
 .card {
-    background-color: #070f1e; 
+    background-color: #070f1e;
     padding: 40px 30px;
     border-radius: 24px;
     box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), inset 0 0 0 1px rgba(212, 175, 55, 0.2);
@@ -131,7 +273,10 @@ body {
 .card::before {
     content: "";
     position: absolute;
-    top: 10px; left: 10px; right: 10px; bottom: 10px;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
     border: 1px solid rgba(212, 175, 55, 0.25);
     border-radius: 16px;
     pointer-events: none;
@@ -146,16 +291,19 @@ body {
     margin-bottom: 20px;
 }
 
-/* 📌 تنظیمات متن شعر (بزرگ، کتابی، بدون حالت Bold خشن) */
+/* متن شعر */
 .text {
     font-family: "B Nazanin", "B Lotus", "Tanha", sans-serif;
-    font-size: 1.65rem; /* اندازه مناسب برای خوانایی عالی */
-    font-weight: normal; 
+    font-size: 1.65rem;
+    font-weight: normal;
     color: #f1ebd9;
-    line-height: 1.9; 
+    line-height: 1.9;
     margin-bottom: 20px;
     min-height: 80px;
     word-wrap: break-word;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .source {
@@ -165,16 +313,19 @@ body {
     display: block;
     font-family: "B Nazanin", "B Lotus", sans-serif;
     font-weight: normal;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
+/* دکمه‌های اکشن */
 .actions {
     display: flex;
     justify-content: center;
     gap: 12px;
-    flex-wrap: wrap; 
+    flex-wrap: wrap;
 }
 
-/* دکمه‌های پایین */
 .btn {
     background-color: #d4af37;
     color: #030710;
@@ -189,7 +340,8 @@ body {
     text-decoration: none;
     display: inline-block;
 }
-.btn:hover { 
+
+.btn:hover {
     background-color: #fff;
     color: #030710;
     box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
@@ -200,75 +352,76 @@ body {
     color: #d4af37;
     border: 1px solid #d4af37;
 }
-.btn-secondary:hover { 
+
+.btn-secondary:hover {
     background-color: rgba(212, 175, 55, 0.1);
     color: #d4af37;
 }
 
-/* 📌 باکس توضیحات زیبا و بهینه‌سازی شده */
+/* باکس توضیحات */
 .info-box {
     background-color: #040914;
     border: 1px dashed rgba(212, 175, 55, 0.3);
     padding: 20px;
     border-radius: 14px;
     margin-top: 10px;
-    text-align: justify; 
-    display: none; 
+    text-align: justify;
+    display: none;
     font-size: 1.1rem;
     color: #cbd5e0;
     line-height: 1.8;
     font-family: "B Nazanin", "B Lotus", sans-serif;
     box-sizing: border-box;
 }
-.info-box strong { color: #d4af37; }
 
-/* 📱 مدیا کوئری هوشمند برای موبایل و تبلت‌های کوچک */
-@media (max-width: 580px) {
-    .genre-container {
-        justify-content: flex-start; 
-    }
-    .card {
-        padding: 30px 20px; 
-    }
-    .text {
-        font-size: 1.45rem; 
-        line-height: 1.8;
-    }
-    .btn {
-        padding: 10px 20px;
-        font-size: 1rem; 
-    }
+.info-box strong {
+    color: #d4af37;
 }
 
-/* ۱. تنظیم نشانگر موس برای متون ثابت */
-.text, .source, id, p, span, h2, h3 {
-    cursor: default !important;
-}
-
-/* ۲. تنظیم نشانگر موس برای المان‌های کلیک‌شدنی */
-.btn, .genre-btn, a, button {
+/* ============================================
+   دکمه قلب (علاقه‌مندی)
+   ============================================ */
+#love-btn {
+    background: none !important;
+    border: none !important;
     cursor: pointer !important;
+    padding: 0 !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    outline: none;
 }
 
-/* ۳. غیرفعال کردن قابلیت انتخاب متن شعر */
-.text, .source {
-    -webkit-user-select: none; 
-    -ms-user-select: none; 
-    user-select: none; 
-}
-.style-mini {
-    padding: 6px 15px !important;
-    font-size: 0.95rem !important;
-    border-radius: 15px !important;
-}
-.auth-bar {
-    font-family: "B Nazanin", "Tanha", sans-serif;
-    font-size: 1rem;
+.heart-icon-img {
+    width: 28px;
+    height: 28px;
+    transition: transform 0.2s ease;
 }
 
-/* 📌 بازسازی و شیک‌سازی پاپ‌آپ ورود / ثبت‌نام */
+#love-btn:hover .heart-icon-img {
+    transform: scale(1.15);
+}
+
+.btn,
+.genre-btn,
+#toggle-password-btn,
+#love-btn {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+    transition: all 0.15s cubic-bezier(0.2, 0, 0.2, 1) !important;
+}
+
+button,
+a {
+    touch-action: manipulation;
+}
+
+/* ============================================
+   مودال ورود / ثبت‌نام
+   ============================================ */
 #auth-modal {
-    backdrop-filter: blur(8px); 
+    backdrop-filter: blur(8px);
 }
 
 #auth-modal .card {
@@ -287,19 +440,18 @@ body {
     font-weight: bold !important;
     color: #d4af37 !important;
     margin-bottom: 30px !important;
-    background: none !important; 
+    background: none !important;
     padding: 0 !important;
     user-select: none !important;
     cursor: default !important;
 }
 
-/* 🌟 قانون مادر و یکپارچه برای تمام کادرهای ورودی مودال (حذف کدهای متناقض قبلی) */
 #auth-modal input[type="text"],
 #auth-modal input[type="email"],
 #auth-modal input[type="password"],
 #auth-modal input[type="tel"] {
     width: 100% !important;
-    height: 46px !important; /* ارتفاع ثابت هندسی */
+    height: 46px !important;
     box-sizing: border-box !important;
     background-color: #030710 !important;
     border: 1px solid rgba(212, 175, 55, 0.4) !important;
@@ -307,26 +459,25 @@ body {
     color: #f1ebd9 !important;
     font-family: "B Nazanin", "Tanha", Tahoma, sans-serif !important;
     font-size: 1.15rem !important;
-    margin-bottom: 18px !important; /* مارجین ثابت برای جلوگیری از تغییر ابعاد کارت */
-    padding: 0 15px !important; /* پدینگ استاندارد برای راست‌چین */
-    text-align: right !important; /* تراز راست ثابت برای تمام کادرها */
-    direction: rtl !important;    /* جهت پیش‌فرض فارسی */
+    margin-bottom: 18px !important;
+    padding: 0 15px !important;
+    text-align: right !important;
+    direction: rtl !important;
     cursor: text !important;
     transition: border-color 0.2s ease !important;
 }
 
-/* 🌟 تنظیمات اختصاصی کادر پسورد برای باز کردن فضا جهت قرارگیری چشم در سمت چپ */
 #auth-modal #auth-password {
-    padding-left: 45px !important; /* پدینگ بیشتر از سمت چپ برای آیکون چشم */
+    padding-left: 45px !important;
     padding-right: 15px !important;
 }
 
-/* پایداری فونت و فاصله‌گذاری حروف در حالت متن و پسورد */
 #auth-modal #auth-password[type="text"] {
     letter-spacing: 0px !important;
 }
+
 #auth-modal #auth-password[type="password"] {
-    letter-spacing: 2px !important; /* خوانایی زیباتر نقاط مشکی پسورد */
+    letter-spacing: 2px !important;
 }
 
 #auth-modal input:focus {
@@ -351,14 +502,14 @@ body {
     padding: 10px 30px !important;
     font-size: 1.1rem !important;
     border-radius: 25px !important;
-    flex: 1 !important; 
+    flex: 1 !important;
 }
 
 #toggle-auth-mode {
     color: #a0aec0 !important;
     margin-top: 25px !important;
     font-size: 1rem !important;
-    cursor: pointer !important; 
+    cursor: pointer !important;
     font-family: "B Nazanin", "Tanha", sans-serif !important;
     user-select: none !important;
     transition: color 0.3s ease !important;
@@ -368,79 +519,33 @@ body {
     color: #d4af37 !important;
 }
 
-/* 🌟 تراز عمودی و ریاضی بی‌نقص آیکون چشم و خط عمودی طلایی */
+/* ============================================
+   آیکون چشم (نمایش/مخفی کردن پسورد)
+   ============================================ */
 .password-wrapper {
     position: relative !important;
     width: 100% !important;
     display: block !important;
+}
+
+.password-wrapper input {
+    width: 100% !important;
+    padding-left: 40px !important;
+    box-sizing: border-box !important;
 }
 
 #toggle-password-container {
     position: absolute !important;
     left: 12px !important;
     top: 50% !important;
-    transform: translateY(-50%) !important; /* قرارگیری دقیق هندسی در وسط فیلد پسورد */
+    transform: translateY(-50%) !important;
     display: flex !important;
     align-items: center !important;
     border-right: 1px solid rgba(212, 175, 55, 0.4) !important;
     padding-right: 8px !important;
-    height: 20px !important; /* ارتفاع متناسب خط جداکننده */
+    height: 20px !important;
     z-index: 5 !important;
     pointer-events: none !important;
-}
-
-#toggle-password-btn {
-    width: 18px !important;
-    height: 18px !important;
-    cursor: pointer !important;
-    user-select: none !important;
-    pointer-events: auto !important;
-    display: block !important;
-}
-
-/* 📌 بهینه‌سازی دکمه‌ها و آیکون قلب لایک */
-.btn, .genre-btn, #toggle-password-btn, #love-btn {
-    transform: translateZ(0); 
-    backface-visibility: hidden;
-    perspective: 1000px;
-    transition: all 0.15s cubic-bezier(0.2, 0, 0.2, 1) !important; 
-}
-
-button, a {
-    touch-action: manipulation;
-}
-
-#love-btn {
-    background: none !important;
-    border: none !important;
-    cursor: pointer !important;
-    padding: 0 !important;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    outline: none;
-}
-
-.heart-icon-img {
-    width: 28px; 
-    height: 28px;
-    transition: transform 0.2s ease;
-}
-
-#love-btn:hover .heart-icon-img {
-    transform: scale(1.15);
-}
-
-/* 📌 تنظیم موقعیت آیکون چشم در گوشه سمت چپ کادر پسورد */
-.password-wrapper {
-    position: relative !important;
-    width: 100%;
-}
-
-.password-wrapper input {
-    width: 100% !important;
-    padding-left: 40px !important; /* ایجاد فضای خالی سمت چپ کادر برای چشم */
-    box-sizing: border-box !important;
 }
 
 #toggle-password-container-signup {
@@ -452,22 +557,15 @@ button, a {
     align-items: center;
 }
 
-.toggle-eye-btn {
-    width: 22px;
-    height: 22px;
-    cursor: pointer;
-}
-
-/* کانتینر چشم که در گوشه سمت چپ قرار می‌گیرد */
 .password-wrapper div[id^="toggle-password-container"] {
     position: absolute !important;
-    left: 12px !important; /* فاصله دقیق از لبه سمت چپ */
+    left: 12px !important;
     top: 50% !important;
-    transform: translateY(-85%) !important; /* تراز عمودی کاملاً دقیق */
+    transform: translateY(-85%) !important;
     display: flex !important;
     align-items: center !important;
     z-index: 10 !important;
-    pointer-events: auto !important; /* باز کردن قابلیت کلیک */
+    pointer-events: auto !important;
 }
 
 .toggle-eye-btn {
@@ -478,253 +576,86 @@ button, a {
     pointer-events: auto !important;
     display: block !important;
 }
-.auth-bar{
-    position: absolute;
-    top: 30px;
-    left: 25px;
-    z-index: 9999;
-    font-family: "B Nazanin", "Tanha", sans-serif;
-    font-size: 1rem;
+
+#toggle-password-btn {
+    width: 18px !important;
+    height: 18px !important;
+    cursor: pointer !important;
+    user-select: none !important;
+    pointer-events: auto !important;
+    display: block !important;
 }
 
-
-body::before{
-    content:"";
-    position:absolute;
-    top:75px;
-    left:0;
-    width:100%;
-    height:2px;
-
-    background:#d4af37;
-
-    z-index:999;
+/* ============================================
+   نشانگر موس
+   ============================================ */
+.text,
+.source,
+id,
+p,
+span,
+h2,
+h3 {
+    cursor: default !important;
 }
 
-.auth-container {
-    width: 450px;
-    margin: 80px auto;
-    background: rgba(3, 7, 16, 0.9);
-    border: 1px solid rgba(212, 175, 55, 0.4);
-    border-radius: 25px;
-    padding: 40px;
-    text-align: center;
-    box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
+.btn,
+.genre-btn,
+a,
+button {
+    cursor: pointer !important;
 }
 
-/* استایل اختصاصی و لوکس دکمه محبوب‌های من */
-.genre-btn.fav-gold-btn {
-    background-color: rgba(7, 15, 30, 0.8) !important;
-    border: 1px solid rgba(212, 175, 55, 0.6) !important;
-    color: #e2c275 !important;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(212, 175, 55, 0.1);
+/* ============================================
+   ریسپانسیو (موبایل)
+   ============================================ */
+@media (max-width: 600px) {
+    .genre-container {
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+    }
+    .genre-container::-webkit-scrollbar {
+        display: none;
+    }
 }
 
-/* افکت نشانگر متمایز کننده دکمه */
-.genre-btn.fav-gold-btn .heart-icon {
-    display: inline-block;
-    margin-left: 6px;
-    transition: transform 0.3s ease;
-    color: #d4af37;
-}
-
-/* حالت هوور (وقتی موس روی دکمه می‌رود) */
-.genre-btn.fav-gold-btn:hover {
-    background-color: #d4af37 !important;
-    color: #030710 !important;
-    border-color: #ffffff !important;
-    box-shadow: 0 0 25px rgba(212, 175, 55, 0.65) !important;
-}
-
-/* انیمیشن چرخش یا تپش ملایم آیکون کلمه محبوب‌ها در حالت هوور */
-.genre-btn.fav-gold-btn:hover .heart-icon {
-    transform: scale(1.2) rotate(10deg);
-    color: #030710 !important;
-}
-
-/* افکت فعال بودن دکمه (وقتی کاربر روی آن کلیک کرده و در حال دیدن محبوب‌هاست) */
-.genre-btn.fav-gold-btn.active {
-    background: linear-gradient(135deg, #d4af37 0%, #d4af37 100%) !important;
-    color: #030710 !important;
-    border-color: #ffffff !important;
-    box-shadow: 0 0 30px rgba(212, 175, 55, 0.8) !important;
-}
-
-.genre-btn.fav-gold-btn.active .heart-icon {
-    color: #030710 !important;
-    transform: scale(1.25);
-}
-
-body::before {
-    display: none !important;
-}
-
-/* 📌 کانتینر اصلی هدر لوکس */
-.luxury-islamic-header {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 160px; /* ارتفاع کلی بخش موج هدر */
-    overflow: hidden;
-    z-index: 99; /* قرارگیری در پشت متون هدر اما روی پس‌زمینه اصلی سایت */
-    pointer-events: none;
-}
-
-/* لایه بافت گره‌چینی طلایی در پس‌زمینه (الهام گرفته از بخش مشبک سمت چپ عکس) */
-.header-pattern-layer {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0.08; /* بسیار ملایم در پس‌زمینه قرار می‌گیرد تا متن‌ها خوانا بمانند */
-    /* ساخت یک بافت هندسی اسلامی با کدهای خالص CSS */
-    background-image: 
-        linear-gradient(45deg, #d4af37 25%, transparent 25%), 
-        linear-gradient(-45deg, #d4af37 25%, transparent 25%), 
-        linear-gradient(45deg, transparent 75%, #d4af37 75%), 
-        linear-gradient(-45deg, transparent 75%, #d4af37 75%);
-    background-size: 30px 30px;
-    background-position: 0 0, 0 15px, 15px -15px, -15px 0px;
-}
-
-/* لایه نوارهای طلایی موج‌دار */
-.gold-wave-stripes {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-}
-
-.gold-wave-stripes svg {
-    width: 100%;
-    height: 100%;
-    display: block;
-    /* ایجاد افکت سایه و درخشش برای نوار طلایی (Glow Effect) */
-    filter: drop-shadow(0px 4px 8px rgba(212, 175, 55, 0.4));
-}
-
-/* لایه بدنه سورمه‌ای تیره برای ایجاد مرز دقیق نهایی */
-.navy-wave-body {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-}
-
-.navy-wave-body svg {
-    width: 100%;
-    height: 100%;
-    display: block;
-}
-
-/* دکمه‌های ژانر را کمی پایین‌تر می‌آوریم تا از کادر موج هدر فاصله مناسبی داشته باشند */
-.genre-container {
-    margin-top: 150px !important; 
-}
-
-/* 📱 تنظیمات ریسپانسیو برای صفحات موبایل */
 @media (max-width: 580px) {
     .luxury-islamic-header {
-        height: 120px; /* کمتر شدن ارتفاع هدر در موبایل */
+        height: 120px;
     }
 
     .auth-bar {
         top: 15px !important;
         left: 20px !important;
     }
+
     .genre-container {
         margin-top: 115px !important;
     }
-  
-}
-/* کانتینر والد برای موقعیت‌دهی دقیق */
-.header-wrapper {
-    position: relative;
-    width: 100%;
-    height: 0; /* فقط برای موقعیت‌دهی */
-    z-index: 99999;
-    pointer-events: none;
-}
 
-/* اضافه کردن طرح اسلیمی گرد به سمت راست */
-.site-name::before {
-    content: "" !important;
-    display: inline-block !important;
-    width: 40px !important;
-    height: 40px !important;
-    background-image: url('8.png') !important;
-    background-size: 45px !important;
-    background-repeat: no-repeat !important;
-    background-position: center !important;
-    margin-left: -150px !important;
-    /* فیلتر طلایی */
-    filter: brightness(0) saturate(100%) invert(68%) sepia(85%) saturate(950%) hue-rotate(354deg) brightness(95%) contrast(90%);    
-    
-    /* اتصال انیمیشن اصلاح شده */
-    animation: eslimiMiniRotate 10s linear infinite;
-    
-    /* 🌟 کمک به مرورگر برای پردازش فوق‌العاده نرم انیمیشن بدون لرزش لبه‌ها */
-    will-change: transform; 
-    flex-shrink: 0 !important;
-}
-
-@keyframes eslimiMiniRotate {
-from { 
-        transform: rotate(0deg); 
+    .card {
+        padding: 30px 20px;
     }
-    to { 
-        transform: rotate(360deg); 
+
+    .text {
+        font-size: 1.45rem;
+        line-height: 1.8;
     }
-}
-/* ===== کانتینر اصلی اسم سایت ===== */
-.site-name {
-    position: absolute;
-    top: -160px;
-    right: 30px;
-    z-index: 99999;
-    
-    /* مهم: با flex هر دو رو هم‌تراز کن */
-    display: flex;
-    align-items: center;  /* عمودی وسط */
-    justify-content: center;
-    gap: 0px;  /* فاصله بین طرح اسلیمی و لوگو */
-    
-    pointer-events: none;
-}
 
-/* ===== عکس لوگو (نغمه قلم) ===== */
-.logo-img {
-    display: block;
-    width: 400px;    /* ← اینجا عرض رو کم و زیاد کن */
-    height: auto;
-    pointer-events: auto;
-    filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.3));
-    transition: all 0.3s ease;
-}
+    .btn {
+        padding: 10px 20px;
+        font-size: 1rem;
+    }
 
-.logo-img:hover {
-    filter: drop-shadow(0 0 40px rgba(212, 175, 55, 0.6));
-    transform: scale(1.05);
-}
-
-
-/* ===== موبایل ===== */
-@media (max-width: 580px) {
     .site-name {
         top: 10px;
         right: 15px;
         gap: 10px;
     }
-    .eslimi-icon {
-        width: 30px;
-        height: 30px;
-    }
+
     .logo-img {
         height: 35px;
     }
