@@ -37,7 +37,7 @@
 </head>
 <body>
 
-    <div class="admin-form">
+    <div class="admin-form" style="display: none;">
         <h2 style="text-align: center; color: #d4af37; margin-bottom: 25px; font-size: 1.8rem;">ارسال مستقیم شاهکار به سرور ابری</h2>
         
         <div class="form-group">
@@ -76,14 +76,34 @@
     </div>
 
     <script>
-        // 📌 ۱. ابتدا مشخصات اصلی تعریف می‌شوند
+        // تعریف متغیرهای سوپابیس (فقط یک بار و بدون تکرار اضافی)
         const SUPABASE_URL = 'https://shnuggkkwvyixdmlnugl.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_Lih64HUZIiKkxniY28yOPA_NL7Hz7km';
-        
-        // 📌 ۲. سپس کلاینت کاملاً ساخته و آماده‌سازی (Initialize) می‌شود
         const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // 📌 ۳. در نهایت تابع اصلی که قرار است از کلاینت استفاده کند نوشته می‌شود
+        // 🌟 تایید دسترسی ادمین به محض باز شدن صفحه 🌟
+        async function checkAdminAccess() {
+            try {
+                const { data: { session } } = await client.auth.getSession();
+                
+                // بررسی اینکه آیا کاربر لاگین است و ایمیلش ادمین است (ایمیلت را دقیقاً به جای admin@gmail.com بنویس)
+                if (!session || session.user.email !== 'admin@gmail.com') {
+                    alert('شما دسترسی به این صفحه را ندارید! لطفاً ابتدا از صفحه اصلی به عنوان ادمین وارد شوید.');
+                    window.location.href = 'index.html'; // برگشت به صفحه اصلی
+                } else {
+                    // اگر تایید شد، فرم را نمایش بده
+                    document.querySelector('.admin-form').style.display = 'block';
+                }
+            } catch (err) {
+                console.error("خطا در سیستم احراز هویت:", err);
+                window.location.href = 'index.html';
+            }
+        }
+
+        // اجرای خودکار بررسی دسترسی به محض لود کامل لایه‌ها
+        window.onload = checkAdminAccess;
+
+        // 📌 تابع اصلی ثبت اثر در دیتابیس ابری
         async function sendToCloud() {
             console.log("دکمه ثبت کلیک شد...");
             
@@ -99,7 +119,7 @@
             }
 
             try {
-                // ارسال مستقیم داده به جدول بدون نیاز به رمز عبور ادمین
+                // ارسال مستقیم داده به جدول
                 const { data, error } = await client
                     .from('quotes')
                     .insert([{ 

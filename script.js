@@ -338,7 +338,7 @@ setTimeout(() => {
 
             return; // توقف کامل اجرای تابع بعد از ثبت‌نام موفق
 
-        } else {
+        }  else {
             // ==========================================
             // ۲. حالت ورود هوشمند و ترکیبی (ایمیل یا نام کاربری)
             // ==========================================
@@ -382,19 +382,27 @@ setTimeout(() => {
 
             if (signInError) throw signInError;
 
-            showSuccess('خوش آمدید! 🎉');
-
             // ذخیره اطلاعات کاربر لاگین شده در متغیر عمومی سایت
             if (signInData && signInData.user) {
                 currentUser = signInData.user;
             }
 
-            // بستن مودال و مخفی ماندن دکمه ورود هدر
-            closeAuthModal();
+            /* 🌟 هدایت هوشمند و مخفیانه ادمین به پنل مدیریت 🌟 */
+            // ایمیل اصلی ادمین خودت را دقیقاً به جای admin@gmail.com قرار بده
+            if (emailToLogin === 'admin@gmail.com') {
+                closeAuthModal();
+                window.location.href = 'admin.html'; // انتقال مستقیم و آنی ادمین به پنل مدیریت
+            } else {
+                // رفتار عادی برای سایر کاربران سایت
+                showSuccess('خوش آمدید! 🎉');
+                
+                // بستن مودال و مخفی ماندن دکمه ورود هدر
+                closeAuthModal();
 
-            setTimeout(() => {
-                location.reload();
-            }, 2000);
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
+            }
         }
     } catch (error) {
         console.error("Auth Error:", error);
