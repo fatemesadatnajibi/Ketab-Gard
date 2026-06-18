@@ -240,43 +240,43 @@
             document.getElementById('quoteLink').value = '';
         }
 
-        // ۵. بارگذاری پیشنهادهای کاربران (تب دوم)
-        async function loadSuggestions() {
-            try {
-                const { data, error } = await client
-                    .from('suggestions')
-                    .select('*')
-                    .eq('status', 'pending')
-                    .order('created_at', { ascending: false });
+       // بارگذاری اعلان‌های پیشنهادی کاربران
+async function loadSuggestions() {
+    try {
+        const { data, error } = await client
+            .from('admin_notifications')
+            .select('*')
+            .eq('is_read', false)
+            .order('created_at', { ascending: false });
 
-                if (error) throw error;
+        if (error) throw error;
 
-                const container = document.getElementById('suggestions-list');
-                if (!data || data.length === 0) {
-                    container.innerHTML = '<p style="text-align: center; color: #cbd5e0; margin: 20px 0;">هیچ پیشنهاد جدیدی در صف بررسی نیست. ✨</p>';
-                    return;
-                }
-
-                container.innerHTML = '';
-                data.forEach(sugg => {
-                    const card = document.createElement('div');
-                    card.className = 'suggestion-card';
-                    card.innerHTML = `
-                        <p style="color: #f1ebd9; font-size: 1.1rem; line-height: 1.6; white-space: pre-line;">${sugg.text}</p>
-                        <div style="color: #cbd5e0; font-size: 0.95rem; margin-top: 8px;">
-                            ✍︎ نویسنده/شاعر: <strong style="color: #d4af37;">${sugg.source}</strong> | ژانر: ${sugg.genre}
-                        </div>
-                        <div class="suggestion-actions">
-                            <button onclick="approveSuggestion(${sugg.id}, \`${sugg.text.replace(/\n/g, '\\n')}\`, '${sugg.source}', '${sugg.genre}')" style="background: #1e4620; color: #eeffef; border: none; padding: 6px 14px; border-radius: 8px; cursor: pointer;">تایید و انتشار ✓</button>
-                            <button onclick="rejectSuggestion(${sugg.id})" style="background: #611a1a; color: #ffebeb; border: none; padding: 6px 14px; border-radius: 8px; cursor: pointer;">حذف ✕</button>
-                        </div>
-                    `;
-                    container.appendChild(card);
-                });
-            } catch (err) {
-                document.getElementById('suggestions-list').innerHTML = `<p style="color: #ff6b6b; text-align: center;">خطا در دریافت: ${err.message}</p>`;
-            }
+        const container = document.getElementById('suggestions-list');
+        if (!data || data.length === 0) {
+            container.innerHTML = '<p style="text-align: center; color: #cbd5e0; margin: 20px 0;">هیچ پیشنهاد جدیدی ندارید. ✨</p>';
+            return;
         }
+
+        container.innerHTML = '';
+        data.forEach(sugg => {
+            const card = document.createElement('div');
+            card.className = 'suggestion-card';
+            card.innerHTML = `
+                <p style="color: #f1ebd9; font-size: 1.1rem; line-height: 1.6; white-space: pre-line;">${sugg.text}</p>
+                <div style="color: #cbd5e0; font-size: 0.95rem; margin-top: 8px;">
+                    ✍︎ پیشنهادی از طرف مراجعین | نویسنده: <strong style="color: #d4af37;">${sugg.source}</strong>
+                </div>
+                <div class="suggestion-actions">
+                    <button onclick="sendToInsertForm(${sugg.id}, \`${sugg.text.replace(/\n/g, '\\n')}\`, '${sugg.source}', '${sugg.genre}')" style="background: #102a45; color: #d4af37; border: 1px solid #d4af37; padding: 6px 14px; border-radius: 8px; cursor: pointer;">✏️ انتقال به فرم و ویرایش</button>
+                    <button onclick="deleteNotification(${sugg.id})" style="background: #611a1a; color: #ffebeb; border: none; padding: 6px 14px; border-radius: 8px; cursor: pointer;">حذف ✕</button>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    } catch (err) {
+        document.getElementById('suggestions-list').innerHTML = `<p style="color: #ff6b6b; text-align: center;">خطا: ${err.message}</p>`;
+    }
+}
 
         // ۶. تایید پیشنهاد کاربر
         async function approveSuggestion(id, text, source, genre) {
@@ -304,6 +304,34 @@
                 loadSuggestions();
             } catch (err) { alert('خطا: ' + err.message); }
         }
+
+        // تابع جادویی انتقال دیتای کاربر به فرم اصلی ادمین برای ویرایش
+async function sendToInsertForm(id, text, source, genre) {
+    // ۱. پر کردن فیلدهای فرم ثبت اثر ادمین به صورت خودکار
+    document.getElementById('quoteText').value = text;
+    document.getElementById('quoteSource').value = source;
+    document.getElementById('quoteGenre').value = genre;
+    
+    // خالی کردن فیلدهای تفسیری برای اینکه خودت پر کنی
+    document.getElementById('quoteInfo').value = '';
+    document.getElementById('quoteLink').value = '';
+
+    // ۲. جابه‌جایی خودکار تب به تب ثبت اثر (تب اول)
+    switchTab('insert');
+
+    // ۳. فوکوس کردن روی فیلد توضیحات برای راحتی کار شما
+    document.getElementById('quoteInfo').focus();
+
+    // ۴. حذف این پیشنهاد از لیست اعلان‌ها (یا مارک کردن به عنوان خوانده شده)
+    await client.from('admin_notifications').update({ is_read: true }).eq('id', id);
+}
+
+// تابع حذف مستقیم اعلان
+async function deleteNotification(id) {
+    if(!confirm('آیا از حذف این پیشنهاد مطمئن هستید؟')) return;
+    await client.from('admin_notifications').update({ is_read: true }).eq('id', id);
+    loadSuggestions();
+}
     </script>
 </body>
 </html>

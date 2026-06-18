@@ -584,7 +584,7 @@ function toggleSuggestionModal() {
     }
 }
 
-// ارسال پیشنهاد به جدول suggestions در سوپابیس
+// ارسال پیشنهاد به جدول اعلان‌های ادمین
 async function submitSuggestion() {
     const text = document.getElementById('sugg-text').value.trim();
     const source = document.getElementById('sugg-source').value.trim();
@@ -597,24 +597,19 @@ async function submitSuggestion() {
 
     try {
         const { error } = await client
-            .from('suggestions')
-            .insert([{
-                text: text,
-                source: source,
-                genre: genre,
-                user_id: currentUser ? currentUser.id : null // اگر لاگین بود آی‌دی ثبت می‌شود
-            }]);
+            .from('admin_notifications')
+            .insert([{ text, source, genre }]);
 
         if (error) throw error;
 
-        showSuccess('پیشنهاد شما با موفقیت ارسال شد و پس از تایید ادمین افزوده می‌شود! 🤍');
+        showSuccess('پیشنهاد شما با موفقیت برای ادمین ارسال شد! 🤍');
         
-        // ریست کردن فرم و بستن مودال
+        // ریست فرم و بستن مودال
         document.getElementById('sugg-text').value = '';
         document.getElementById('sugg-source').value = '';
         toggleSuggestionModal();
 
     } catch (err) {
-        showError('خطا در ارسال پیشنهاد: ' + err.message);
+        showError('خطا در ارسال: ' + err.message);
     }
 }
