@@ -24,7 +24,7 @@ async function checkUserStatus() {
                 window.location.href = "reset-password.html";
                 return; // جلوگیری از ادامه اجرای کد در این صفحه
             }
-            
+
             // مدیریت وضعیت نمایش منوهای کاربری بر اساس وجود Session
             if (session && session.user) {
                 currentUser = session.user;
@@ -55,6 +55,7 @@ async function checkUserStatus() {
 
 // تابع کمکی برای حالت مهمان
 function setUserAsGuest() {
+    
     currentUser = null;
     document.getElementById('auth-guest').style.display = 'block';
     document.getElementById('auth-user').style.display = 'none';
@@ -107,13 +108,13 @@ async function toggleFavorite() {
         const { error } = await client.from('favorites').delete().eq('user_id', currentUser.id).eq('quote_id', currentQuoteId);
         if (!error) {
             favoriteQuotesIds = favoriteQuotesIds.filter(id => id !== currentQuoteId);
-            alert('از لیست محبوب‌ها حذف شد.');
+            showInfo('از لیست محبوب‌ها حذف شد.');
         }
     } else {
         const { error } = await client.from('favorites').insert([{ user_id: currentUser.id, quote_id: currentQuoteId }]);
         if (!error) {
             favoriteQuotesIds.push(currentQuoteId);
-            alert('به لیست محبوب‌ها اضافه شد! ❤️');
+            showSuccess('به لیست محبوب‌ها اضافه شد! ❤️');
         }
     }
     updateHeartIcon();
@@ -216,10 +217,10 @@ function openAuthModal() {
     if (modal) {
         modal.style.display = 'flex'; // باز شدن پاپ‌آپ
     }
-    
+
     // 🌟 پنهان کردن دکمه ورود/ثبت‌نام بالا سمت چپ به محض باز شدن فرم
     const authBar = document.querySelector('.auth-bar');
-    if (authBar && !currentUser) { 
+    if (authBar && !currentUser) {
         authBar.style.display = 'none';
     }
 }
@@ -230,7 +231,7 @@ function closeAuthModal() {
     if (modal) {
         modal.style.display = 'none'; // بسته شدن پاپ‌آپ
     }
-    
+
     // 🌟 برگرداندن و ظاهر کردن دوباره دکمه بالا سمت چپ (اگر کاربر لاگین نکرده باشد)
     const authBar = document.querySelector('.auth-bar');
     if (authBar && !currentUser) {
@@ -245,9 +246,9 @@ function switchAuthMode() {
     const toggleAuthModeBtn = document.getElementById('toggle-auth-mode');
     const loginFields = document.getElementById('login-fields');
     const signupFields = document.getElementById('signup-fields');
-    
+
     // 🌟 خط جدید: گرفتن کانتینر لینک فراموشی رمز
-    const forgotPasswordContainer = document.getElementById('forgot-password-container'); 
+    const forgotPasswordContainer = document.getElementById('forgot-password-container');
 
     if (isSignUpMode) {
         modalTitle.innerText = 'ثبت‌نام حساب کاربری';
@@ -255,18 +256,18 @@ function switchAuthMode() {
         toggleAuthModeBtn.innerText = 'قبلاً ثبت‌نام کرده‌اید؟ وارد شوید';
         loginFields.style.display = 'none';
         signupFields.style.display = 'block';
-        
+
         // 🌟 خط جدید: مخفی کردن دکمه فراموشی رمز در حالت ثبت‌نام
-        if (forgotPasswordContainer) forgotPasswordContainer.style.display = 'none'; 
+        if (forgotPasswordContainer) forgotPasswordContainer.style.display = 'none';
     } else {
         modalTitle.innerText = 'ورود به حساب کاربری';
         mainAuthBtn.innerText = 'ورود';
         toggleAuthModeBtn.innerText = 'حساب کاربری ندارید؟ ثبت‌نام کنید';
         loginFields.style.display = 'block';
         signupFields.style.display = 'none';
-        
+
         // 🌟 خط جدید: نمایش مجدد دکمه فراموشی رمز در حالت ورود
-        if (forgotPasswordContainer) forgotPasswordContainer.style.display = 'block'; 
+        if (forgotPasswordContainer) forgotPasswordContainer.style.display = 'block';
     }
 }
 
@@ -281,12 +282,12 @@ async function handleAuth() {
             const password = document.getElementById('auth-password').value;
 
             if (!username || !email || !password) {
-                alert('لطفاً همه فیلدها را پر کنید.');
+                showError('لطفاً همه فیلدها را پر کنید.');
                 return;
             }
 
             if (password.length < 6) {
-                alert('رمز عبور باید حداقل ۶ کاراکتر باشد.');
+                showError('رمز عبور باید حداقل ۶ کاراکتر باشد.');
                 return;
             }
 
@@ -324,17 +325,17 @@ async function handleAuth() {
                 throw profileInsertError;
             }
 
-            alert('ثبت‌نام و ورود با موفقیت انجام شد! 🎉 خوش آمدید.');
-            
+            showSuccess('ثبت‌نام و ورود با موفقیت انجام شد! 🎉 خوش آمدید.');
             // ذخیره دیتای کاربر جدید در متغیر عمومی برای مدیریت دکمه هدر
             currentUser = authData.user;
-            
+
             // بستن مودال بدون بازگشت دکمه ورود در هدر
             closeAuthModal();
-            
-            // ریلود صفحه جهت فعال‌سازی بخش محبوب‌ها و گنجینه اشعار شخصی
-            location.reload();
-            
+
+setTimeout(() => {
+                location.reload();
+            }, 2000);
+
             return; // توقف کامل اجرای تابع بعد از ثبت‌نام موفق
 
         } else {
@@ -345,7 +346,7 @@ async function handleAuth() {
             const password = document.getElementById('login-password').value;
 
             if (!inputLogin || !password) {
-                alert('لطفاً مشخصات ورود و رمز عبور خود را وارد کنید.');
+                showError('لطفاً مشخصات ورود و رمز عبور خود را وارد کنید.');
                 return;
             }
 
@@ -358,14 +359,14 @@ async function handleAuth() {
                     .from('profiles')
                     .select('email')
                     .eq('username', inputLogin)
-                    .maybeSingle(); 
+                    .maybeSingle();
 
                 if (profileError) {
                     console.error("خطا در بررسی نام کاربری:", profileError.message);
                 }
 
                 if (!profile) {
-                    alert('نام کاربری یافت نشد. لطفا در صورت داشتن ایمیل، آن را وارد کنید.');
+                    showError('نام کاربری یافت نشد. لطفا در صورت داشتن ایمیل، آن را وارد کنید.');
                     return;
                 }
 
@@ -381,8 +382,8 @@ async function handleAuth() {
 
             if (signInError) throw signInError;
 
-            alert('خوش آمدید! 🎉');
-            
+            showSuccess('خوش آمدید! 🎉');
+
             // ذخیره اطلاعات کاربر لاگین شده در متغیر عمومی سایت
             if (signInData && signInData.user) {
                 currentUser = signInData.user;
@@ -390,20 +391,25 @@ async function handleAuth() {
 
             // بستن مودال و مخفی ماندن دکمه ورود هدر
             closeAuthModal();
-            
-            // ریلود نهایی صفحه
-            location.reload();
+
+            setTimeout(() => {
+                location.reload();
+            }, 2000);
         }
     } catch (error) {
         console.error("Auth Error:", error);
-        alert(error.message || 'خطایی در فرآیند احراز هویت رخ داد.');
+        showError(error.message || 'خطایی در فرآیند احراز هویت رخ داد.');
     }
 }
 
 async function logout() {
     await client.auth.signOut();
-    alert('از حساب خود خارج شدید.');
-    location.reload();
+    showInfo('از حساب خود خارج شدید.');
+    setUserAsGuest();
+        setTimeout(() => {
+        const container = document.getElementById('notificationContainer');
+        if (container) container.innerHTML = '';
+    }, 3000);
 }
 
 window.onload = checkUserStatus;
@@ -432,9 +438,67 @@ async function forgotPassword() {
     });
 
     if (error) {
-        alert("خطا: " + error.message);
+        showError("خطا: " + error.message);
         return;
     }
 
-    alert("ایمیل بازیابی رمز عبور ارسال شد. لطفاً صندوق ورودی خود را بررسی کنید. 🎉");
+    showSuccess("ایمیل بازیابی رمز عبور ارسال شد. لطفاً صندوق ورودی خود را بررسی کنید. 🎉");
+}
+// ============================================
+//   سیستم پیام‌های سفارشی (جایگزین alert)
+// ============================================
+
+function showNotification(message, type = 'info', duration = 4000) {
+    const container = document.getElementById('notificationContainer');
+    if (!container) return;
+
+    // حذف نوتیفیکیشن‌های قبلی (اختیاری)
+    // container.innerHTML = '';
+
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+
+    // آیکون‌ها بر اساس نوع پیام
+    const icons = {
+        success: '✅',
+        error: '❌',
+        info: '📖'
+    };
+
+    notification.innerHTML = `
+        <span style="margin-left: 10px;">${icons[type] || '📖'}</span>
+        <span>${message}</span>
+        <button class="close-btn" onclick="this.parentElement.remove()">✕</button>
+    `;
+
+    container.appendChild(notification);
+
+    // حذف خودکار بعد از مدت زمان مشخص
+    if (duration > 0) {
+        setTimeout(() => {
+            if (notification.parentElement) {
+                notification.style.animation = 'fadeOut 0.4s ease forwards';
+                setTimeout(() => {
+                    if (notification.parentElement) {
+                        notification.remove();
+                    }
+                }, 400);
+            }
+        }, duration);
+    }
+
+    return notification;
+}
+
+// ===== توابع میانبر برای انواع پیام =====
+function showSuccess(message, duration = 4000) {
+    showNotification(message, 'success', duration);
+}
+
+function showError(message, duration = 4000) {
+    showNotification(message, 'error', duration);
+}
+
+function showInfo(message, duration = 4000) {
+    showNotification(message, 'info', duration);
 }

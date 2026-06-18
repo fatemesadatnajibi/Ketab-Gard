@@ -660,3 +660,124 @@ button {
         height: 35px;
     }
 }
+/* ============================================
+   سیستم پیام‌های سفارشی (Notification)
+   ============================================ */
+.notification-container {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999999;
+    width: 90%;
+    max-width: 500px;
+    pointer-events: none;
+    direction: rtl;
+}
+
+.notification {
+    background: linear-gradient(135deg, #070f1e 0%, #0a1628 100%);
+    border: 2px solid #d4af37;
+    border-radius: 16px;
+    padding: 16px 24px;
+    margin-bottom: 12px;
+    box-shadow: 0 10px 40px rgba(212, 175, 55, 0.2), 0 0 60px rgba(212, 175, 55, 0.05);
+    color: #f1ebd9;
+    font-family: "B Nazanin", "Tanha", sans-serif;
+    font-size: 1.1rem;
+    text-align: center;
+    pointer-events: auto;
+    animation: slideDown 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    position: relative;
+    overflow: hidden;
+}
+
+.notification::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(to bottom, #d4af37, #f9d976);
+    border-radius: 0 4px 4px 0;
+}
+
+.notification.success {
+    border-color: #4ecdc4;
+}
+
+.notification.success::before {
+    background: linear-gradient(to bottom, #4ecdc4, #44b3ab);
+}
+
+.notification.error {
+    border-color: #ff6b6b;
+}
+
+.notification.error::before {
+    background: linear-gradient(to bottom, #ff6b6b, #ee5a24);
+}
+
+.notification.info {
+    border-color: #a29bfe;
+}
+
+.notification.info::before {
+    background: linear-gradient(to bottom, #a29bfe, #6c5ce7);
+}
+
+/* خط طلایی درخشان در پایین نوتیفیکیشن */
+.notification::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, #d4af37, transparent);
+    opacity: 0.3;
+}
+
+@keyframes slideDown {
+    0% {
+        opacity: 0;
+        transform: translateY(-30px) scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+}
+
+/* ===== دکمه بستن نوتیفیکیشن ===== */
+.notification .close-btn {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 4px 8px;
+    transition: all 0.3s ease;
+    pointer-events: auto;
+}
+
+.notification .close-btn:hover {
+    color: #d4af37;
+    transform: translateY(-50%) scale(1.2);
+}
