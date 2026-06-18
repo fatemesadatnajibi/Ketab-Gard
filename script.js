@@ -28,6 +28,10 @@ async function checkUserStatus() {
             // مدیریت وضعیت نمایش منوهای کاربری بر اساس وجود Session
             if (session && session.user) {
                 currentUser = session.user;
+
+                // 📌 زدن جرقه بررسی نقش کاربر (برای حل مشکل دکمه Back)
+                handleAdminRedirection(currentUser.id);
+
                 document.getElementById('auth-guest').style.display = 'none';
                 document.getElementById('auth-user').style.display = 'block';
 
@@ -53,14 +57,37 @@ async function checkUserStatus() {
     }
 }
 
+// 📌 تابع کمکی و ناهمگام برای چک کردن نقش ادمین و هدایت خودکار
+async function handleAdminRedirection(userId) {
+    try {
+        const { data: profile, error } = await client
+            .from('profiles')
+            .select('role')
+            .eq('id', userId)
+            .maybeSingle();
+
+        if (error) {
+            console.error("خطا در استخراج نقش کاربر:", error.message);
+            return;
+        }
+
+        // اگر کاربر لاگین شده نقش ادمین داشت، اجازه نده در صفحه اصلی بماند
+        if (profile && profile.role === 'admin') {
+            window.location.href = 'admin.html';
+        }
+    } catch (err) {
+        console.error("خطا در لایه امنیتی هدایت ادمین:", err.message);
+    }
+}
+
 // تابع کمکی برای حالت مهمان
 function setUserAsGuest() {
-    
     currentUser = null;
     document.getElementById('auth-guest').style.display = 'block';
     document.getElementById('auth-user').style.display = 'none';
     document.getElementById('love-btn').style.display = 'none';
     document.getElementById('fav-genre-btn').style.display = 'none';
+    document.getElementById('user-email').innerText = ''; // پاک کردن نام قبلی
 }
 // ۲. دریافت اشعار از سرور سوپابیس
 async function loadQuotesFromServer() {
@@ -338,7 +365,7 @@ setTimeout(() => {
 
             return; // توقف کامل اجرای تابع بعد از ثبت‌نام موفق
 
-        }  else {
+} else {
             // ==========================================
             // ۲. حالت ورود هوشمند و ترکیبی (ایمیل یا نام کاربری)
             // ==========================================
@@ -351,30 +378,28 @@ setTimeout(() => {
             }
 
             let emailToLogin = inputLogin;
+            let userRole = 'user'; // مقدار پیش‌فرض
 
-            // 🔍 بررسی هوشمند: اگر ورودی شامل @ نباشد، یعنی کاربر نام کاربری وارد کرده است
-            if (!inputLogin.includes('@')) {
-                // پیدا کردن ایمیل متناظر با نام کاربری از جدول profiles
-                const { data: profile, error: profileError } = await client
-                    .from('profiles')
-                    .select('email')
-                    .eq('username', inputLogin)
-                    .maybeSingle();
+            // ۱. پیدا کردن ایمیل و نقش کاربر از روی جدول پروفایل
+            const { data: profile, error: profileError } = await client
+                .from('profiles')
+                .select('email, role')
+                .eq(inputLogin.includes('@') ? 'email' : 'username', inputLogin)
+                .maybeSingle();
 
-                if (profileError) {
-                    console.error("خطا در بررسی نام کاربری:", profileError.message);
-                }
-
-                if (!profile) {
-                    showError('نام کاربری یافت نشد. لطفا در صورت داشتن ایمیل، آن را وارد کنید.');
-                    return;
-                }
-
-                // جایگزینی ایمیلِ پیدا شده به جای نام کاربری برای ورود به سوپابیس
-                emailToLogin = profile.email;
+            if (profileError) {
+                console.error("خطا در بررسی نام کاربری:", profileError.message);
             }
 
-            // ورود نهایی به بخش احراز هویت Supabase با ایمیل مشخص شده
+            if (profile) {
+                emailToLogin = profile.email;
+                userRole = profile.role; // استخراج نقش واقعی (user یا admin)
+            } else if (!inputLogin.includes('@')) {
+                showError('نام کاربری یافت نشد. لطفا در صورت داشتن ایمیل، آن را وارد کنید.');
+                return;
+            }
+
+            // ۲. ورود نهایی به بخش احراز هویت Supabase با ایمیل مشخص شده
             const { data: signInData, error: signInError } = await client.auth.signInWithPassword({
                 email: emailToLogin,
                 password: password
@@ -382,27 +407,26 @@ setTimeout(() => {
 
             if (signInError) throw signInError;
 
+            showSuccess('خوش آمدید! 🎉');
+
             // ذخیره اطلاعات کاربر لاگین شده در متغیر عمومی سایت
             if (signInData && signInData.user) {
                 currentUser = signInData.user;
             }
 
-            /* 🌟 هدایت هوشمند و مخفیانه ادمین به پنل مدیریت 🌟 */
-            // ایمیل اصلی ادمین خودت را دقیقاً به جای admin@gmail.com قرار بده
-            if (emailToLogin === 'admin@gmail.com') {
-                closeAuthModal();
-                window.location.href = 'admin.html'; // انتقال مستقیم و آنی ادمین به پنل مدیریت
-            } else {
-                // رفتار عادی برای سایر کاربران سایت
-                showSuccess('خوش آمدید! 🎉');
-                
-                // بستن مودال و مخفی ماندن دکمه ورود هدر
-                closeAuthModal();
+            // بستن مودال ورود
+            closeAuthModal();
 
-                setTimeout(() => {
+            // 📌 مکانیزم تاخیر هوشمند شما: ۲ ثانیه صبر برای دیدن پیام، سپس هدایت بر اساس نقش
+            setTimeout(() => {
+                if (userRole === 'admin') {
+                    // اگر ادمین بود، مستقیم به صفحه مدیریت می‌رود
+                    window.location.href = 'admin.html';
+                } else {
+                    // اگر کاربر عادی بود، صفحه اصلی رفرش می‌شود
                     location.reload();
-                }, 2000);
-            }
+                }
+            }, 2000);
         }
     } catch (error) {
         console.error("Auth Error:", error);

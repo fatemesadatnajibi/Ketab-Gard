@@ -37,7 +37,13 @@
 </head>
 <body>
 
-    <div class="admin-form" style="display: none;">
+<div style="margin-top: -20px; margin-bottom: 30px; width: 100%; padding: 0 20px; box-sizing: border-box; display: flex; justify-content: flex-start; align-items: center; direction: rtl;">
+    <div id="auth-user" style="display: none; align-items: center; margin-right: auto;">
+        <span id="admin-username" style="color: #cbd5e0; margin-left: 10px; font-size: 1.05rem;"></span>
+        <button class="btn btn-secondary style-mini" onclick="logoutAdmin()" style="margin: 0 !important;">خروج</button>
+    </div>
+</div>
+    <div class="admin-form">
         <h2 style="text-align: center; color: #d4af37; margin-bottom: 25px; font-size: 1.8rem;">ارسال مستقیم شاهکار به سرور ابری</h2>
         
         <div class="form-group">
@@ -57,8 +63,12 @@
                 <option value="عرفانی">عرفانی</option>
                 <option value="فلسفی">فلسفی</option>
                 <option value="حکمت">پند و حکمت</option>
-                <option value="اجتماعی">اجتماعی و حماسی</option>
+                <option value="اجتماعی">اجتماعی</option>
                 <option value="طنز">طنز و انتقادی</option>
+                <option value="مذهبی">مذهبی</option>
+                <option value="حماسی">حماسی</option>
+                <option value="ادبیات جهان">ادبیات جهان</option>
+
             </select>
         </div>
 
@@ -72,83 +82,122 @@
             <input type="url" id="quoteLink" placeholder="https://ganjoor.net/...">
         </div>
 
-        <button class="btn" style="width: 100%; margin-top: 15px; padding: 12px; font-size: 1.3rem; display: block;" onclick="sendToCloud()">ثبت آنی در دیتابیس ابری 🚀</button>
+        <button class="btn" style="width: 100%; margin-top: 15px; padding: 12px; font-size: 1.4rem; display: block;" onclick="sendToCloud()">ثبت در پایگاه داده</button>
     </div>
 
-    <script>
-        // تعریف متغیرهای سوپابیس (فقط یک بار و بدون تکرار اضافی)
-        const SUPABASE_URL = 'https://shnuggkkwvyixdmlnugl.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_Lih64HUZIiKkxniY28yOPA_NL7Hz7km';
-        const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+<script>
+    const SUPABASE_URL = 'https://shnuggkkwvyixdmlnugl.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_Lih64HUZIiKkxniY28yOPA_NL7Hz7km';
+    const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // 🌟 تایید دسترسی ادمین به محض باز شدن صفحه 🌟
-        async function checkAdminAccess() {
-            try {
-                const { data: { session } } = await client.auth.getSession();
-                
-                // بررسی اینکه آیا کاربر لاگین است و ایمیلش ادمین است (ایمیلت را دقیقاً به جای admin@gmail.com بنویس)
-                if (!session || session.user.email !== 'admin@gmail.com') {
-                    alert('شما دسترسی به این صفحه را ندارید! لطفاً ابتدا از صفحه اصلی به عنوان ادمین وارد شوید.');
-                    window.location.href = 'index.html'; // برگشت به صفحه اصلی
-                } else {
-                    // اگر تایید شد، فرم را نمایش بده
-                    document.querySelector('.admin-form').style.display = 'block';
-                }
-            } catch (err) {
-                console.error("خطا در سیستم احراز هویت:", err);
-                window.location.href = 'index.html';
-            }
-        }
+    // 📌 لایه امنیتی ۱: به محض ورود به صفحه، دسترسی ادمین بررسی می‌شود
+    // 📌 لایه امنیتی ۱: بررسی دسترسی ادمین و نمایش شیک نام کاربری
+    async function checkAdminAccess() {
+        try {
+            // در ابتدا کانتینر هدر را مخفی نگه می‌داریم تا دیتای واقعی لود شود
+            const authUserContainer = document.getElementById('auth-user');
+            if (authUserContainer) authUserContainer.style.display = 'none';
 
-        // اجرای خودکار بررسی دسترسی به محض لود کامل لایه‌ها
-        window.onload = checkAdminAccess;
-
-        // 📌 تابع اصلی ثبت اثر در دیتابیس ابری
-        async function sendToCloud() {
-            console.log("دکمه ثبت کلیک شد...");
+            const { data: { user }, error: userError } = await client.auth.getUser();
             
-            const text = document.getElementById('quoteText').value.trim();
-            const source = document.getElementById('quoteSource').value.trim();
-            const genre = document.getElementById('quoteGenre').value;
-            const info = document.getElementById('quoteInfo').value.trim();
-            let link = document.getElementById('quoteLink').value.trim() || "https://ganjoor.net";
-
-            if(!text || !source) {
-                alert('لطفاً متن شعر و نام شاعر را وارد کنید.');
+            // اگر کاربر اصلاً لاگین نکرده باشد
+            if (userError || !user) {
+                window.location.replace('index.html');
                 return;
             }
 
-            try {
-                // ارسال مستقیم داده به جدول
-                const { data, error } = await client
-                    .from('quotes')
-                    .insert([{ 
-                        text: text, 
-                        source: source, 
-                        genre: genre, 
-                        info: info, 
-                        link: link 
-                    }]);
+            // بررسی نقش کاربر از جدول profiles
+            const { data: profile, error: profileError } = await client
+                .from('profiles')
+                .select('role')
+                .eq('id', user.id)
+                .maybeSingle();
 
-                if (error) {
-                    alert('خطا از سمت سرور سوپابیس: ' + error.message);
-                    console.error("جزئیات خطا:", error);
-                    return;
-                }
-
-                alert('با موفقیت در سرور ابری ذخیره شد! 🎉');
-                
-                // پاک کردن فرم برای ورودی بعدی
-                document.getElementById('quoteText').value = '';
-                document.getElementById('quoteInfo').value = '';
-                document.getElementById('quoteLink').value = '';
-                document.getElementById('quoteSource').value = '';
-                
-            } catch (error) {
-                alert('خطای داخلی مرورگر: ' + error.message);
-                console.error(error);
+            // اگر نقش ادمین نداشت، او را به صفحه اصلی شوت کن
+            if (profileError || !profile || profile.role !== 'admin') {
+                alert('شما دسترسی به این صفحه را ندارید!');
+                window.location.replace('index.html');
+                return;
             }
+
+            // 📌 استخراج و نمایش هوشمند نام کاربری ادمین
+            let displayUsername = "";
+            if (user.user_metadata && user.user_metadata.username) {
+                displayUsername = user.user_metadata.username;
+            } else {
+                displayUsername = user.email.split('@')[0];
+            }
+            
+            // تزریق نام ادمین و سپس ظاهر کردن کل هدر به صورت یکپارچه
+            document.getElementById('admin-username').innerText = displayUsername;
+            if (authUserContainer) authUserContainer.style.display = 'inline-flex';
+
+        } catch (err) {
+            console.error("خطا در بررسی سطح دسترسی:", err.message);
+            window.location.replace('index.html');
         }
-    </script>
+    }
+
+    // اجرای خودکار لایه امنیتی به محض بالا آمدن صفحه ادمین
+    window.onload = checkAdminAccess;
+    // اجرای خودکار لایه امنیتی به محض بالا آمدن صفحه ادمین
+    window.onload = checkAdminAccess;
+
+    // 📌 تابع اختصاصی خروج ادمین (درخواست شما)
+    async function logoutAdmin() {
+        try {
+            // ۱. خروج رسمی از نشست سوپابیس
+            await client.auth.signOut();
+            
+            // ۲. هدایت مستقیم و پاک به صفحه اصلی بدون امکان بازگشت (با replace)
+            // استفاده از replace باعث میشه دکمه Back مرورگر دیگر او را به صفحه ادمین برنگرداند
+            window.location.replace('index.html');
+        } catch (error) {
+            console.error("خطا در هنگام خروج:", error.message);
+            window.location.href = 'index.html';
+        }
+    }
+
+    // تابع قبلی شما برای ارسال شعر (بدون تغییر)
+    async function sendQuote() {
+        let text = document.getElementById('quoteText').value.trim();
+        let source = document.getElementById('quoteSource').value.trim();
+        let genre = document.getElementById('quoteGenre').value;
+        let info = document.getElementById('quoteInfo').value.trim() || "توضیحات و تفسیری برای این اثر ثبت نشده است.";
+        let link = document.getElementById('quoteLink').value.trim() || "https://ganjoor.net";
+
+        if(!text || !source) {
+            alert('لطفاً متن شعر و نام شاعر را وارد کنید.');
+            return;
+        }
+
+        try {
+            const { data, error } = await client
+                .from('quotes')
+                .insert([{ 
+                    text: text, 
+                    source: source, 
+                    genre: genre, 
+                    info: info, 
+                    link: link 
+                }]);
+
+            if (error) {
+                alert('خطا از سمت سرور سوپابیس: ' + error.message);
+                return;
+            }
+
+            alert('با موفقیت در سرور ابری ذخیره شد! 🎉');
+            
+            document.getElementById('quoteText').value = '';
+            document.getElementById('quoteInfo').value = '';
+            document.getElementById('quoteLink').value = '';
+            document.getElementById('quoteSource').value = '';
+            
+        } catch (error) {
+            alert('خطای داخلی مرورگر: ' + error.message);
+        }
+    }
+</script>
 </body>
 </html>
