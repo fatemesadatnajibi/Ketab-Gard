@@ -150,8 +150,104 @@
                 style="color:#a0aec0; margin-top:20px; font-size:0.9rem; cursor:pointer;">حساب ندارید؟ ثبت‌نام کنید</p>
         </div>
     </div>
-<div id="suggestion-floating-btn" onclick="toggleSuggestionModal()" style="position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; background: #070f1e; border: 2px solid #d4af37; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 10px 25px rgba(0,0,0,0.6); z-index: 999; transition: transform 0.3s ease;">
-    <span style="color: #d4af37; font-size: 1.5rem; font-weight: bold;">✍︎</span>
+<!-- استایل اختصاصی برای انیمیشن نبض و هاور آیکون -->
+<style>
+    .suggestion-container {
+        position: fixed;
+        bottom: 25px;
+        right: 25px;
+        z-index: 999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .floating-ink-btn {
+        cursor: pointer;
+        transition: transform 0.3s ease, filter 0.3s ease;
+        transform: scaleX(-1); /* قرینه کردن آیکون */
+        position: relative;
+    }
+
+    /* ✨ افکت هاور روی آیکون با درخشش ملایم‌تر */
+    .floating-ink-btn:hover {
+        transform: scaleX(-1) scale(1.1);
+        filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.6));
+    }
+
+    /* ⏳ انیمیشن نبض طلایی زیر آیکون (آرام‌تر و با دامنه کمتر) */
+    .floating-ink-btn::after {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        border-radius: 50%;
+        box-shadow: 0 0 12px rgba(212, 175, 55, 0.25);
+        animation: inkPulse 3.5s infinite ease-in-out; /* افزایش زمان برای حرکت سنگین‌تر */
+        z-index: -1;
+    }
+
+    @keyframes inkPulse {
+        0% { transform: scale(0.95); opacity: 0.3; }
+        50% { transform: scale(1.1); opacity: 0.6; filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.4)); } /* کاهش بازه بزرگ‌نمایی */
+        100% { transform: scale(0.95); opacity: 0.3; }
+    }
+
+    /* 🏛 استایل باکس متن راهنما (تولتیپ) کاملاً ست شده با تم سرمه‌ای و طلایی */
+    .ink-tooltip {
+        position: absolute;
+        bottom: 75px; /* قرارگیری دقیق در بالای آیکون */
+        right: 0;
+        width: 240px;
+        background: #070f1e;
+        color: #cbd5e0;
+        border: 1px solid #d4af37;
+        padding: 12px;
+        border-radius: 12px;
+        font-family: "B Nazanin", "Tanha", sans-serif;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        text-align: right;
+        direction: rtl;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+        
+        /* حالت اولیه: مخفی و کمی پایین‌تر برای انیمیشن ورود */
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(10px);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        pointer-events: none; /* جلوگیری از تداخل با موس */
+    }
+
+    /* مثلث کوچک زیر باکس که به سمت آیکون اشاره می‌کند */
+    .ink-tooltip::after {
+        content: '';
+        position: absolute;
+        bottom: -6px;
+        right: 22px;
+        width: 10px;
+        height: 10px;
+        background: #070f1e;
+        border-right: 1px solid #d4af37;
+        border-bottom: 1px solid #d4af37;
+        transform: rotate(45deg);
+    }
+
+    /* نمایش جادویی باکس متن با رفتن موس روی کل مجموعه */
+    .suggestion-container:hover .ink-tooltip {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+</style>
+
+<div class="suggestion-container">
+    <div class="ink-tooltip">
+        ✨ شاهکار ادبی یا شعر دلخواهت را به مدیر پیشنهاد کن تا دیگر مراجعین نیز از انوشه‌نویسی تو لذت ببرند.
+    </div>
+
+    <div id="suggestion-floating-btn" class="floating-ink-btn" onclick="toggleSuggestionModal()">
+        <img src="icons8-paper-and-ink-66.png" alt="پیشنهاد شعر" style="width: 55px; height: auto; display: block;">
+    </div>
 </div>
 
 <div id="suggestion-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(3, 7, 16, 0.85); z-index: 1000; justify-content: center; align-items: center; direction: rtl;">
