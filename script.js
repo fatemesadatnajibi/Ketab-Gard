@@ -428,21 +428,61 @@ function togglePasswordVisibility(inputId, imgId) {
     }
 }
 
-async function forgotPassword() {
-    const email = prompt("ایمیل خود را وارد کنید:");
-    if (!email) return;
+// ============================================
+//   فراموشی رمز عبور (بدون prompt)
+// ============================================
+function forgotPassword() {
+    document.getElementById('forgot-password-container').style.display = 'none';
+    document.getElementById('login-fields').style.display = 'none';
+    
+    // 👇 مخفی کردن دکمه‌ها با id
+    document.getElementById('main-auth-btn').style.display = 'none';
+    document.querySelector('.actions-auth .btn-secondary').style.display = 'none';
+    
+    document.getElementById('toggle-auth-mode').style.display = 'none';
+    document.getElementById('modal-title').innerText = 'بازیابی رمز عبور';
+    document.getElementById('forgot-password-section').style.display = 'block';
+}
 
+function closeForgotPassword() {
+    document.getElementById('forgot-password-section').style.display = 'none';
+    document.getElementById('forgot-password-container').style.display = 'block';
+    document.getElementById('login-fields').style.display = 'block';
+    
+    // 👇 برگردوندن دکمه‌ها
+    document.getElementById('main-auth-btn').style.display = 'block';
+    document.querySelector('.actions-auth .btn-secondary').style.display = 'block';
+    
+    document.getElementById('toggle-auth-mode').style.display = 'block';
+    document.getElementById('modal-title').innerText = 'ورود به حساب کاربری';
+    document.getElementById('reset-email-input').value = '';
+}
+
+async function sendResetEmail() {
+    const email = document.getElementById('reset-email-input').value.trim();
+    
+    if (!email) {
+        showError('لطفاً ایمیل خود را وارد کنید.');
+        return;
+    }
+    
+    if (!email.includes('@') || !email.includes('.')) {
+        showError('لطفاً یک ایمیل معتبر وارد کنید.');
+        return;
+    }
+    
     const { error } = await client.auth.resetPasswordForEmail(email, {
-        // این خط به طور خودکار آدرس سایت گیت‌هاب شما را تشخیص می‌دهد
         redirectTo: window.location.origin + window.location.pathname.replace('index.html', '') + 'reset-password.html'
     });
-
+    
     if (error) {
         showError("خطا: " + error.message);
         return;
     }
-
-    showSuccess("ایمیل بازیابی رمز عبور ارسال شد. لطفاً صندوق ورودی خود را بررسی کنید. 🎉");
+    
+    showSuccess("ایمیل بازیابی رمز عبور ارسال شد. 📧");
+    closeForgotPassword();
+    document.getElementById('reset-email-input').value = '';
 }
 // ============================================
 //   سیستم پیام‌های سفارشی (جایگزین alert)
