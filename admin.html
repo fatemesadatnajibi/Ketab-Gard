@@ -3,201 +3,307 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>پنل مدیریت ابری | نغمه قلم</title>
+    <title>پنل مدیریت ابری | گنجینه شاهکارها</title>
     <link rel="stylesheet" href="style.css">
-    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
         body {
             display: block !important;
             overflow-y: auto !important;
-            padding: 40px 10px !important;
+            padding: 20px 10px !important;
             min-height: 100vh;
             box-sizing: border-box;
         }
+
+        /* استایل تب‌های شبیه کروم */
+        .tabs-container {
+            display: flex;
+            width: 95%;
+            max-width: 600px;
+            margin: 0 auto;
+            background: #030710;
+            border-bottom: 2px solid #d4af37;
+            padding-right: 10px;
+            gap: 5px;
+        }
+        .chrome-tab {
+            background: #0b1426;
+            color: #cbd5e0;
+            padding: 10px 20px;
+            border-radius: 12px 12px 0 0;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-bottom: none;
+            cursor: pointer;
+            font-family: "B Nazanin", "Tanha", sans-serif;
+            font-size: 1.05rem;
+            transition: all 0.2s ease;
+        }
+        .chrome-tab:hover {
+            background: #111f38;
+            color: #fff;
+        }
+        .chrome-tab.active-tab {
+            background: #070f1e;
+            color: #d4af37;
+            border-color: #d4af37;
+            font-weight: bold;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* کانتینر اصلی فرم‌ها */
         .admin-form {
             background-color: #070f1e;
             padding: 30px;
-            border-radius: 20px;
+            border-radius: 0 0 20px 20px; /* لبه‌های بالا صاف برای چسبیدن به تب */
             border: 2px solid #d4af37;
+            border-top: none; /* حذف خط بالا برای ادغام با تب فعال */
             width: 95%;
             max-width: 600px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
             font-family: "B Nazanin", "Tanha", sans-serif;
-            margin: 0 auto;
+            margin: 0 auto 40px auto;
         }
         .form-group { margin-bottom: 20px; text-align: right; }
-        .form-group label { display: block; margin-bottom: 8px; color: #d4af37; font-size: 1.2rem; font-weight: bold; }
+        .form-group label { display: block; color: #cbd5e0; margin-bottom: 8px; font-size: 1.1rem; }
         .form-group input, .form-group textarea, .form-group select {
-            width: 100%; padding: 12px; background-color: #030710; border: 1px solid rgba(212, 175, 55, 0.4);
-            border-radius: 8px; color: #f1ebd9; font-family: inherit; font-size: 1.1rem; box-sizing: border-box;
+            width: 100%; padding: 12px; background-color: #030710;
+            border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 10px;
+            color: #fff; font-family: inherit; font-size: 1.05rem; box-sizing: border-box;
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            border-color: #d4af37; outline: none; box-shadow: 0 0 10px rgba(212,175,55,0.2);
+        }
+        
+        /* کارت‌های پیشنهاد کاربران */
+        .suggestion-card {
+            background: #030710;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            text-align: right;
+        }
+        .suggestion-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 15px;
+            border-top: 1px solid rgba(212, 175, 55, 0.1);
+            padding-top: 12px;
         }
     </style>
 </head>
 <body>
 
-<div style="margin-top: -20px; margin-bottom: 30px; width: 100%; padding: 0 20px; box-sizing: border-box; display: flex; justify-content: flex-start; align-items: center; direction: rtl;">
-    <div id="auth-user" style="display: none; align-items: center; margin-right: auto;">
-        <span id="admin-username" style="color: #cbd5e0; margin-left: 10px; font-size: 1.05rem;"></span>
-        <button class="btn btn-secondary style-mini" onclick="logoutAdmin()" style="margin: 0 !important;">خروج</button>
+    <div style="margin-top: 15px; margin-bottom: 20px; width: 100%; padding: 0 20px; box-sizing: border-box; display: flex; justify-content: flex-start; align-items: center; direction: rtl;">
+        <div id="auth-user" style="display: none; align-items: center; margin-right: auto;">
+            <span id="admin-username" style="color: #cbd5e0; margin-left: 10px; font-size: 1.05rem;"></span>
+            <button class="btn btn-secondary style-mini" onclick="logoutAdmin()" style="margin: 0 !important;">خروج</button>
+        </div>
     </div>
-</div>
-    <div class="admin-form">
-        <h2 style="text-align: center; color: #d4af37; margin-bottom: 25px; font-size: 1.8rem;">ارسال مستقیم شاهکار به سرور ابری</h2>
+
+    <div class="tabs-container" style="direction: rtl;">
+        <div id="tab-insert" class="chrome-tab active-tab" onclick="switchTab('insert')">✍︎ ثبت اثر جدید</div>
+        <div id="tab-review" class="chrome-tab" onclick="switchTab('review')">📥 بررسی پیشنهادها</div>
+    </div>
+
+    <div id="content-insert" class="admin-form">
+        <h2 style="color: #d4af37; text-align: center; margin-top: 0; margin-bottom: 25px;">افزودن شاهکار ادبی جدید</h2>
         
         <div class="form-group">
-            <label for="quoteText">متن شعر یا سخن (با دکمه Enter به خط بعد بروید):</label>
-            <textarea id="quoteText" rows="4" placeholder="گر ز می افشان کنی زلف چلیپا را ز هم..."></textarea>
+            <label for="quoteText">متن شعر یا سخن (برای رفتن به خط بعد از Enter استفاده کنید):</label>
+            <textarea id="quoteText" rows="4" placeholder="متن اثر را اینجا بنویسید..."></textarea>
         </div>
 
         <div class="form-group">
-            <label for="quoteSource">صاحب اثر (شاعر/نویسنده):</label>
-            <input type="text" id="quoteSource" placeholder="حافظ شیرازی">
+            <label for="quoteSource">نام شاعر یا نویسنده:</label>
+            <input type="text" id="quoteSource" placeholder="مثال: حافظ شیرازی">
         </div>
 
         <div class="form-group">
-            <label for="quoteGenre">ژانر / دسته‌بندی:</label>
+            <label for="quoteGenre">دسته‌بندی موضوعی (ژانر):</label>
             <select id="quoteGenre">
                 <option value="عاشقانه">عاشقانه</option>
-                <option value="عرفانی">عرفانی</option>
-                <option value="فلسفی">فلسفی</option>
-                <option value="حکمت">پند و حکمت</option>
-                <option value="اجتماعی">اجتماعی</option>
-                <option value="طنز">طنز و انتقادی</option>
-                <option value="مذهبی">مذهبی</option>
-                <option value="حماسی">حماسی</option>
-                <option value="ادبیات جهان">ادبیات جهان</option>
-
+                <option value="عرفانی">عرفانی و سلوک</option>
+                <option value="فلسفی">فلسفی و پندآموز</option>
+                <option value="حماسی">حماسی و وطنی</option>
             </select>
         </div>
 
         <div class="form-group">
-            <label for="quoteInfo">توضیحات و تفسیر پشت اثر:</label>
-            <textarea id="quoteInfo" rows="3" placeholder="توضیحاتی درباره این بیت..."></textarea>
+            <label for="quoteInfo">توضیحات، تفسیر یا شأن نزول اثر (اختیاری):</label>
+            <textarea id="quoteInfo" rows="3" placeholder="توضیحاتی درباره این بیت یا سخن..."></textarea>
         </div>
 
         <div class="form-group">
-            <label for="quoteLink">لینک منبع:</label>
-            <input type="url" id="quoteLink" placeholder="https://ganjoor.net/...">
+            <label for="quoteLink">لینک منبع یا گنجور (اختیاری):</label>
+            <input type="url" id="quoteLink" placeholder="https://ganjoor.net/..." style="text-align: left; direction: ltr;">
         </div>
 
-        <button class="btn" style="width: 100%; margin-top: 15px; padding: 12px; font-size: 1.4rem; display: block;" onclick="sendToCloud()">ثبت در پایگاه داده</button>
+        <button class="btn" onclick="sendQuote()" style="width: 100%; padding: 12px; font-size: 1.1rem; margin-top: 10px;">ذخیره در سرور ابری</button>
     </div>
 
-<script>
-    const SUPABASE_URL = 'https://shnuggkkwvyixdmlnugl.supabase.co';
-    const SUPABASE_ANON_KEY = 'sb_publishable_Lih64HUZIiKkxniY28yOPA_NL7Hz7km';
-    const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    <div id="content-review" class="admin-form" style="display: none;">
+        <h2 style="color: #d4af37; text-align: center; margin-top: 0; margin-bottom: 25px;">درخواست‌های ارسالی مراجعین</h2>
+        <div id="suggestions-list">
+            <p style="text-align: center; color: #cbd5e0;">در حال دریافت اطلاعات...</p>
+        </div>
+    </div>
 
-    // 📌 لایه امنیتی ۱: به محض ورود به صفحه، دسترسی ادمین بررسی می‌شود
-    // 📌 لایه امنیتی ۱: بررسی دسترسی ادمین و نمایش شیک نام کاربری
-    async function checkAdminAccess() {
-        try {
-            // در ابتدا کانتینر هدر را مخفی نگه می‌داریم تا دیتای واقعی لود شود
-            const authUserContainer = document.getElementById('auth-user');
-            if (authUserContainer) authUserContainer.style.display = 'none';
+    <script>
+        const SUPABASE_URL = 'https://shnuggkkwvyixdmlnugl.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_Lih64HUZIiKkxniY28yOPA_NL7Hz7km';
+        const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-            const { data: { user }, error: userError } = await client.auth.getUser();
+        // ۱. تایید هویت و سطح دسترسی ادمین
+        async function checkAdminAccess() {
+            try {
+                const authUserContainer = document.getElementById('auth-user');
+                if (authUserContainer) authUserContainer.style.display = 'none';
+
+                const { data: { user }, error: userError } = await client.auth.getUser();
+                if (userError || !user) { window.location.replace('index.html'); return; }
+
+                const { data: profile, error: profileError } = await client
+                    .from('profiles')
+                    .select('role')
+                    .eq('id', user.id)
+                    .maybeSingle();
+
+                if (profileError || !profile || profile.role !== 'admin') {
+                    alert('شما دسترسی به این صفحه را ندارید!');
+                    window.location.replace('index.html');
+                    return;
+                }
+
+                let displayUsername = user.user_metadata?.username || user.email.split('@')[0];
+                document.getElementById('admin-username').innerText = displayUsername;
+                if (authUserContainer) authUserContainer.style.display = 'inline-flex';
+
+                // لود پیش‌فرض دیتای پیشنهادها در بک‌گراند
+                loadSuggestions();
+
+            } catch (err) {
+                console.error(err);
+                window.location.replace('index.html');
+            }
+        }
+
+        window.onload = checkAdminAccess;
+
+        // ۲. منطق جا به جایی بین تب‌ها (Chrome Style)
+        function switchTab(tabName) {
+            // ریست کردن کلاس تب‌ها
+            document.getElementById('tab-insert').classList.remove('active-tab');
+            document.getElementById('tab-review').classList.remove('active-tab');
             
-            // اگر کاربر اصلاً لاگین نکرده باشد
-            if (userError || !user) {
-                window.location.replace('index.html');
-                return;
-            }
+            // مخفی کردن محتواها
+            document.getElementById('content-insert').style.display = 'none';
+            document.getElementById('content-review').style.display = 'none';
 
-            // بررسی نقش کاربر از جدول profiles
-            const { data: profile, error: profileError } = await client
-                .from('profiles')
-                .select('role')
-                .eq('id', user.id)
-                .maybeSingle();
-
-            // اگر نقش ادمین نداشت، او را به صفحه اصلی شوت کن
-            if (profileError || !profile || profile.role !== 'admin') {
-                alert('شما دسترسی به این صفحه را ندارید!');
-                window.location.replace('index.html');
-                return;
-            }
-
-            // 📌 استخراج و نمایش هوشمند نام کاربری ادمین
-            let displayUsername = "";
-            if (user.user_metadata && user.user_metadata.username) {
-                displayUsername = user.user_metadata.username;
+            // فعال‌سازی تب کلیک شده
+            if (tabName === 'insert') {
+                document.getElementById('tab-insert').classList.add('active-tab');
+                document.getElementById('content-insert').style.display = 'block';
             } else {
-                displayUsername = user.email.split('@')[0];
+                document.getElementById('tab-review').classList.add('active-tab');
+                document.getElementById('content-review').style.display = 'block';
+                loadSuggestions(); // رفرش لیست هنگام ورود به تب
             }
-            
-            // تزریق نام ادمین و سپس ظاهر کردن کل هدر به صورت یکپارچه
-            document.getElementById('admin-username').innerText = displayUsername;
-            if (authUserContainer) authUserContainer.style.display = 'inline-flex';
-
-        } catch (err) {
-            console.error("خطا در بررسی سطح دسترسی:", err.message);
-            window.location.replace('index.html');
         }
-    }
 
-    // اجرای خودکار لایه امنیتی به محض بالا آمدن صفحه ادمین
-    window.onload = checkAdminAccess;
-    // اجرای خودکار لایه امنیتی به محض بالا آمدن صفحه ادمین
-    window.onload = checkAdminAccess;
-
-    // 📌 تابع اختصاصی خروج ادمین (درخواست شما)
-    async function logoutAdmin() {
-        try {
-            // ۱. خروج رسمی از نشست سوپابیس
+        // ۳. خروج ادمین
+        async function logoutAdmin() {
             await client.auth.signOut();
-            
-            // ۲. هدایت مستقیم و پاک به صفحه اصلی بدون امکان بازگشت (با replace)
-            // استفاده از replace باعث میشه دکمه Back مرورگر دیگر او را به صفحه ادمین برنگرداند
             window.location.replace('index.html');
-        } catch (error) {
-            console.error("خطا در هنگام خروج:", error.message);
-            window.location.href = 'index.html';
-        }
-    }
-
-    // تابع قبلی شما برای ارسال شعر (بدون تغییر)
-    async function sendQuote() {
-        let text = document.getElementById('quoteText').value.trim();
-        let source = document.getElementById('quoteSource').value.trim();
-        let genre = document.getElementById('quoteGenre').value;
-        let info = document.getElementById('quoteInfo').value.trim() || "توضیحات و تفسیری برای این اثر ثبت نشده است.";
-        let link = document.getElementById('quoteLink').value.trim() || "https://ganjoor.net";
-
-        if(!text || !source) {
-            alert('لطفاً متن شعر و نام شاعر را وارد کنید.');
-            return;
         }
 
-        try {
-            const { data, error } = await client
-                .from('quotes')
-                .insert([{ 
-                    text: text, 
-                    source: source, 
-                    genre: genre, 
-                    info: info, 
-                    link: link 
-                }]);
+        // ۴. ارسال مستقیم شعر توسط ادمین (تب اول)
+        async function sendQuote() {
+            let text = document.getElementById('quoteText').value.trim();
+            let source = document.getElementById('quoteSource').value.trim();
+            let genre = document.getElementById('quoteGenre').value;
+            let info = document.getElementById('quoteInfo').value.trim() || "توضیحات و تفسیری برای این اثر ثبت نشده است.";
+            let link = document.getElementById('quoteLink').value.trim() || "https://ganjoor.net";
 
-            if (error) {
-                alert('خطا از سمت سرور سوپابیس: ' + error.message);
-                return;
-            }
+            if(!text || !source) { alert('لطفاً متن شعر و نام شاعر را وارد کنید.'); return; }
 
-            alert('با موفقیت در سرور ابری ذخیره شد! 🎉');
-            
+            const { error } = await client.from('quotes').insert([{ text, source, genre, info, link }]);
+            if (error) { alert('خطا: ' + error.message); return; }
+
+            alert('با موفقیت در دیتابیس ثبت شد! 🎉');
             document.getElementById('quoteText').value = '';
+            document.getElementById('quoteSource').value = '';
             document.getElementById('quoteInfo').value = '';
             document.getElementById('quoteLink').value = '';
-            document.getElementById('quoteSource').value = '';
-            
-        } catch (error) {
-            alert('خطای داخلی مرورگر: ' + error.message);
         }
-    }
-</script>
+
+        // ۵. بارگذاری پیشنهادهای کاربران (تب دوم)
+        async function loadSuggestions() {
+            try {
+                const { data, error } = await client
+                    .from('suggestions')
+                    .select('*')
+                    .eq('status', 'pending')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                const container = document.getElementById('suggestions-list');
+                if (!data || data.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: #cbd5e0; margin: 20px 0;">هیچ پیشنهاد جدیدی در صف بررسی نیست. ✨</p>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                data.forEach(sugg => {
+                    const card = document.createElement('div');
+                    card.className = 'suggestion-card';
+                    card.innerHTML = `
+                        <p style="color: #f1ebd9; font-size: 1.1rem; line-height: 1.6; white-space: pre-line;">${sugg.text}</p>
+                        <div style="color: #cbd5e0; font-size: 0.95rem; margin-top: 8px;">
+                            ✍︎ نویسنده/شاعر: <strong style="color: #d4af37;">${sugg.source}</strong> | ژانر: ${sugg.genre}
+                        </div>
+                        <div class="suggestion-actions">
+                            <button onclick="approveSuggestion(${sugg.id}, \`${sugg.text.replace(/\n/g, '\\n')}\`, '${sugg.source}', '${sugg.genre}')" style="background: #1e4620; color: #eeffef; border: none; padding: 6px 14px; border-radius: 8px; cursor: pointer;">تایید و انتشار ✓</button>
+                            <button onclick="rejectSuggestion(${sugg.id})" style="background: #611a1a; color: #ffebeb; border: none; padding: 6px 14px; border-radius: 8px; cursor: pointer;">حذف ✕</button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (err) {
+                document.getElementById('suggestions-list').innerHTML = `<p style="color: #ff6b6b; text-align: center;">خطا در دریافت: ${err.message}</p>`;
+            }
+        }
+
+        // ۶. تایید پیشنهاد کاربر
+        async function approveSuggestion(id, text, source, genre) {
+            try {
+                const { error: insError } = await client.from('quotes').insert([{ 
+                    text, source, genre, info: "پیشنهاد شده توسط کاربران نجوای قلم.", link: "https://ganjoor.net" 
+                }]);
+                if (insError) throw insError;
+
+                const { error: updError } = await client.from('suggestions').update({ status: 'approved' }).eq('id', id);
+                if (updError) throw updError;
+
+                alert('اثر پیشنهادی با موفقیت تایید و منتشر شد! 🌟');
+                loadSuggestions();
+            } catch (err) { alert('خطا: ' + err.message); }
+        }
+
+        // ۷. رد یا حذف پیشنهاد
+        async function rejectSuggestion(id) {
+            if(!confirm('آیا از رد این پیشنهاد مطمئن هستید؟')) return;
+            try {
+                const { error } = await client.from('suggestions').update({ status: 'rejected' }).eq('id', id);
+                if (error) throw error;
+                alert('پیشنهاد حذف شد.');
+                loadSuggestions();
+            } catch (err) { alert('خطا: ' + err.message); }
+        }
+    </script>
 </body>
 </html>

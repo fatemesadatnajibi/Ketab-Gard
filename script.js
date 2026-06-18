@@ -574,3 +574,47 @@ function showError(message, duration = 4000) {
 function showInfo(message, duration = 4000) {
     showNotification(message, 'info', duration);
 }
+// باز و بسته کردن مودال پیشنهاد
+function toggleSuggestionModal() {
+    const modal = document.getElementById('suggestion-modal');
+    if (modal.style.display === 'none' || modal.style.display === '') {
+        modal.style.display = 'flex';
+    } else {
+        modal.style.display = 'none';
+    }
+}
+
+// ارسال پیشنهاد به جدول suggestions در سوپابیس
+async function submitSuggestion() {
+    const text = document.getElementById('sugg-text').value.trim();
+    const source = document.getElementById('sugg-source').value.trim();
+    const genre = document.getElementById('sugg-genre').value;
+
+    if (!text || !source) {
+        showError('لطفاً متن اثر و نام نویسنده را وارد کنید.');
+        return;
+    }
+
+    try {
+        const { error } = await client
+            .from('suggestions')
+            .insert([{
+                text: text,
+                source: source,
+                genre: genre,
+                user_id: currentUser ? currentUser.id : null // اگر لاگین بود آی‌دی ثبت می‌شود
+            }]);
+
+        if (error) throw error;
+
+        showSuccess('پیشنهاد شما با موفقیت ارسال شد و پس از تایید ادمین افزوده می‌شود! 🤍');
+        
+        // ریست کردن فرم و بستن مودال
+        document.getElementById('sugg-text').value = '';
+        document.getElementById('sugg-source').value = '';
+        toggleSuggestionModal();
+
+    } catch (err) {
+        showError('خطا در ارسال پیشنهاد: ' + err.message);
+    }
+}
