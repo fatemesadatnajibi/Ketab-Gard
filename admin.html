@@ -425,23 +425,30 @@
                 }
 
                 container.innerHTML = '';
+                // بخشی از تابع loadSuggestions در فایل admin.html که کارت‌ها را رندر می‌کند
                 data.forEach(sugg => {
                     const card = document.createElement('div');
                     card.className = 'suggestion-card';
+
+                    const cleanText = (sugg.text || '').replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/'/g, "\\'").replace(/"/g, '\\"');
+                    const cleanSource = (sugg.source || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"');
+                    const cleanGenre = (sugg.genre || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"');
+
                     card.innerHTML = `
-                        <p style="color: #f1ebd9; font-size: 1.1rem; line-height: 1.6; white-space: pre-line;">${sugg.text}</p>
-                        <div style="color: #cbd5e0; font-size: 0.95rem; margin-top: 8px;">
-                            کاربر : | نویسنده: <strong style="color: #d4af37;">${sugg.source}</strong>
-                        </div>
-                        <div class="suggestion-actions">
-                            <button class="btn-transfer" onclick="sendToInsertForm('${sugg.id}', \`${sugg.text.replace(/\n/g, '\\n')}\`, '${sugg.source}', '${sugg.genre}')">ویرایش</button>
-                            <button class="btn-delete-suggestion" onclick="deleteNotification('${sugg.id}')">حذف</button>
-                        </div>
-                    `;
+        <p style="color: #f1ebd9; font-size: 1.1rem; line-height: 1.6; white-space: pre-line;">${sugg.text || ''}</p>
+        <div style="color: #cbd5e0; font-size: 0.95rem; margin-top: 8px;">
+            کاربر : <strong style="color: #4ecdc4; margin-left: 10px; font-size: 0.95rem;">${sugg.sender_username || 'ثبت نشده'}</strong> | نویسنده : <strong style="color: #d4af37;">${sugg.source || 'نامشخص'}</strong>
+        </div>
+        <div class="suggestion-actions">
+            <button class="btn-transfer" onclick="sendToInsertForm('${sugg.id}', '${cleanText}', '${cleanSource}', '${cleanGenre}')">ویرایش</button>
+            <button class="btn-delete-suggestion" onclick="deleteNotification('${sugg.id}')">حذف</button>
+        </div>
+    `;
                     container.appendChild(card);
                 });
             } catch (err) {
-                document.getElementById('suggestions-list').innerHTML = `<p style="color: #ff6b6b; text-align: center;">خطا: ${err.message}</p>`;
+                console.error(err);
+                document.getElementById('suggestions-list').innerHTML = `<p style="color: #ff6b6b; text-align: center;">خطا در بارگذاری پیشنهادات: ${err.message}</p>`;
             }
         }
 
@@ -823,7 +830,7 @@
         function resetFormToInsertMode() {
             editingQuoteId = null;
             currentSuggestionCard = null; // 👈 اضافه شدن ریست وضعیت پیشنهاد کاربران
-            
+
             document.getElementById('quoteText').value = '';
             document.getElementById('quoteSource').value = '';
             document.getElementById('quoteInfo').value = '';

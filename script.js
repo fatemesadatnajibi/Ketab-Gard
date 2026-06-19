@@ -648,23 +648,8 @@ function toggleSuggestionModal() {
     }
 }
 
-// ارسال پیشنهاد به جدول اعلان‌های ادمین (نسخه محافظت‌شده با لاگین)
+// ارسال پیشنهاد به جدول اعلان‌های ادمین
 async function submitSuggestion() {
-    // 🔒 بررسی وضعیت لاگین مراجعین
-    if (!currentUser) {
-        const warningHtml = `
-            <div style="color: #ff4757; font-size: 2.5rem; margin-bottom: 8px; line-height: 1; text-shadow: 0 0 30px rgba(255, 71, 87, 0.4); text-align: center;">
-                ⚠
-            </div>
-            <div style="font-size: 0.95rem; color: #cbd5e0;">برای ارسال پیشنهاد شعر، ابتدا باید وارد حساب کاربری خود شوید.</div>
-        `;
-        
-        showError(warningHtml);
-        toggleSuggestionModal();
-        openAuthModal();
-        return; 
-    }
-
     const text = document.getElementById('sugg-text').value.trim();
     const source = document.getElementById('sugg-source').value.trim();
     const genre = document.getElementById('sugg-genre').value;
@@ -674,15 +659,33 @@ async function submitSuggestion() {
         return;
     }
 
+    // ساخت آبجکت داده برای ارسال
+    const insertData = { text, source, genre };
+    
+    // اگر کاربر وارد شده بود، مشخصاتش را استخراج کن
+    if (currentUser) {
+        insertData.user_id = currentUser.id; // آیدی متنی برای دیتابیس
+        
+        // پیدا کردن نام کاربری خوانا:
+        // اول چک میکند اگر در متادیتا نام کاربری (username) دارد آن را بردارد
+        // در غیر این صورت بخش قبل از @ در ایمیلش را به عنوان نام کاربری برمیدارد (مثل f.a)
+        const username = currentUser.user_metadata?.username || 
+                         currentUser.user_metadata?.full_name || 
+                         (currentUser.email ? currentUser.email.split('@')[0] : 'کاربر غریب');
+                         
+        insertData.sender_username = username; // 🌟 ذخیره نام کاربری خوانا در ستون جدید
+    }
+
     try {
         const { error } = await client
             .from('admin_notifications')
-            .insert([{ text, source, genre }]);
+            .insert([insertData]);
 
         if (error) throw error;
 
         showSuccess('پیشنهاد شما با موفقیت برای ادمین ارسال شد!');
 
+        // ریست فرم و بستن مودال
         document.getElementById('sugg-text').value = '';
         document.getElementById('sugg-source').value = '';
         toggleSuggestionModal();
