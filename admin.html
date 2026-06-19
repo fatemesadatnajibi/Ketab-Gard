@@ -220,16 +220,19 @@
 
     <div id="custom-alert" class="custom-alert"></div>
 
-    <div style="margin-top: 15px; margin-bottom: 20px; width: 100%; padding: 0 20px; box-sizing: border-box; display: flex; justify-content: flex-start; align-items: center; direction: rtl;">
+    <div
+        style="margin-top: 15px; margin-bottom: 20px; width: 100%; padding: 0 20px; box-sizing: border-box; display: flex; justify-content: flex-start; align-items: center; direction: rtl;">
         <div id="auth-user" style="display: none; align-items: center; margin-right: auto;">
             <span id="admin-username" style="color: #cbd5e0; margin-left: 10px; font-size: 1.05rem;"></span>
-            <button class="btn btn-secondary style-mini" onclick="logoutAdmin()" style="margin: 0 !important;">خروج</button>
+            <button class="btn btn-secondary style-mini" onclick="logoutAdmin()"
+                style="margin: 0 !important;">خروج</button>
         </div>
     </div>
 
     <div class="tabs-container" style="direction: rtl;">
         <div id="tab-insert" class="chrome-tab active-tab" onclick="switchTab('insert')">ثبت اثر جدید</div>
         <div id="tab-review" class="chrome-tab" onclick="switchTab('review')">بررسی پیشنهادها</div>
+        <div id="tab-manage" class="chrome-tab" onclick="switchTab('manage')">لیست آثار ثبت شده</div>
     </div>
 
     <div id="content-insert" class="admin-form">
@@ -266,16 +269,31 @@
 
         <div class="form-group">
             <label for="quoteLink">لینک منبع:</label>
-            <input type="url" id="quoteLink" placeholder="https://ganjoor.net/..." style="text-align: left; direction: ltr;">
+            <input type="url" id="quoteLink" placeholder="https://ganjoor.net/..."
+                style="text-align: left; direction: ltr;">
         </div>
 
-        <button class="btn" onclick="sendQuote()" style="width: 100%; padding: 12px; font-size: 1.1rem; margin-top: 10px;">ذخیره در سرور ابری</button>
+        <button class="btn" onclick="sendQuote()"
+            style="width: 100%; padding: 12px; font-size: 1.1rem; margin-top: 10px;">ذخیره در سرور ابری</button>
     </div>
 
     <div id="content-review" class="admin-form" style="display: none;">
         <h2 style="color: #d4af37; text-align: center; margin-top: 0; margin-bottom: 25px;">پیشنهادات کاربران</h2>
         <div id="suggestions-list">
             <p style="text-align: center; color: #cbd5e0;">در حال دریافت اطلاعات...</p>
+        </div>
+    </div>
+
+    <div id="content-manage" class="admin-form" style="display: none; max-width: 800px !important;">
+        <h2 style="color: #d4af37; text-align: center; margin-top: 0; margin-bottom: 25px;">لیست کل آثار ثبت شده</h2>
+
+        <div class="form-group" style="margin-bottom: 25px;">
+            <input type="text" id="searchQuotes" placeholder="جستجو در متن اثر یا نام شاعر..." oninput="filterQuotes()"
+                style="width: 100%;">
+        </div>
+
+        <div id="quotes-list">
+            <p style="text-align: center; color: #cbd5e0;">در حال دریافت اطلاعات اشعار...</p>
         </div>
     </div>
 
@@ -328,19 +346,28 @@
         window.onload = checkAdminAccess;
 
         function switchTab(tabName) {
+            // غیرفعال کردن همه تب‌ها
             document.getElementById('tab-insert').classList.remove('active-tab');
             document.getElementById('tab-review').classList.remove('active-tab');
+            document.getElementById('tab-manage').classList.remove('active-tab'); // جدید
 
+            // مخفی کردن همه محتواها
             document.getElementById('content-insert').style.display = 'none';
             document.getElementById('content-review').style.display = 'none';
+            document.getElementById('content-manage').style.display = 'none'; // جدید
 
+            // فعال‌سازی تب انتخاب شده
             if (tabName === 'insert') {
                 document.getElementById('tab-insert').classList.add('active-tab');
                 document.getElementById('content-insert').style.display = 'block';
-            } else {
+            } else if (tabName === 'review') {
                 document.getElementById('tab-review').classList.add('active-tab');
                 document.getElementById('content-review').style.display = 'block';
                 loadSuggestions();
+            } else if (tabName === 'manage') {
+                document.getElementById('tab-manage').classList.add('active-tab');
+                document.getElementById('content-manage').style.display = 'block';
+                loadAllQuotes(); // فراخوانی تابع لود اشعار
             }
         }
 
@@ -353,19 +380,32 @@
             let text = document.getElementById('quoteText').value.trim();
             let source = document.getElementById('quoteSource').value.trim();
             let genre = document.getElementById('quoteGenre').value;
-            let info = document.getElementById('quoteInfo').value.trim() || "توضیحات و تفسیری برای این اثر ثبت نشده است.";
-            let link = document.getElementById('quoteLink').value.trim() || "https://ganjoor.net";
+            let info = document.getElementById('quoteInfo').value.trim();
+            let link = document.getElementById('quoteLink').value.trim();
 
-            if (!text || !source) { showMessage('لطفا متن شعر و نام شاعر را وارد کنید.'); return; }
+            // 🔴 بررسی اجباری بودن تمام فیلدها بدون استثنا
+            if (!text) { showMessage('لطفاً متن شعر یا اثر را وارد کنید.'); return; }
+            if (!source) { showMessage('لطفاً نام شاعر یا نویسنده را وارد کنید.'); return; }
+            if (!info) { showMessage('لطفاً بخش درباره اثر را وارد کنید.'); return; }
+            if (!link) { showMessage('لطفاً لینک منبع اثر را وارد کنید.'); return; }
 
-            const { error } = await client.from('quotes').insert([{ text, source, genre, info, link }]);
-            if (error) { showMessage('خطا: ' + error.message); return; }
+            try {
+                const { data, error } = await client
+                    .from('quotes')
+                    .insert([{ text, source, genre, info, link }]);
 
-            showMessage('با موفقیت در سرور ابری ثبت شد!');
-            document.getElementById('quoteText').value = '';
-            document.getElementById('quoteSource').value = '';
-            document.getElementById('quoteInfo').value = '';
-            document.getElementById('quoteLink').value = '';
+                if (error) throw error;
+
+                // 🌟 بخش جدید: اگر این ثبت مربوط به یک پیشنهاد کاربر بوده، آن را تایید و خوانده شده کن
+                if (currentSuggestionCard && currentSuggestionCard.id) {
+                    await client.from('admin_notifications').update({ is_read: true }).eq('id', currentSuggestionCard.id);
+                }
+
+                showMessage('با موفقیت در سرور ابری ثبت شد!');
+                resetFormToInsertMode(); // ریست کردن فرم پس از ثبت موفقیت‌آمیز
+            } catch (err) {
+                showMessage('خطا در ثبت اطلاعات: ' + err.message);
+            }
         }
 
         async function loadSuggestions() {
@@ -394,7 +434,7 @@
                             کاربر : | نویسنده: <strong style="color: #d4af37;">${sugg.source}</strong>
                         </div>
                         <div class="suggestion-actions">
-                            <button class="btn-transfer" onclick="sendToInsertForm('${sugg.id}', \`${sugg.text.replace(/\n/g, '\\n')}\`, '${sugg.source}', '${sugg.genre}')">✏️انتقال به فرم و ویرایش</button>
+                            <button class="btn-transfer" onclick="sendToInsertForm('${sugg.id}', \`${sugg.text.replace(/\n/g, '\\n')}\`, '${sugg.source}', '${sugg.genre}')">ویرایش</button>
                             <button class="btn-delete-suggestion" onclick="deleteNotification('${sugg.id}')">حذف</button>
                         </div>
                     `;
@@ -406,56 +446,114 @@
         }
 
         async function sendToInsertForm(id, text, source, genre) {
+            // ذخیره وضعیت پیشنهاد جاری برای ردیابی در زمان انصراف
+            currentSuggestionCard = { id, text, source, genre };
+            editingQuoteId = null; // چون ویرایش اثر نیست، این را null می‌کنیم
+
             document.getElementById('quoteText').value = text;
             document.getElementById('quoteSource').value = source;
             document.getElementById('quoteGenre').value = genre;
-
             document.getElementById('quoteInfo').value = '';
             document.getElementById('quoteLink').value = '';
 
+            // پیدا کردن دکمه اصلی و تغییر ظاهر آن برای تایید پیشنهاد
+            const submitBtn = document.querySelector("#content-insert .btn");
+            if (submitBtn) {
+                submitBtn.innerText = "تایید و ذخیره پیشنهاد";
+                submitBtn.style.background = "##d4af37";
+                submitBtn.setAttribute("onclick", "sendQuote()");
+
+                // تنظیم اندازه دکمه اصلی به ۵۰٪
+                submitBtn.style.width = "calc(50% - 6px)";
+                submitBtn.style.display = "inline-block";
+                submitBtn.style.float = "right";
+                submitBtn.style.boxSizing = "border-box";
+            }
+
+            // حذف دکمه انصراف و المان‌های ترازکننده قبلی در صورت وجود
+            const oldCancelBtn = document.getElementById('inlineCancelBtn');
+            if (oldCancelBtn) oldCancelBtn.remove();
+            const oldClearfix = document.getElementById('btnClearfix');
+            if (oldClearfix) oldClearfix.remove();
+
+            // ساخت دکمه انصراف بیضی شکل مخصوص بازگشت به لیست پیشنهادها
+            const cancelBtn = document.createElement('button');
+            cancelBtn.id = 'inlineCancelBtn';
+            cancelBtn.innerText = 'انصراف و بازگشت';
+            cancelBtn.style.cssText = `
+                width: calc(50% - 6px);
+                display: inline-block;
+                float: left;
+                padding: 12px;
+                font-size: 1.1rem;
+                margin-top: 10px;
+                background: #bd3a3a;
+                color: white;
+                border: none;
+                border-radius: 50px; /* 👈 بیضی شکل طبق خواسته شما */
+                cursor: pointer;
+                font-family: inherit;
+                font-weight: bold;
+                box-sizing: border-box;
+            `;
+
+            // رفتار دکمه انصراف: بازگشت به تب پیشنهادها بدون حذف آن
+            cancelBtn.onclick = function () {
+                resetFormToInsertMode();
+                switchTab('review'); // 👈 برگشت به تب بررسی پیشنهادها
+                showMessage('بررسی پیشنهاد کاربر لغو شد.');
+            };
+
+            // ساخت المان کمکی ترازکننده
+            const clearfix = document.createElement('div');
+            clearfix.id = 'btnClearfix';
+            clearfix.style.cssText = "clear: both; display: block; height: 1px;";
+
+            // تزریق دکمه انصراف و المان کمکی به فرم
+            submitBtn.parentNode.insertBefore(cancelBtn, submitBtn.nextSibling);
+            submitBtn.parentNode.insertBefore(clearfix, cancelBtn.nextSibling);
+
             switchTab('insert');
             document.getElementById('quoteInfo').focus();
-
-            await client.from('admin_notifications').update({ is_read: true }).eq('id', id);
             showMessage('متن پیشنهادی به فرم انتقال یافت.');
         }
 
-// ===== حذف پیشنهاد با تایید سفارشی =====
-async function deleteNotification(id) {
-    // نمایش پیام تایید سفارشی به جای confirm
-    showConfirmMessage(
-        'آیا از حذف این پیشنهاد مطمئن هستید؟',
-        async function() {
-            // اجرا در صورت تایید
-            try {
-                const { error } = await client
-                    .from('admin_notifications')
-                    .update({ is_read: true })
-                    .eq('id', id);
-                
-                if (error) throw error;
-                
-                showMessage('پیشنهاد با موفقیت حذف شد.');
-                loadSuggestions();
-            } catch (err) {
-                showMessage('خطا: ' + err.message);
-            }
-        },
-        function() {
-            // اجرا در صورت انصراف
-            showMessage('عملیات حذف لغو شد.');
-        }
-    );
-}
-// ===== نمایش پیام تایید سفارشی (جایگزین confirm) =====
-function showConfirmMessage(message, onConfirm, onCancel) {
-    // حذف تایید قبلی اگر وجود داشته باشد
-    const oldConfirm = document.querySelector('.custom-confirm');
-    if (oldConfirm) oldConfirm.remove();
+        // ===== حذف پیشنهاد با تایید سفارشی =====
+        async function deleteNotification(id) {
+            // نمایش پیام تایید سفارشی به جای confirm
+            showConfirmMessage(
+                'آیا از حذف این پیشنهاد مطمئن هستید؟',
+                async function () {
+                    // اجرا در صورت تایید
+                    try {
+                        const { error } = await client
+                            .from('admin_notifications')
+                            .update({ is_read: true })
+                            .eq('id', id);
 
-    const overlay = document.createElement('div');
-    overlay.className = 'custom-confirm-overlay';
-    overlay.style.cssText = `
+                        if (error) throw error;
+
+                        showMessage('پیشنهاد با موفقیت حذف شد.');
+                        loadSuggestions();
+                    } catch (err) {
+                        showMessage('خطا: ' + err.message);
+                    }
+                },
+                function () {
+                    // اجرا در صورت انصراف
+                    showMessage('عملیات حذف لغو شد.');
+                }
+            );
+        }
+        // ===== نمایش پیام تایید سفارشی (جایگزین confirm) =====
+        function showConfirmMessage(message, onConfirm, onCancel) {
+            // حذف تایید قبلی اگر وجود داشته باشد
+            const oldConfirm = document.querySelector('.custom-confirm');
+            if (oldConfirm) oldConfirm.remove();
+
+            const overlay = document.createElement('div');
+            overlay.className = 'custom-confirm-overlay';
+            overlay.style.cssText = `
         position: fixed;
         top: 0;
         left: 0;
@@ -469,9 +567,9 @@ function showConfirmMessage(message, onConfirm, onCancel) {
         backdrop-filter: blur(4px);
     `;
 
-    const box = document.createElement('div');
-    box.className = 'custom-confirm';
-    box.style.cssText = `
+            const box = document.createElement('div');
+            box.className = 'custom-confirm';
+            box.style.cssText = `
         background: linear-gradient(135deg, #070f1e, #0a1628);
         border: 2px solid #d4af37;
         border-radius: 20px;
@@ -484,7 +582,7 @@ function showConfirmMessage(message, onConfirm, onCancel) {
         direction: rtl;
     `;
 
-    box.innerHTML = `
+            box.innerHTML = `
 <div style="color: #ff4757; font-size: 2.5rem; margin-bottom: 8px; line-height: 1; text-shadow: 0 0 30px rgba(255, 71, 87, 0.4);">
     ⚠
 </div>
@@ -503,34 +601,258 @@ function showConfirmMessage(message, onConfirm, onCancel) {
         </div>
     `;
 
-    overlay.appendChild(box);
-    document.body.appendChild(overlay);
+            overlay.appendChild(box);
+            document.body.appendChild(overlay);
 
-    // ذخیره توابع در خود المان برای استفاده در دکمه‌ها
-    overlay._onConfirm = onConfirm || function() {};
-    overlay._onCancel = onCancel || function() {};
+            // ذخیره توابع در خود المان برای استفاده در دکمه‌ها
+            overlay._onConfirm = onConfirm || function () { };
+            overlay._onCancel = onCancel || function () { };
 
-    // بازنویسی دکمه‌ها برای استفاده از توابع ذخیره شده
-    const buttons = overlay.querySelectorAll('.btn');
-    buttons[0].onclick = function() {
-        overlay.remove();
-        if (overlay._onConfirm) overlay._onConfirm();
-    };
-    buttons[1].onclick = function() {
-        overlay.remove();
-        if (overlay._onCancel) overlay._onCancel();
-    };
-}
+            // بازنویسی دکمه‌ها برای استفاده از توابع ذخیره شده
+            const buttons = overlay.querySelectorAll('.btn');
+            buttons[0].onclick = function () {
+                overlay.remove();
+                if (overlay._onConfirm) overlay._onConfirm();
+            };
+            buttons[1].onclick = function () {
+                overlay.remove();
+                if (overlay._onCancel) overlay._onCancel();
+            };
+        }
 
-// اضافه کردن انیمیشن به استایل
-const confirmStyle = document.createElement('style');
-confirmStyle.textContent = `
+        // اضافه کردن انیمیشن به استایل
+        const confirmStyle = document.createElement('style');
+        confirmStyle.textContent = `
     @keyframes confirmSlideIn {
         0% { opacity: 0; transform: scale(0.9) translateY(-20px); }
         100% { opacity: 1; transform: scale(1) translateY(0); }
     }
 `;
-document.head.appendChild(confirmStyle);
+        document.head.appendChild(confirmStyle);
+
+        let allQuotesCache = []; // ذخیره اشعار برای فیلتر و جستجوی سریع
+
+        // ۱. دریافت تمام اشعار از جدول quotes در سوپابیس
+        async function loadAllQuotes() {
+            try {
+                const container = document.getElementById('quotes-list');
+                container.innerHTML = '<p style="text-align: center; color: #cbd5e0;">در حال بارگذاری آثار...</p>';
+
+                const { data, error } = await client
+                    .from('quotes')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                allQuotesCache = data; // ذخیره در کش
+                renderQuotesList(allQuotesCache);
+
+            } catch (err) {
+                document.getElementById('quotes-list').innerHTML = `<p style="color: #ff6b6b; text-align: center;">خطا در دریافت اشعار: ${err.message}</p>`;
+            }
+        }
+
+        // ۲. رندر کردن و نمایش لیست اشعار در قالب کارت‌های مدیریت
+        function renderQuotesList(quotesArray) {
+            const container = document.getElementById('quotes-list');
+            if (!quotesArray || quotesArray.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #cbd5e0; margin: 20px 0;">هیچ اثری یافت نشد.</p>';
+                return;
+            }
+
+            container.innerHTML = '';
+            quotesArray.forEach(quote => {
+                const card = document.createElement('div');
+                card.className = 'suggestion-card'; // استفاده از استایل‌های زیبای موجود خودت
+                card.style.borderLeft = '4px solid #d4af37';
+
+                card.innerHTML = `
+            <p style="color: #f1ebd9; font-size: 1.1rem; line-height: 1.6; white-space: pre-line;">${quote.text}</p>
+            <div style="color: #cbd5e0; font-size: 0.95rem; margin-top: 8px; display: flex; justify-content: space-between; direction: rtl;">
+                <span>شاعر/نویسنده: <strong style="color: #d4af37;">${quote.source}</strong></span>
+                <span>دسته‌بندی: <em style="color: #cbd5e0;">${quote.genre}</em></span>
+            </div>
+            <div class="suggestion-actions" style="margin-top: 15px;">
+                <button class="btn-transfer" onclick="editQuoteInForm('${quote.id}', \`${quote.text.replace(/\n/g, '\\n')}\`, '${quote.source}', '${quote.genre}', \`${quote.info ? quote.info.replace(/\n/g, '\\n') : ''}\`, '${quote.link}')"> ویرایش اثر</button>
+                <button class="btn-reject" onclick="deleteQuote('${quote.id}')"> حذف قطعی</button>
+            </div>
+        `;
+                container.appendChild(card);
+            });
+        }
+
+        // ۳. فیلتر کردن و جستجو در لیست اشعار بدون ریلود صفحه
+        function filterQuotes() {
+            const query = document.getElementById('searchQuotes').value.toLowerCase().trim();
+            if (!query) {
+                renderQuotesList(allQuotesCache);
+                return;
+            }
+            const filtered = allQuotesCache.filter(q =>
+                (q.text && q.text.toLowerCase().includes(query)) ||
+                (q.source && q.source.toLowerCase().includes(query))
+            );
+            renderQuotesList(filtered);
+        }
+
+        // ۴. حذف شعر با استفاده از کامپوننت تایید سفارشی خوشگل خودت
+        async function deleteQuote(id) {
+            showConfirmMessage(
+                'آیا از حذف کاملا قطعی این شاهکار ادبی از سرور ابری مطمئن هستید؟ (این عملیات غیرقابل بازگشت است)',
+                async function () {
+                    try {
+                        const { error } = await client
+                            .from('quotes')
+                            .delete()
+                            .eq('id', id);
+
+                        if (error) throw error;
+
+                        showMessage('اثر با موفقیت از دیتابیس حذف شد.');
+                        loadAllQuotes(); // ریلود لیست اشعار
+                    } catch (err) {
+                        showMessage('خطا در حذف: ' + err.message);
+                    }
+                },
+                function () {
+                    showMessage('عملیات حذف لغو شد.');
+                }
+            );
+        }
+
+        // ۵. سیستم ویرایش: انتقال اطلاعات به فرم ثبت اثر اصلی برای ویرایش و تغییر دکمه ذخیره به حالت آپدیت
+        let editingQuoteId = null; // برای ردیابی اینکه در حال ویرایش هستیم یا ثبت جدید
+        let currentSuggestionCard = null; // برای ذخیره و ردیابی پیشنهادی که در حال انتقال به فرم است
+
+        function editQuoteInForm(id, text, source, genre, info, link) {
+            editingQuoteId = id;
+
+            document.getElementById('quoteText').value = text;
+            document.getElementById('quoteSource').value = source;
+            document.getElementById('quoteGenre').value = genre;
+            document.getElementById('quoteInfo').value = info;
+            document.getElementById('quoteLink').value = link;
+
+            // پیدا کردن دکمه اصلی ثبت اثر برای کوچک کردن آن
+            const submitBtn = document.querySelector("#content-insert .btn");
+            if (submitBtn) {
+                submitBtn.innerText = "بروزرسانی اثر";
+                submitBtn.style.background = "##d4af37";
+                submitBtn.setAttribute("onclick", "updateQuote()");
+
+                // تنظیم اندازه دکمه اصلی به ۵۰٪ و اعمال ویژگی باکسینگ برای جلوگیری از بیرون‌زدگی
+                submitBtn.style.width = "calc(50% - 6px)";
+                submitBtn.style.display = "inline-block";
+                submitBtn.style.float = "right";
+                submitBtn.style.boxSizing = "border-box";
+            }
+
+            // حذف دکمه انصراف و المان‌های ترازکننده قبلی در صورت وجود داشتن
+            const oldCancelBtn = document.getElementById('inlineCancelBtn');
+            if (oldCancelBtn) oldCancelBtn.remove();
+            const oldClearfix = document.getElementById('btnClearfix');
+            if (oldClearfix) oldClearfix.remove();
+
+            // ساخت دکمه انصراف جدید به صورت مستطیل شیک هم‌اندازه با دکمه اصلی
+            const cancelBtn = document.createElement('button');
+            cancelBtn.id = 'inlineCancelBtn';
+            cancelBtn.innerText = 'انصراف از ویرایش';
+            cancelBtn.style.cssText = `
+        width: calc(50% - 6px);
+        display: inline-block;
+        float: left;
+        padding: 12px;
+        font-size: 1.1rem;
+        margin-top: 10px;
+        background: #bd3a3a;
+        color: white;
+        border: none;
+        border-radius: 50px; /* تغییر از بیضی به مستطیل با گوشه‌های نرم مثل بقیه فیلدها */
+        cursor: pointer;
+        font-family: inherit;
+        font-weight: bold;
+        box-sizing: border-box; /* جلوگیری از بیرون زدن دکمه از کارت */
+    `;
+
+            cancelBtn.onclick = function () {
+                resetFormToInsertMode();
+                showMessage('عملیات ویرایش لغو شد.');
+            };
+
+            // ساخت یک المان کمکی برای اینکه کارت متوجه ارتفاع دکمه‌ها بشود و دکمه‌ها بیرون نزنند
+            const clearfix = document.createElement('div');
+            clearfix.id = 'btnClearfix';
+            clearfix.style.cssText = "clear: both; display: block; height: 1px;";
+
+            // اضافه کردن دکمه انصراف و المان کمکی بعد از دکمه اصلی
+            submitBtn.parentNode.insertBefore(cancelBtn, submitBtn.nextSibling);
+            submitBtn.parentNode.insertBefore(clearfix, cancelBtn.nextSibling);
+
+            switchTab('insert');
+            document.getElementById('quoteText').focus();
+            showMessage('اطلاعات اثر برای ویرایش بارگذاری شد.');
+        }
+
+        async function updateQuote() {
+            let text = document.getElementById('quoteText').value.trim();
+            let source = document.getElementById('quoteSource').value.trim();
+            let genre = document.getElementById('quoteGenre').value;
+            let info = document.getElementById('quoteInfo').value.trim();
+            let link = document.getElementById('quoteLink').value.trim();
+
+            // 🔴 بررسی اجباری بودن تمام فیلدها در زمان ویرایش و آپدیت
+            if (!text) { showMessage('لطفاً متن شعر یا اثر را وارد کنید.'); return; }
+            if (!source) { showMessage('لطفاً نام شاعر یا نویسنده را وارد کنید.'); return; }
+            if (!info) { showMessage('لطفاً بخش «درباره اثر» را وارد کنید.'); return; }
+            if (!link) { showMessage('لطفاً لینک منبع اثر را وارد کنید.'); return; }
+
+            const { error } = await client
+                .from('quotes')
+                .update({ text, source, genre, info, link })
+                .eq('id', editingQuoteId);
+
+            if (error) { showMessage('خطا در بروزرسانی: ' + error.message); return; }
+
+            showMessage('تغییرات اثر با موفقیت در دیتابیس ابری اعمال شد!');
+
+            // بازگرداندن فرم به حالت ثبت جدید و پاکسازی فیلدها
+            resetFormToInsertMode();
+        }
+
+        function resetFormToInsertMode() {
+            editingQuoteId = null;
+            currentSuggestionCard = null; // 👈 اضافه شدن ریست وضعیت پیشنهاد کاربران
+            
+            document.getElementById('quoteText').value = '';
+            document.getElementById('quoteSource').value = '';
+            document.getElementById('quoteInfo').value = '';
+            document.getElementById('quoteLink').value = '';
+
+            const submitBtn = document.querySelector("#content-insert .btn");
+            if (submitBtn) {
+                submitBtn.innerText = "ذخیره در سرور ابری";
+                submitBtn.style.background = "";
+                submitBtn.setAttribute("onclick", "sendQuote()");
+
+                // برگرداندن دکمه اصلی به حالت ۱۰۰٪ تمام عرض و حذف استایل‌های شناور
+                submitBtn.style.width = "100%";
+                submitBtn.style.display = "block";
+                submitBtn.style.float = "none";
+            }
+
+            // حذف کامل دکمه انصراف
+            const cancelBtn = document.getElementById('inlineCancelBtn');
+            if (cancelBtn) {
+                cancelBtn.remove();
+            }
+
+            // حذف المان کمکی ترازکننده
+            const clearfix = document.getElementById('btnClearfix');
+            if (clearfix) {
+                clearfix.remove();
+            }
+        }
     </script>
 
 </body>
