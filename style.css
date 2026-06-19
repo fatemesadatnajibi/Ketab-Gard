@@ -92,7 +92,7 @@ body {
     position: absolute;
     top: -160px;
     right: 30px;
-    z-index: 99999;
+    z-index: 9999999;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -423,6 +423,20 @@ a {
 #auth-modal {
     backdrop-filter: blur(8px);
 }
+#auth-modal {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background-color: rgba(3, 7, 16, 0.6) !important; /* پس‌زمینه تیره تیره نیمه‌شفاف */
+    backdrop-filter: blur(12px) !important; /* مات کردن شدیدتر لایه‌های پشت مثل دکمه‌ها */
+    -webkit-backdrop-filter: blur(12px) !important;
+    display: none; /* در حالت عادی مخفی است */
+    justify-content: center;
+    align-items: center;
+    z-index: 999999 !important; /* بالاترین لایه ممکن برای جلو آمدن کامل */
+}
 
 #auth-modal .card {
     max-width: 400px !important;
@@ -661,82 +675,58 @@ button {
     }
 }
 /* ============================================
-   سیستم پیام‌های سفارشی (Notification)
+   سیستم پیام‌های سفارشی (Notification) - نسخه نهایی و بی‌نقص
+   ============================================ */
+/* ============================================
+   سیستم پیام‌های سفارشی (Notification) - نسخه نهایی صفحه اصلی (بدون لایه اضافه)
    ============================================ */
 .notification-container {
     position: fixed;
-    top: 80px;
+    top: 40px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 999999;
+    z-index: 99999999 !important;
     width: 90%;
-    max-width: 500px;
+    max-width: 420px;
     pointer-events: none;
     direction: rtl;
 }
 
 .notification {
     background: linear-gradient(135deg, #070f1e 0%, #0a1628 100%);
-    border: 2px solid #d4af37;
-    border-radius: 16px;
-    padding: 16px 24px;
-    margin-bottom: 12px;
-    box-shadow: 0 10px 40px rgba(212, 175, 55, 0.2), 0 0 60px rgba(212, 175, 55, 0.05);
     color: #f1ebd9;
+    
+    /* 🌟 تکنیک طلایی پنل ادمین: حذف بردر معمولی برای جلوگیری از باگ رندر لبه‌ها */
+    border: none !important; 
+    
+    border-radius: 14px;
+    padding: 16px 28px;
+    margin-bottom: 12px;
     font-family: "B Nazanin", "Tanha", sans-serif;
     font-size: 1.1rem;
     text-align: center;
     pointer-events: auto;
     animation: slideDown 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     position: relative;
-    overflow: hidden;
+    overflow: hidden !important;
 }
 
-.notification::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 4px;
-    height: 100%;
-    background: linear-gradient(to bottom, #d4af37, #f9d976);
-    border-radius: 0 4px 4px 0;
+/* 🌟 استفاده از box-shadow به جای بردر (دقیقاً مثل پنل ادمین) برای داشتن لبه‌های ۱۰۰٪ تک‌لایه و تیز */
+.notification.success { 
+    box-shadow: 0 0 0 1.5px #4ecdc4, 0 15px 40px rgba(0, 0, 0, 0.8) !important; 
+}
+.notification.error { 
+    box-shadow: 0 0 0 1.5px #ff6b6b, 0 15px 40px rgba(0, 0, 0, 0.8) !important; 
+}
+.notification.info { 
+    box-shadow: 0 0 0 1.5px #a29bfe, 0 15px 40px rgba(0, 0, 0, 0.8) !important; 
 }
 
-.notification.success {
-    border-color: #4ecdc4;
-}
-
-.notification.success::before {
-    background: linear-gradient(to bottom, #4ecdc4, #44b3ab);
-}
-
-.notification.error {
-    border-color: #ff6b6b;
-}
-
-.notification.error::before {
-    background: linear-gradient(to bottom, #ff6b6b, #ee5a24);
-}
-
-.notification.info {
-    border-color: #a29bfe;
-}
-
-.notification.info::before {
-    background: linear-gradient(to bottom, #a29bfe, #6c5ce7);
-}
-
-/* خط طلایی درخشان در پایین نوتیفیکیشن */
+/* 🌟 حذف کامل تمام شبه‌المان‌های قبل و بعد که لبه اضافه زیر یا روی کادر مینداختن */
+.notification::before,
 .notification::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 1px;
-    background: linear-gradient(to right, transparent, #d4af37, transparent);
-    opacity: 0.3;
+    display: none !important;
+    content: none !important;
 }
 
 @keyframes slideDown {
@@ -780,4 +770,47 @@ button {
 .notification .close-btn:hover {
     color: #d4af37;
     transform: translateY(-50%) scale(1.2);
+}
+/* ============================================
+   افکت شیشه‌ای مودال پیشنهادها
+   ============================================ */
+#suggestion-modal {
+    backdrop-filter: blur(8px); /* مات کردن پس‌زمینه پشت پاپ‌آپ */
+    -webkit-backdrop-filter: blur(8px);
+}
+
+/* کارت داخل مودال پیشنهادها */
+#suggestion-modal .card {
+    max-width: 450px !important;
+    width: 90% !important;
+    padding: 35px 25px !important;
+    background-color: rgba(7, 15, 30, 0.75) !important; /* پس‌زمینه نیمه‌شفاف برای حس شیشه */
+    border: 2px solid #d4af37 !important;
+    border-radius: 24px !important;
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(212, 175, 55, 0.1) !important;
+}
+
+/* استایل‌دهی به فیلدهای ورودی داخل مودال پیشنهاد */
+#suggestion-modal textarea,
+#suggestion-modal input,
+#suggestion-modal select {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    background-color: rgba(3, 7, 16, 0.8) !important;
+    border: 1px solid rgba(212, 175, 55, 0.4) !important;
+    border-radius: 12px !important;
+    color: #f1ebd9 !important;
+    font-family: "B Nazanin", "Tanha", sans-serif !important;
+    font-size: 1.1rem !important;
+    margin-bottom: 15px !important;
+    padding: 10px 15px !important;
+    text-align: right !important;
+    direction: rtl !important;
+}
+
+#suggestion-modal textarea:focus,
+#suggestion-modal input:focus,
+#suggestion-modal select:focus {
+    border-color: #d4af37 !important;
+    outline: none !important;
 }

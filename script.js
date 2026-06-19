@@ -239,33 +239,43 @@ function toggleInfo() {
 }
 
 // ۱. تابع باز کردن مودال ورود و ثبت‌نام
+// ۱. تابع باز کردن مودال ورود و ثبت‌نام
+// ۱. هنگام باز شدن فرم ورود
 function openAuthModal() {
-    const modal = document.getElementById('auth-modal');
-    if (modal) {
-        modal.style.display = 'flex'; // باز شدن پاپ‌آپ
+    // مخفی کردن مودال پیشنهاد اگر باز بود
+    const suggestionModal = document.getElementById('suggestion-modal');
+    if (suggestionModal) suggestionModal.style.display = 'none';
+
+    // پنهان کردن منو یا دکمه‌های بالا (ثبت اثر و بررسی پیشنهادها)
+    const adminTabs = document.querySelector('.admin-tabs-container'); 
+    if (adminTabs) {
+        adminTabs.style.pointerEvents = 'none';
+        adminTabs.style.opacity = '0'; // این دکمه‌ها کاملاً محو شوند
     }
 
-    // 🌟 پنهان کردن دکمه ورود/ثبت‌نام بالا سمت چپ به محض باز شدن فرم
+    // باز کردن مودال ورود
+    const modal = document.getElementById('auth-modal');
+    if (modal) modal.style.display = 'flex';
+
+    // پنهان کردن نوار ورود/ثبت‌نام اصلی (اما به اسم سایت دست نمی‌زنیم!)
     const authBar = document.querySelector('.auth-bar');
-    if (authBar && !currentUser) {
-        authBar.style.display = 'none';
-    }
+    if (authBar && !currentUser) authBar.style.display = 'none';
 }
 
-// ۲. تابع بسته شدن مودال (انصراف یا زدن دکمه ضربدر)
 function closeAuthModal() {
     const modal = document.getElementById('auth-modal');
-    if (modal) {
-        modal.style.display = 'none'; // بسته شدن پاپ‌آپ
+    if (modal) modal.style.display = 'none';
+
+    // برگرداندن دکمه‌ها به حالت عادی
+    const adminTabs = document.querySelector('.admin-tabs-container');
+    if (adminTabs) {
+        adminTabs.style.pointerEvents = 'auto';
+        adminTabs.style.opacity = '1';
     }
 
-    // 🌟 برگرداندن و ظاهر کردن دوباره دکمه بالا سمت چپ (اگر کاربر لاگین نکرده باشد)
     const authBar = document.querySelector('.auth-bar');
-    if (authBar && !currentUser) {
-        authBar.style.display = 'block';
-    }
+    if (authBar && !currentUser) authBar.style.display = 'block';
 }
-
 function switchAuthMode() {
     isSignUpMode = !isSignUpMode;
     const modalTitle = document.getElementById('modal-title');
@@ -531,10 +541,10 @@ function showNotification(message, type = 'info', duration = 4000) {
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
 
-    notification.innerHTML = `
-        <span>${message}</span>
-        <button class="close-btn" onclick="this.parentElement.remove()">✕</button>
-    `;
+// فایل script.js - داخل تابع showNotification
+notification.innerHTML = `
+    <div class="notification-content">${message}</div>
+`;
 
     container.appendChild(notification);
 
@@ -590,7 +600,28 @@ function toggleSuggestionModal() {
 }
 
 // ارسال پیشنهاد به جدول اعلان‌های ادمین
+// ارسال پیشنهاد به جدول اعلان‌های ادمین (نسخه محافظت‌شده با لاگین)
+// ارسال پیشنهاد به جدول اعلان‌های ادمین
 async function submitSuggestion() {
+    // 🔒 بررسی وضعیت لاگین مراجعین
+    if (!currentUser) {
+        // ایجاد ساختار HTML اختصاصی شما برای خطای ورود
+        const warningHtml = `
+            <div style="color: #ff4757; font-size: 2.5rem; margin-bottom: 8px; line-height: 1; text-shadow: 0 0 30px rgba(255, 71, 87, 0.4); text-align: center;">
+                ⚠
+            </div>
+            <div style="font-size: 0.95rem; color: #cbd5e0;">برای ارسال پیشنهاد شعر، ابتدا باید وارد حساب کاربری خود شوید.</div>
+        `;
+        
+        // نمایش خطای کاستومایز شده
+        showError(warningHtml);
+        
+        // بستن مودال پیشنهادها و باز کردن مودال ورود
+        toggleSuggestionModal();
+        openAuthModal();
+        return; 
+    }
+
     const text = document.getElementById('sugg-text').value.trim();
     const source = document.getElementById('sugg-source').value.trim();
     const genre = document.getElementById('sugg-genre').value;
