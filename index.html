@@ -83,8 +83,10 @@
             </div>
 
             <div class="actions">
-                <button class="btn" id="next-btn" onclick="nextRandomQuote()">بعدی</button>
-                <button class="btn btn-secondary" id="toggle-btn" onclick="toggleInfo()">درباره اثر</button>
+                <button id="next-btn" class="btn btn-primary" onclick="nextRandomQuote()">بعدی</button>
+                <button id="toggle-btn" class="btn btn-secondary" onclick="toggleInfo()">درباره اثر</button>
+                <button id="prev-btn" class="btn btn-primary" onclick="previousQuote()">قبلی</button>
+
             </div>
         </div>
     </div>
@@ -278,7 +280,7 @@
             <h3 style="color: #d4af37; text-align: center; margin-top: 0; margin-bottom: 20px;">پیشنهاد شاهکار ادبی</h3>
 
             <div style="margin-bottom: 15px; text-align: right;">
-                <label style="color: #cbd5e0; display: block; margin-bottom: 5px;">متن شعر یا  کتاب:</label>
+                <label style="color: #cbd5e0; display: block; margin-bottom: 5px;">متن شعر یا کتاب:</label>
                 <textarea id="sugg-text" rows="3"
                     style="width: 100%; padding: 10px; background: #030710; border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 8px; color: #fff; resize: none; box-sizing: border-box; font-family: inherit;"></textarea>
             </div>
