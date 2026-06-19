@@ -14,57 +14,75 @@
             padding: 20px 10px !important;
             min-height: 100vh;
             box-sizing: border-box;
+            background-color: #030710 !important; /* رنگ بدنه اصلی سایت */
         }
 
-        /* استایل تب‌های شبیه کروم */
+        /* 🧱 اصلاح کانتینر تب‌ها: جابه‌جایی تب‌ها به میزان ۱۰ پیکسل به سمت وسط */
         .tabs-container {
-            display: flex;
-            width: 95%;
-            max-width: 600px;
-            margin: 0 auto;
-            background: #030710;
-            border-bottom: 2px solid #d4af37;
-            padding-right: 10px;
-            gap: 5px;
-        }
-        .chrome-tab {
-            background: #0b1426;
-            color: #cbd5e0;
-            padding: 10px 20px;
-            border-radius: 12px 12px 0 0;
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            border-bottom: none;
-            cursor: pointer;
-            font-family: "B Nazanin", "Tanha", sans-serif;
-            font-size: 1.05rem;
-            transition: all 0.2s ease;
-        }
-        .chrome-tab:hover {
-            background: #111f38;
-            color: #fff;
-        }
-        .chrome-tab.active-tab {
-            background: #070f1e;
-            color: #d4af37;
-            border-color: #d4af37;
-            font-weight: bold;
-            position: relative;
-            z-index: 2;
+            display: flex !important;
+            width: 95% !important;
+            max-width: 600px !important;
+            margin: 0 auto !important;
+            background: transparent !important;
+            padding: 0 !important;
+            padding-right: 40px !important; /* 👈 افزایش پدینگ راست برای جابه‌جایی تب‌ها به سمت وسط */
+            gap: 6px !important;
+            position: relative !important;
+            top: 2px !important;
+            z-index: 10 !important;
         }
 
-        /* کانتینر اصلی فرم‌ها */
-        .admin-form {
-            background-color: #070f1e;
-            padding: 30px;
-            border-radius: 0 0 20px 20px; /* لبه‌های بالا صاف برای چسبیدن به تب */
-            border: 2px solid #d4af37;
-            border-top: none; /* حذف خط بالا برای ادغام با تب فعال */
-            width: 95%;
-            max-width: 600px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            font-family: "B Nazanin", "Tanha", sans-serif;
-            margin: 0 auto 40px auto;
+        /* 💻 استایل زبانه‌های شبیه کروم */
+        .chrome-tab {
+            background: #0b1426 !important;
+            color: #cbd5e0 !important;
+            padding: 10px 22px !important;
+            border-radius: 12px 12px 0 0 !important;
+            border: 1px solid rgba(212, 175, 55, 0.3) !important;
+            border-bottom: none !important;
+            cursor: pointer !important;
+            font-family: "B Nazanin", "Tanha", sans-serif !important;
+            font-size: 1.05rem !important;
+            transition: all 0.2s ease !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 8px !important;
         }
+
+        .chrome-tab:hover {
+            background: #111f38 !important;
+            color: #fff !important;
+        }
+
+        /* 🌟 زبانه فعال */
+        .chrome-tab.active-tab {
+            background: #070f1e !important;
+            color: #d4af37 !important;
+            border: 2px solid #d4af37 !important;
+            border-bottom: 2px solid #070f1e !important;
+            font-weight: bold !important;
+            position: relative !important;
+            z-index: 20 !important;
+            margin-bottom: -2px !important;
+        }
+
+        /* 🏛 کانتینر اصلی فرم‌ها */
+        .admin-form {
+            background-color: #070f1e !important;
+            padding: 30px !important;
+            border: 2px solid #d4af37 !important;
+            border-radius: 20px !important;
+            width: 95% !important;
+            max-width: 600px !important;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5) !important;
+            font-family: "B Nazanin", "Tanha", sans-serif !important;
+            margin: 0 auto 40px auto !important;
+            position: relative !important;
+            z-index: 15 !important;
+            box-sizing: border-box !important;
+        }
+
+        /* استایل فیلدها */
         .form-group { margin-bottom: 20px; text-align: right; }
         .form-group label { display: block; color: #cbd5e0; margin-bottom: 8px; font-size: 1.1rem; }
         .form-group input, .form-group textarea, .form-group select {
@@ -75,8 +93,7 @@
         .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
             border-color: #d4af37; outline: none; box-shadow: 0 0 10px rgba(212,175,55,0.2);
         }
-        
-        /* کارت‌های پیشنهاد کاربران */
+
         .suggestion-card {
             background: #030710;
             border: 1px solid rgba(212, 175, 55, 0.2);
@@ -93,9 +110,38 @@
             border-top: 1px solid rgba(212, 175, 55, 0.1);
             padding-top: 12px;
         }
+
+        /* ✨ استایل آلارم‌ها سفارشی، مینی‌مال و اصیل شاهکارها */
+        .custom-alert {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #070f1e;
+            color: #cbd5e0;
+            border: 1px solid #d4af37;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-family: "B Nazanin", "Tanha", sans-serif;
+            font-size: 1.1rem;
+            z-index: 9999;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+            direction: rtl;
+            text-align: center;
+            transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+            min-width: 250px;
+        }
+        .custom-alert.show {
+            top: 30px;
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
+
+    <div id="custom-alert" class="custom-alert"></div>
 
     <div style="margin-top: 15px; margin-bottom: 20px; width: 100%; padding: 0 20px; box-sizing: border-box; display: flex; justify-content: flex-start; align-items: center; direction: rtl;">
         <div id="auth-user" style="display: none; align-items: center; margin-right: auto;">
@@ -157,6 +203,16 @@
         const SUPABASE_ANON_KEY = 'sb_publishable_Lih64HUZIiKkxniY28yOPA_NL7Hz7km';
         const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        /* 🔔 موتور آلارم اختصاصی سیستم */
+        function showMessage(msg) {
+            const alertBox = document.getElementById('custom-alert');
+            alertBox.innerText = msg;
+            alertBox.classList.add('show');
+            setTimeout(() => {
+                alertBox.classList.remove('show');
+            }, 3500);
+        }
+
         // ۱. تایید هویت و سطح دسترسی ادمین
         async function checkAdminAccess() {
             try {
@@ -173,8 +229,8 @@
                     .maybeSingle();
 
                 if (profileError || !profile || profile.role !== 'admin') {
-                    alert('شما دسترسی به این صفحه را ندارید!');
-                    window.location.replace('index.html');
+                    showMessage('⚠️ شما دسترسی به این صفحه را ندارید!');
+                    setTimeout(() => window.location.replace('index.html'), 2000);
                     return;
                 }
 
@@ -182,7 +238,6 @@
                 document.getElementById('admin-username').innerText = displayUsername;
                 if (authUserContainer) authUserContainer.style.display = 'inline-flex';
 
-                // لود پیش‌فرض دیتای پیشنهادها در بک‌گراند
                 loadSuggestions();
 
             } catch (err) {
@@ -193,24 +248,21 @@
 
         window.onload = checkAdminAccess;
 
-        // ۲. منطق جا به جایی بین تب‌ها (Chrome Style)
+        // ۲. منطق جا به جایی بین تب‌ها
         function switchTab(tabName) {
-            // ریست کردن کلاس تب‌ها
             document.getElementById('tab-insert').classList.remove('active-tab');
             document.getElementById('tab-review').classList.remove('active-tab');
             
-            // مخفی کردن محتواها
             document.getElementById('content-insert').style.display = 'none';
             document.getElementById('content-review').style.display = 'none';
 
-            // فعال‌سازی تب کلیک شده
             if (tabName === 'insert') {
                 document.getElementById('tab-insert').classList.add('active-tab');
                 document.getElementById('content-insert').style.display = 'block';
             } else {
                 document.getElementById('tab-review').classList.add('active-tab');
                 document.getElementById('content-review').style.display = 'block';
-                loadSuggestions(); // رفرش لیست هنگام ورود به تب
+                loadSuggestions();
             }
         }
 
@@ -220,7 +272,7 @@
             window.location.replace('index.html');
         }
 
-        // ۴. ارسال مستقیم شعر توسط ادمین (تب اول)
+        // ۴. ارسال مستقیم شعر توسط ادمین
         async function sendQuote() {
             let text = document.getElementById('quoteText').value.trim();
             let source = document.getElementById('quoteSource').value.trim();
@@ -228,55 +280,55 @@
             let info = document.getElementById('quoteInfo').value.trim() || "توضیحات و تفسیری برای این اثر ثبت نشده است.";
             let link = document.getElementById('quoteLink').value.trim() || "https://ganjoor.net";
 
-            if(!text || !source) { alert('لطفاً متن شعر و نام شاعر را وارد کنید.'); return; }
+            if(!text || !source) { showMessage('❌ لطفا متن شعر و نام شاعر را وارد کنید.'); return; }
 
             const { error } = await client.from('quotes').insert([{ text, source, genre, info, link }]);
-            if (error) { alert('خطا: ' + error.message); return; }
+            if (error) { showMessage('خطا: ' + error.message); return; }
 
-            alert('با موفقیت در دیتابیس ثبت شد! 🎉');
+            showMessage('با موفقیت در سرور ابری ثبت شد! 🎉');
             document.getElementById('quoteText').value = '';
             document.getElementById('quoteSource').value = '';
             document.getElementById('quoteInfo').value = '';
             document.getElementById('quoteLink').value = '';
         }
 
-       // بارگذاری اعلان‌های پیشنهادی کاربران
-async function loadSuggestions() {
-    try {
-        const { data, error } = await client
-            .from('admin_notifications')
-            .select('*')
-            .eq('is_read', false)
-            .order('created_at', { ascending: false });
+        // ۵. بارگذاری اعلان‌های پیشنهادی کاربران
+        async function loadSuggestions() {
+            try {
+                const { data, error } = await client
+                    .from('admin_notifications')
+                    .select('*')
+                    .eq('is_read', false)
+                    .order('created_at', { ascending: false });
 
-        if (error) throw error;
+                if (error) throw error;
 
-        const container = document.getElementById('suggestions-list');
-        if (!data || data.length === 0) {
-            container.innerHTML = '<p style="text-align: center; color: #cbd5e0; margin: 20px 0;">هیچ پیشنهاد جدیدی ندارید. ✨</p>';
-            return;
+                const container = document.getElementById('suggestions-list');
+                if (!data || data.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: #cbd5e0; margin: 20px 0;">هیچ پیشنهاد جدیدی ندارید. ✨</p>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                data.forEach(sugg => {
+                    const card = document.createElement('div');
+                    card.className = 'suggestion-card';
+                    card.innerHTML = `
+                        <p style="color: #f1ebd9; font-size: 1.1rem; line-height: 1.6; white-space: pre-line;">${sugg.text}</p>
+                        <div style="color: #cbd5e0; font-size: 0.95rem; margin-top: 8px;">
+                            ✍︎ پیشنهادی از طرف مراجعین | نویسنده: <strong style="color: #d4af37;">${sugg.source}</strong>
+                        </div>
+                        <div class="suggestion-actions">
+                            <button onclick="sendToInsertForm(${sugg.id}, \`${sugg.text.replace(/\n/g, '\\n')}\`, '${sugg.source}', '${sugg.genre}')" style="background: #102a45; color: #d4af37; border: 1px solid #d4af37; padding: 6px 14px; border-radius: 8px; cursor: pointer;">✏️ انتقال به فرم و ویرایش</button>
+                            <button onclick="deleteNotification(${sugg.id})" style="background: #611a1a; color: #ffebeb; border: none; padding: 6px 14px; border-radius: 8px; cursor: pointer;">حذف ✕</button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (err) {
+                document.getElementById('suggestions-list').innerHTML = `<p style="color: #ff6b6b; text-align: center;">خطا: ${err.message}</p>`;
+            }
         }
-
-        container.innerHTML = '';
-        data.forEach(sugg => {
-            const card = document.createElement('div');
-            card.className = 'suggestion-card';
-            card.innerHTML = `
-                <p style="color: #f1ebd9; font-size: 1.1rem; line-height: 1.6; white-space: pre-line;">${sugg.text}</p>
-                <div style="color: #cbd5e0; font-size: 0.95rem; margin-top: 8px;">
-                    ✍︎ پیشنهادی از طرف مراجعین | نویسنده: <strong style="color: #d4af37;">${sugg.source}</strong>
-                </div>
-                <div class="suggestion-actions">
-                    <button onclick="sendToInsertForm(${sugg.id}, \`${sugg.text.replace(/\n/g, '\\n')}\`, '${sugg.source}', '${sugg.genre}')" style="background: #102a45; color: #d4af37; border: 1px solid #d4af37; padding: 6px 14px; border-radius: 8px; cursor: pointer;">✏️ انتقال به فرم و ویرایش</button>
-                    <button onclick="deleteNotification(${sugg.id})" style="background: #611a1a; color: #ffebeb; border: none; padding: 6px 14px; border-radius: 8px; cursor: pointer;">حذف ✕</button>
-                </div>
-            `;
-            container.appendChild(card);
-        });
-    } catch (err) {
-        document.getElementById('suggestions-list').innerHTML = `<p style="color: #ff6b6b; text-align: center;">خطا: ${err.message}</p>`;
-    }
-}
 
         // ۶. تایید پیشنهاد کاربر
         async function approveSuggestion(id, text, source, genre) {
@@ -289,9 +341,9 @@ async function loadSuggestions() {
                 const { error: updError } = await client.from('suggestions').update({ status: 'approved' }).eq('id', id);
                 if (updError) throw updError;
 
-                alert('اثر پیشنهادی با موفقیت تایید و منتشر شد! 🌟');
+                showMessage('اثر پیشنهادی با موفقیت تایید و منتشر شد! 🌟');
                 loadSuggestions();
-            } catch (err) { alert('خطا: ' + err.message); }
+            } catch (err) { showMessage('خطا: ' + err.message); }
         }
 
         // ۷. رد یا حذف پیشنهاد
@@ -300,38 +352,33 @@ async function loadSuggestions() {
             try {
                 const { error } = await client.from('suggestions').update({ status: 'rejected' }).eq('id', id);
                 if (error) throw error;
-                alert('پیشنهاد حذف شد.');
+                showMessage('پیشنهاد حذف شد.');
                 loadSuggestions();
-            } catch (err) { alert('خطا: ' + err.message); }
+            } catch (err) { showMessage('خطا: ' + err.message); }
         }
 
-        // تابع جادویی انتقال دیتای کاربر به فرم اصلی ادمین برای ویرایش
-async function sendToInsertForm(id, text, source, genre) {
-    // ۱. پر کردن فیلدهای فرم ثبت اثر ادمین به صورت خودکار
-    document.getElementById('quoteText').value = text;
-    document.getElementById('quoteSource').value = source;
-    document.getElementById('quoteGenre').value = genre;
-    
-    // خالی کردن فیلدهای تفسیری برای اینکه خودت پر کنی
-    document.getElementById('quoteInfo').value = '';
-    document.getElementById('quoteLink').value = '';
+        // ۸. انتقال دیتای کاربر به فرم اصلی ادمین برای ویرایش
+        async function sendToInsertForm(id, text, source, genre) {
+            document.getElementById('quoteText').value = text;
+            document.getElementById('quoteSource').value = source;
+            document.getElementById('quoteGenre').value = genre;
+            
+            document.getElementById('quoteInfo').value = '';
+            document.getElementById('quoteLink').value = '';
 
-    // ۲. جابه‌جایی خودکار تب به تب ثبت اثر (تب اول)
-    switchTab('insert');
+            switchTab('insert');
+            document.getElementById('quoteInfo').focus();
 
-    // ۳. فوکوس کردن روی فیلد توضیحات برای راحتی کار شما
-    document.getElementById('quoteInfo').focus();
+            await client.from('admin_notifications').update({ is_read: true }).eq('id', id);
+        }
 
-    // ۴. حذف این پیشنهاد از لیست اعلان‌ها (یا مارک کردن به عنوان خوانده شده)
-    await client.from('admin_notifications').update({ is_read: true }).eq('id', id);
-}
-
-// تابع حذف مستقیم اعلان
-async function deleteNotification(id) {
-    if(!confirm('آیا از حذف این پیشنهاد مطمئن هستید؟')) return;
-    await client.from('admin_notifications').update({ is_read: true }).eq('id', id);
-    loadSuggestions();
-}
+        // ۹. تابع حذف مستقیم اعلان
+        async function deleteNotification(id) {
+            if(!confirm('آیا از حذف این پیشنهاد مطمئن هستید؟')) return;
+            await client.from('admin_notifications').update({ is_read: true }).eq('id', id);
+            showMessage('پیشنهاد حذف شد.');
+            loadSuggestions();
+        }
     </script>
 </body>
 </html>
