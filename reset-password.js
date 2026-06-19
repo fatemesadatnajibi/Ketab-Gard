@@ -36,9 +36,9 @@ function showNotification(message, type = 'info', duration = 4000) {
         direction: rtl;
     `;
     
-    const icons = { success: '✅', error: '❌', info: '📖' };
+    const icons = { success: '', error: '', info: '' };
     notification.innerHTML = `
-        <span style="margin-left:10px;">${icons[type] || '📖'}</span>
+        <span style="margin-left:10px;">${icons[type] || ''}</span>
         <span>${message}</span>
         <button onclick="this.parentElement.remove()" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:rgba(255,255,255,0.3);font-size:1.2rem;cursor:pointer;">✕</button>
     `;
@@ -85,7 +85,7 @@ async function updatePassword() {
             return;
         }
 
-        showSuccess("رمز عبور شما با موفقیت تغییر کرد! 🎉");
+        showSuccess("رمز عبور شما با موفقیت تغییر کرد! ");
         
         // هدایت بعد از ۲ ثانیه
         setTimeout(() => {

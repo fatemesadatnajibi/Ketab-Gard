@@ -141,7 +141,7 @@ async function toggleFavorite() {
         const { error } = await client.from('favorites').insert([{ user_id: currentUser.id, quote_id: currentQuoteId }]);
         if (!error) {
             favoriteQuotesIds.push(currentQuoteId);
-            showSuccess('به لیست محبوب‌ها اضافه شد! ❤️');
+            showSuccess('به لیست محبوب‌ها اضافه شد! ♡');
         }
     }
     updateHeartIcon();
@@ -352,20 +352,20 @@ async function handleAuth() {
                 throw profileInsertError;
             }
 
-            showSuccess('ثبت‌نام و ورود با موفقیت انجام شد! 🎉 خوش آمدید.');
+            showSuccess('ثبت‌نام و ورود با موفقیت انجام شد!  خوش آمدید.');
             // ذخیره دیتای کاربر جدید در متغیر عمومی برای مدیریت دکمه هدر
             currentUser = authData.user;
 
             // بستن مودال بدون بازگشت دکمه ورود در هدر
             closeAuthModal();
 
-setTimeout(() => {
+            setTimeout(() => {
                 location.reload();
             }, 2000);
 
             return; // توقف کامل اجرای تابع بعد از ثبت‌نام موفق
 
-} else {
+        } else {
             // ==========================================
             // ۲. حالت ورود هوشمند و ترکیبی (ایمیل یا نام کاربری)
             // ==========================================
@@ -407,7 +407,7 @@ setTimeout(() => {
 
             if (signInError) throw signInError;
 
-            showSuccess('خوش آمدید! 🎉');
+            showSuccess('خوش آمدید!');
 
             // ذخیره اطلاعات کاربر لاگین شده در متغیر عمومی سایت
             if (signInData && signInData.user) {
@@ -438,7 +438,7 @@ async function logout() {
     await client.auth.signOut();
     showInfo('از حساب خود خارج شدید.');
     setUserAsGuest();
-        setTimeout(() => {
+    setTimeout(() => {
         const container = document.getElementById('notificationContainer');
         if (container) container.innerHTML = '';
     }, 3000);
@@ -466,11 +466,11 @@ function togglePasswordVisibility(inputId, imgId) {
 function forgotPassword() {
     document.getElementById('forgot-password-container').style.display = 'none';
     document.getElementById('login-fields').style.display = 'none';
-    
+
     // 👇 مخفی کردن دکمه‌ها با id
     document.getElementById('main-auth-btn').style.display = 'none';
     document.querySelector('.actions-auth .btn-secondary').style.display = 'none';
-    
+
     document.getElementById('toggle-auth-mode').style.display = 'none';
     document.getElementById('modal-title').innerText = 'بازیابی رمز عبور';
     document.getElementById('forgot-password-section').style.display = 'block';
@@ -480,11 +480,11 @@ function closeForgotPassword() {
     document.getElementById('forgot-password-section').style.display = 'none';
     document.getElementById('forgot-password-container').style.display = 'block';
     document.getElementById('login-fields').style.display = 'block';
-    
+
     // 👇 برگردوندن دکمه‌ها
     document.getElementById('main-auth-btn').style.display = 'block';
     document.querySelector('.actions-auth .btn-secondary').style.display = 'block';
-    
+
     document.getElementById('toggle-auth-mode').style.display = 'block';
     document.getElementById('modal-title').innerText = 'ورود به حساب کاربری';
     document.getElementById('reset-email-input').value = '';
@@ -492,27 +492,27 @@ function closeForgotPassword() {
 
 async function sendResetEmail() {
     const email = document.getElementById('reset-email-input').value.trim();
-    
+
     if (!email) {
         showError('لطفاً ایمیل خود را وارد کنید.');
         return;
     }
-    
+
     if (!email.includes('@') || !email.includes('.')) {
         showError('لطفاً یک ایمیل معتبر وارد کنید.');
         return;
     }
-    
+
     const { error } = await client.auth.resetPasswordForEmail(email, {
         redirectTo: window.location.origin + window.location.pathname.replace('index.html', '') + 'reset-password.html'
     });
-    
+
     if (error) {
         showError("خطا: " + error.message);
         return;
     }
-    
-    showSuccess("ایمیل بازیابی رمز عبور ارسال شد. 📧");
+
+    showSuccess("ایمیل بازیابی رمز عبور ارسال شد. ");
     closeForgotPassword();
     document.getElementById('reset-email-input').value = '';
 }
@@ -532,13 +532,13 @@ function showNotification(message, type = 'info', duration = 4000) {
 
     // آیکون‌ها بر اساس نوع پیام
     const icons = {
-        success: '✅',
-        error: '❌',
-        info: '📖'
+        success: '',
+        error: '',
+        info: ''
     };
 
     notification.innerHTML = `
-        <span style="margin-left: 10px;">${icons[type] || '📖'}</span>
+        <span style="margin-left: 10px;">${icons[type] || ''}</span>
         <span>${message}</span>
         <button class="close-btn" onclick="this.parentElement.remove()">✕</button>
     `;
@@ -602,8 +602,8 @@ async function submitSuggestion() {
 
         if (error) throw error;
 
-        showSuccess('پیشنهاد شما با موفقیت برای ادمین ارسال شد! 🤍');
-        
+        showSuccess('پیشنهاد شما با موفقیت برای ادمین ارسال شد!');
+
         // ریست فرم و بستن مودال
         document.getElementById('sugg-text').value = '';
         document.getElementById('sugg-source').value = '';

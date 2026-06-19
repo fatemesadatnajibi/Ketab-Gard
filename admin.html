@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>پنل مدیریت ابری | گنجینه شاهکارها</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
+
     <style>
         body {
             display: block !important;
@@ -14,7 +15,8 @@
             padding: 20px 10px !important;
             min-height: 100vh;
             box-sizing: border-box;
-            background-color: #030710 !important; /* رنگ بدنه اصلی سایت */
+            background-color: #030710 !important;
+            /* رنگ بدنه اصلی سایت */
         }
 
         /* 🧱 اصلاح کانتینر تب‌ها: جابه‌جایی تب‌ها به میزان ۱۰ پیکسل به سمت وسط */
@@ -25,7 +27,8 @@
             margin: 0 auto !important;
             background: transparent !important;
             padding: 0 !important;
-            padding-right: 40px !important; /* 👈 افزایش پدینگ راست برای جابه‌جایی تب‌ها به سمت وسط */
+            padding-right: 40px !important;
+            /* 👈 افزایش پدینگ راست برای جابه‌جایی تب‌ها به سمت وسط */
             gap: 6px !important;
             position: relative !important;
             top: 2px !important;
@@ -74,7 +77,7 @@
             border-radius: 20px !important;
             width: 95% !important;
             max-width: 600px !important;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5) !important;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5) !important;
             font-family: "B Nazanin", "Tanha", sans-serif !important;
             margin: 0 auto 40px auto !important;
             position: relative !important;
@@ -83,15 +86,38 @@
         }
 
         /* استایل فیلدها */
-        .form-group { margin-bottom: 20px; text-align: right; }
-        .form-group label { display: block; color: #cbd5e0; margin-bottom: 8px; font-size: 1.1rem; }
-        .form-group input, .form-group textarea, .form-group select {
-            width: 100%; padding: 12px; background-color: #030710;
-            border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 10px;
-            color: #fff; font-family: inherit; font-size: 1.05rem; box-sizing: border-box;
+        .form-group {
+            margin-bottom: 20px;
+            text-align: right;
         }
-        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
-            border-color: #d4af37; outline: none; box-shadow: 0 0 10px rgba(212,175,55,0.2);
+
+        .form-group label {
+            display: block;
+            color: #cbd5e0;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            background-color: #030710;
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            border-radius: 10px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 1.05rem;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: #d4af37;
+            outline: none;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
         }
 
         .suggestion-card {
@@ -102,6 +128,7 @@
             margin-bottom: 15px;
             text-align: right;
         }
+
         .suggestion-actions {
             display: flex;
             gap: 10px;
@@ -133,31 +160,35 @@
             pointer-events: none;
             min-width: 250px;
         }
+
         .custom-alert.show {
             top: 30px;
             opacity: 1;
         }
     </style>
 </head>
+
 <body>
 
     <div id="custom-alert" class="custom-alert"></div>
 
-    <div style="margin-top: 15px; margin-bottom: 20px; width: 100%; padding: 0 20px; box-sizing: border-box; display: flex; justify-content: flex-start; align-items: center; direction: rtl;">
+    <div
+        style="margin-top: 15px; margin-bottom: 20px; width: 100%; padding: 0 20px; box-sizing: border-box; display: flex; justify-content: flex-start; align-items: center; direction: rtl;">
         <div id="auth-user" style="display: none; align-items: center; margin-right: auto;">
             <span id="admin-username" style="color: #cbd5e0; margin-left: 10px; font-size: 1.05rem;"></span>
-            <button class="btn btn-secondary style-mini" onclick="logoutAdmin()" style="margin: 0 !important;">خروج</button>
+            <button class="btn btn-secondary style-mini" onclick="logoutAdmin()"
+                style="margin: 0 !important;">خروج</button>
         </div>
     </div>
 
     <div class="tabs-container" style="direction: rtl;">
-        <div id="tab-insert" class="chrome-tab active-tab" onclick="switchTab('insert')">✍︎ ثبت اثر جدید</div>
-        <div id="tab-review" class="chrome-tab" onclick="switchTab('review')">📥 بررسی پیشنهادها</div>
+        <div id="tab-insert" class="chrome-tab active-tab" onclick="switchTab('insert')"> ثبت اثر جدید</div>
+        <div id="tab-review" class="chrome-tab" onclick="switchTab('review')"> بررسی پیشنهادها</div>
     </div>
 
     <div id="content-insert" class="admin-form">
         <h2 style="color: #d4af37; text-align: center; margin-top: 0; margin-bottom: 25px;">افزودن شاهکار ادبی جدید</h2>
-        
+
         <div class="form-group">
             <label for="quoteText">متن شعر یا سخن (برای رفتن به خط بعد از Enter استفاده کنید):</label>
             <textarea id="quoteText" rows="4" placeholder="متن اثر را اینجا بنویسید..."></textarea>
@@ -172,9 +203,13 @@
             <label for="quoteGenre">دسته‌بندی موضوعی (ژانر):</label>
             <select id="quoteGenre">
                 <option value="عاشقانه">عاشقانه</option>
-                <option value="عرفانی">عرفانی و سلوک</option>
-                <option value="فلسفی">فلسفی و پندآموز</option>
-                <option value="حماسی">حماسی و وطنی</option>
+                <option value="عرفانی">عرفانی</option>
+                <option value="فلسفی">فلسفی</option>
+                <option value="حکمت">پند و حکمت</option>
+                <option value="اجتماعی">اجتماعی</option>
+                <option value="طنز">طنز و انتقادی</option>
+                <option value="مذهبی">مذهبی</option>
+                <option value="ادبیات جهان">ادبیات جهان</option>
             </select>
         </div>
 
@@ -184,15 +219,18 @@
         </div>
 
         <div class="form-group">
-            <label for="quoteLink">لینک منبع یا گنجور (اختیاری):</label>
-            <input type="url" id="quoteLink" placeholder="https://ganjoor.net/..." style="text-align: left; direction: ltr;">
+            <label for="quoteLink">لینک منبع:</label>
+            <input type="url" id="quoteLink" placeholder="https://ganjoor.net/..."
+                style="text-align: left; direction: ltr;">
         </div>
 
-        <button class="btn" onclick="sendQuote()" style="width: 100%; padding: 12px; font-size: 1.1rem; margin-top: 10px;">ذخیره در سرور ابری</button>
+        <button class="btn" onclick="sendQuote()"
+            style="width: 100%; padding: 12px; font-size: 1.1rem; margin-top: 10px;">ذخیره در سرور ابری</button>
     </div>
 
     <div id="content-review" class="admin-form" style="display: none;">
-        <h2 style="color: #d4af37; text-align: center; margin-top: 0; margin-bottom: 25px;">درخواست‌های ارسالی مراجعین</h2>
+        <h2 style="color: #d4af37; text-align: center; margin-top: 0; margin-bottom: 25px;">درخواست‌های ارسالی مراجعین
+        </h2>
         <div id="suggestions-list">
             <p style="text-align: center; color: #cbd5e0;">در حال دریافت اطلاعات...</p>
         </div>
@@ -229,7 +267,7 @@
                     .maybeSingle();
 
                 if (profileError || !profile || profile.role !== 'admin') {
-                    showMessage('⚠️ شما دسترسی به این صفحه را ندارید!');
+                    showMessage(' شما دسترسی به این صفحه را ندارید!');
                     setTimeout(() => window.location.replace('index.html'), 2000);
                     return;
                 }
@@ -252,7 +290,7 @@
         function switchTab(tabName) {
             document.getElementById('tab-insert').classList.remove('active-tab');
             document.getElementById('tab-review').classList.remove('active-tab');
-            
+
             document.getElementById('content-insert').style.display = 'none';
             document.getElementById('content-review').style.display = 'none';
 
@@ -280,12 +318,12 @@
             let info = document.getElementById('quoteInfo').value.trim() || "توضیحات و تفسیری برای این اثر ثبت نشده است.";
             let link = document.getElementById('quoteLink').value.trim() || "https://ganjoor.net";
 
-            if(!text || !source) { showMessage('❌ لطفا متن شعر و نام شاعر را وارد کنید.'); return; }
+            if (!text || !source) { showMessage(' لطفا متن شعر و نام شاعر را وارد کنید.'); return; }
 
             const { error } = await client.from('quotes').insert([{ text, source, genre, info, link }]);
             if (error) { showMessage('خطا: ' + error.message); return; }
 
-            showMessage('با موفقیت در سرور ابری ثبت شد! 🎉');
+            showMessage('با موفقیت در سرور ابری ثبت شد! ');
             document.getElementById('quoteText').value = '';
             document.getElementById('quoteSource').value = '';
             document.getElementById('quoteInfo').value = '';
@@ -305,7 +343,7 @@
 
                 const container = document.getElementById('suggestions-list');
                 if (!data || data.length === 0) {
-                    container.innerHTML = '<p style="text-align: center; color: #cbd5e0; margin: 20px 0;">هیچ پیشنهاد جدیدی ندارید. ✨</p>';
+                    container.innerHTML = '<p style="text-align: center; color: #cbd5e0; margin: 20px 0;">هیچ پیشنهاد جدیدی ندارید. </p>';
                     return;
                 }
 
@@ -316,7 +354,7 @@
                     card.innerHTML = `
                         <p style="color: #f1ebd9; font-size: 1.1rem; line-height: 1.6; white-space: pre-line;">${sugg.text}</p>
                         <div style="color: #cbd5e0; font-size: 0.95rem; margin-top: 8px;">
-                            ✍︎ پیشنهادی از طرف مراجعین | نویسنده: <strong style="color: #d4af37;">${sugg.source}</strong>
+                             پیشنهادی از طرف مراجعین | نویسنده: <strong style="color: #d4af37;">${sugg.source}</strong>
                         </div>
                         <div class="suggestion-actions">
                             <button onclick="sendToInsertForm(${sugg.id}, \`${sugg.text.replace(/\n/g, '\\n')}\`, '${sugg.source}', '${sugg.genre}')" style="background: #102a45; color: #d4af37; border: 1px solid #d4af37; padding: 6px 14px; border-radius: 8px; cursor: pointer;">✏️ انتقال به فرم و ویرایش</button>
@@ -333,22 +371,22 @@
         // ۶. تایید پیشنهاد کاربر
         async function approveSuggestion(id, text, source, genre) {
             try {
-                const { error: insError } = await client.from('quotes').insert([{ 
-                    text, source, genre, info: "پیشنهاد شده توسط کاربران نجوای قلم.", link: "https://ganjoor.net" 
+                const { error: insError } = await client.from('quotes').insert([{
+                    text, source, genre, info: "پیشنهاد شده توسط کاربران نجوای قلم.", link: "https://ganjoor.net"
                 }]);
                 if (insError) throw insError;
 
                 const { error: updError } = await client.from('suggestions').update({ status: 'approved' }).eq('id', id);
                 if (updError) throw updError;
 
-                showMessage('اثر پیشنهادی با موفقیت تایید و منتشر شد! 🌟');
+                showMessage('اثر پیشنهادی با موفقیت تایید و منتشر شد! ');
                 loadSuggestions();
             } catch (err) { showMessage('خطا: ' + err.message); }
         }
 
         // ۷. رد یا حذف پیشنهاد
         async function rejectSuggestion(id) {
-            if(!confirm('آیا از رد این پیشنهاد مطمئن هستید؟')) return;
+            if (!confirm('آیا از رد این پیشنهاد مطمئن هستید؟')) return;
             try {
                 const { error } = await client.from('suggestions').update({ status: 'rejected' }).eq('id', id);
                 if (error) throw error;
@@ -362,7 +400,7 @@
             document.getElementById('quoteText').value = text;
             document.getElementById('quoteSource').value = source;
             document.getElementById('quoteGenre').value = genre;
-            
+
             document.getElementById('quoteInfo').value = '';
             document.getElementById('quoteLink').value = '';
 
@@ -374,11 +412,12 @@
 
         // ۹. تابع حذف مستقیم اعلان
         async function deleteNotification(id) {
-            if(!confirm('آیا از حذف این پیشنهاد مطمئن هستید؟')) return;
+            if (!confirm('آیا از حذف این پیشنهاد مطمئن هستید؟')) return;
             await client.from('admin_notifications').update({ is_read: true }).eq('id', id);
             showMessage('پیشنهاد حذف شد.');
             loadSuggestions();
         }
     </script>
 </body>
+
 </html>
