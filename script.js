@@ -141,7 +141,7 @@ async function toggleFavorite() {
         const { error } = await client.from('favorites').insert([{ user_id: currentUser.id, quote_id: currentQuoteId }]);
         if (!error) {
             favoriteQuotesIds.push(currentQuoteId);
-            showSuccess('به لیست محبوب‌ها اضافه شد! ♡');
+            showSuccess('به لیست محبوب‌ها اضافه شد! ');
         }
     }
     updateHeartIcon();
@@ -520,32 +520,24 @@ async function sendResetEmail() {
 //   سیستم پیام‌های سفارشی (جایگزین alert)
 // ============================================
 
+// ============================================
+//   سیستم پیام‌های سفارشی (بدون آیکون)
+// ============================================
+
 function showNotification(message, type = 'info', duration = 4000) {
     const container = document.getElementById('notificationContainer');
     if (!container) return;
 
-    // حذف نوتیفیکیشن‌های قبلی (اختیاری)
-    // container.innerHTML = '';
-
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
 
-    // آیکون‌ها بر اساس نوع پیام
-    const icons = {
-        success: '',
-        error: '',
-        info: ''
-    };
-
     notification.innerHTML = `
-        <span style="margin-left: 10px;">${icons[type] || ''}</span>
         <span>${message}</span>
         <button class="close-btn" onclick="this.parentElement.remove()">✕</button>
     `;
 
     container.appendChild(notification);
 
-    // حذف خودکار بعد از مدت زمان مشخص
     if (duration > 0) {
         setTimeout(() => {
             if (notification.parentElement) {
@@ -560,6 +552,19 @@ function showNotification(message, type = 'info', duration = 4000) {
     }
 
     return notification;
+}
+
+// ===== توابع میانبر =====
+function showSuccess(message, duration = 4000) {
+    showNotification(message, 'success', duration);
+}
+
+function showError(message, duration = 4000) {
+    showNotification(message, 'error', duration);
+}
+
+function showInfo(message, duration = 4000) {
+    showNotification(message, 'info', duration);
 }
 
 // ===== توابع میانبر برای انواع پیام =====
