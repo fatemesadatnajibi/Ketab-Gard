@@ -30,27 +30,26 @@
             overflow-x: hidden;
         }
 
-        /* ===== شمسه پس‌زمینه (ثابت در مرکز صفحه) ===== */
+        /* ===== شمسه پس‌زمینه (دقیقاً مثل نمونه) ===== */
         .shamseh-bg {
-            position: fixed;
-            /* ← ثابت نسبت به viewport */
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 90vmin;
-            /* واکنش‌گرا */
-            max-width: 650px;
-            height: 90vmin;
-            max-height: 650px;
+            position: absolute;
+            width: 100%;
+            max-width: 700px;
+            height: auto;
+            aspect-ratio: 1 / 1;
             background-image: url('Eslimi_Design_Surah.svg.png');
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
-            z-index: 0;
-            /* پشت همه چیز */
+            z-index: 1;
             pointer-events: none;
-            filter: invert(1) sepia(1) saturate(7) hue-rotate(5deg) brightness(0.9) opacity(0.1);
+            filter: invert(1) sepia(1) saturate(7) hue-rotate(5deg) brightness(0.9) opacity(0.35);
+            transform-origin: center center;
             animation: slowRotate 140s linear infinite;
+            /* وسط‌تر شدن شمسه */
+            top: 60%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
 
         @keyframes slowRotate {
@@ -154,27 +153,23 @@
             }
         }
 
-        /* ===== کارت پلیر (در لایه بالایی) ===== */
-        .music-container {
-            position: relative;
-            z-index: 10;
-            margin-top: 180px;
-            width: 90%;
-            max-width: 520px;
-            background-color: rgba(7, 15, 30, 0.85);
-            /* نیمه‌شفاف برای دیده شدن شمسه */
-            backdrop-filter: blur(2px);
-            padding: 30px 25px;
+        /* ===== کارت پلیر (دقیقاً مثل نمونه) ===== */
+        .card {
+            background-color: #070f1e;
+            padding: 40px 30px;
             border-radius: 24px;
-            border: 2px solid #d4af37;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), inset 0 0 0 1px rgba(212, 175, 55, 0.2);
+            width: 100%;
+            max-width: 520px;
             text-align: center;
+            border: 2px solid #d4af37;
+            position: relative;
+            z-index: 5;
             box-sizing: border-box;
-            /* overflow: hidden;  << دیگر نیازی نیست چون شمسه به کارت محدود نمی‌شود */
+            margin-top: 180px;
         }
 
-        /* حاشیه داخلی تزئینی */
-        .music-container::before {
+        .card::before {
             content: "";
             position: absolute;
             top: 10px;
@@ -184,6 +179,15 @@
             border: 1px solid rgba(212, 175, 55, 0.25);
             border-radius: 16px;
             pointer-events: none;
+        }
+
+        .quote-icon {
+            font-size: 50px;
+            color: #d4af37;
+            font-family: Georgia, serif;
+            line-height: 0;
+            margin-top: 5px;
+            margin-bottom: 20px;
         }
 
         /* ===== گرامافون ===== */
@@ -376,7 +380,7 @@
 
         /* ===== واکنش‌گرایی ===== */
         @media (max-width: 580px) {
-            .music-container {
+            .card {
                 margin-top: 140px;
                 padding: 20px 15px;
             }
@@ -390,16 +394,12 @@
             .subpage-brand span {
                 display: none;
             }
-            .shamseh-bg {
-                width: 80vmin;
-                height: 80vmin;
-            }
         }
     </style>
 </head>
 <body>
 
-    <!-- شمسه ثابت در مرکز صفحه (خارج از کارت) -->
+    <!-- شمسه پس‌زمینه -->
     <div class="shamseh-bg"></div>
 
     <!-- هدر -->
@@ -419,18 +419,20 @@
 
     <!-- دکمه بازگشت -->
     <div class="subpage-back-zone">
-        <button class="btn-mini" onclick="exitPlayer()">📚 کتابخانه</button>
+        <button class="btn-mini" onclick="exitPlayer()">بازگشت کتابخانه</button>
     </div>
 
     <!-- برند -->
     <div class="subpage-brand">
         <div class="subpage-shamseh"></div>
         <h2>آوا و نوا</h2>
-        <span>| پلیر</span>
+        <span>| نغمه قلم </span>
     </div>
 
     <!-- کارت پلیر -->
-    <div class="music-container">
+    <div class="card">
+        <div class="quote-icon">❝</div>
+
         <div class="gramophone">
             <div id="vinyl-disc" class="vinyl-disc">
                 <div class="vinyl-label">
@@ -453,9 +455,9 @@
         <div id="track-singer" class="track-artist">خواننده</div>
 
         <div class="audio-controls">
-            <button class="control-btn" onclick="playPrevious()">⏮</button>
+            <button class="control-btn" onclick="playPrevious()">⏭</button>
             <button id="play-btn" class="control-btn play-main" onclick="toggleAudio()">▶</button>
-            <button class="control-btn" onclick="playNext()">⏭</button>
+            <button class="control-btn" onclick="playNext()">⏮</button>
         </div>
 
         <div class="progress-container">
