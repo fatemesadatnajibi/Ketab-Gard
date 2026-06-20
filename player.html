@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -54,6 +55,7 @@
             from {
                 transform: translate(-50%, -50%) rotate(0deg);
             }
+
             to {
                 transform: translate(-50%, -50%) rotate(360deg);
             }
@@ -70,6 +72,7 @@
             z-index: 99;
             pointer-events: none;
         }
+
         .gold-wave-stripes,
         .navy-wave-body {
             position: absolute;
@@ -78,12 +81,14 @@
             width: 100%;
             height: 100%;
         }
+
         .gold-wave-stripes svg,
         .navy-wave-body svg {
             width: 100%;
             height: 100%;
             display: block;
         }
+
         .gold-wave-stripes svg {
             filter: drop-shadow(0px 4px 8px rgba(212, 175, 55, 0.4));
         }
@@ -95,6 +100,7 @@
             left: 25px;
             z-index: 9999;
         }
+
         .btn-mini {
             background: none;
             border: 1px solid rgba(212, 175, 55, 0.4);
@@ -106,6 +112,7 @@
             transition: all 0.3s;
             font-size: 0.99rem;
         }
+
         .btn-mini:hover {
             background: rgba(212, 175, 55, 0.15);
             border-color: #d4af37;
@@ -142,37 +149,42 @@
         }
 
         @keyframes eslimiMiniRotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         /* ===== عکس لوگو با افکت‌های طلایی (همانند songs.html) ===== */
-/* ===== عکس لوگو با افکت‌های طلایی (دقیقاً مثل songs.html) ===== */
-/* ===== عکس لوگو ===== */
-.brand-logo {
-    margin-top: 10px;
-    display: block;
-    width: 400px;
-    height: auto;
-    pointer-events: auto;
-    filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.3));
-    transition: all 0.3s ease;
-}
+        /* ===== عکس لوگو با افکت‌های طلایی (دقیقاً مثل songs.html) ===== */
+        /* ===== عکس لوگو ===== */
+        .brand-logo {
+            margin-top: 10px;
+            display: block;
+            width: 400px;
+            height: auto;
+            pointer-events: auto;
+            filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.3));
+            transition: all 0.3s ease;
+        }
 
-.brand-logo:hover {
-    filter: drop-shadow(0 0 40px rgba(212, 175, 55, 0.6));
-    transform: scale(1.05);
-}
+        .brand-logo:hover {
+            filter: drop-shadow(0 0 40px rgba(212, 175, 55, 0.6));
+            transform: scale(1.05);
+        }
 
-/* ===== این تعریف دوم فیلتر طلایی را اعمال می‌کند (بازنویسی) ===== */
-.brand-logo {
-    display: block;
-    width: 400px;
-    height: auto;
-    pointer-events: auto;
-    filter: brightness(0) saturate(100%) invert(68%) sepia(85%) saturate(950%) hue-rotate(354deg) brightness(95%) contrast(90%);
-    transition: all 0.3s ease;
-}
+        /* ===== این تعریف دوم فیلتر طلایی را اعمال می‌کند (بازنویسی) ===== */
+        .brand-logo {
+            display: block;
+            width: 400px;
+            height: auto;
+            pointer-events: auto;
+            filter: brightness(0) saturate(100%) invert(68%) sepia(85%) saturate(950%) hue-rotate(354deg) brightness(95%) contrast(90%);
+            transition: all 0.3s ease;
+        }
 
         /* ===== کارت پلیر ===== */
         .card {
@@ -218,6 +230,7 @@
             height: 200px;
             margin: 0 auto 15px auto;
         }
+
         .vinyl-disc {
             width: 100%;
             height: 100%;
@@ -226,9 +239,11 @@
             box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2), 0 0 0 6px #0a0a0a, 0 0 0 8px rgba(212, 175, 55, 0.15);
             position: relative;
         }
+
         .vinyl-disc.spinning {
             animation: spinVinyl 2.5s linear infinite;
         }
+
         @keyframes spinVinyl {
             100% {
                 transform: rotate(360deg);
@@ -255,6 +270,7 @@
             padding: 4px;
             box-sizing: border-box;
         }
+
         .vinyl-label .label-title {
             font-size: 0.6rem;
             font-weight: bold;
@@ -264,11 +280,13 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
+
         .vinyl-label .label-sub {
             font-size: 0.5rem;
             color: #333;
             margin-top: 2px;
         }
+
         .vinyl-hole {
             position: absolute;
             top: 50%;
@@ -294,9 +312,11 @@
             transform: rotate(-16deg);
             transition: transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
+
         .tone-arm.active {
             transform: rotate(4deg);
         }
+
         .tone-arm svg {
             width: 100%;
             height: 100%;
@@ -310,6 +330,7 @@
             font-weight: bold;
             margin: 8px 0 2px;
         }
+
         .track-artist {
             font-size: 1rem;
             color: #a0aec0;
@@ -470,6 +491,7 @@
                 transform: scale(1);
                 opacity: 0.3;
             }
+
             100% {
                 transform: scale(1.08);
                 opacity: 0;
@@ -485,6 +507,7 @@
             font-size: 0.8rem;
             width: 100%;
         }
+
         .progress-bar {
             flex-grow: 1;
             -webkit-appearance: none;
@@ -494,6 +517,7 @@
             outline: none;
             cursor: pointer;
         }
+
         .progress-bar::-webkit-slider-thumb {
             -webkit-appearance: none;
             width: 14px;
@@ -514,9 +538,11 @@
             overflow-y: auto;
             text-align: center;
         }
+
         .lyrics-box::-webkit-scrollbar {
             width: 3px;
         }
+
         .lyrics-box::-webkit-scrollbar-thumb {
             background: #d4af37;
         }
@@ -527,37 +553,46 @@
                 top: 15px;
                 right: 15px;
             }
+
             .brand-logo {
                 width: 200px;
             }
+
             .subpage-brand::before {
                 width: 30px !important;
                 height: 30px !important;
                 background-size: 35px !important;
                 margin-left: -100px !important;
             }
+
             .card {
                 margin-top: 140px;
                 padding: 20px 15px;
             }
+
             .gramophone {
                 width: 170px;
                 height: 170px;
             }
+
             .control-btn {
                 padding: 8px 10px;
             }
+
             .control-btn svg {
                 width: 18px;
                 height: 18px;
             }
+
             .play-main {
                 padding: 12px 18px;
             }
+
             .play-main svg {
                 width: 26px;
                 height: 26px;
             }
+
             .control-btn.side-btn svg {
                 width: 17px;
                 height: 17px;
@@ -568,6 +603,7 @@
             .brand-logo {
                 width: 150px;
             }
+
             .subpage-brand::before {
                 width: 25px !important;
                 height: 25px !important;
@@ -577,6 +613,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <div class="shamseh-bg"></div>
@@ -584,7 +621,8 @@
     <div class="luxury-islamic-header">
         <div class="gold-wave-stripes">
             <svg viewBox="0 0 1440 200" preserveAspectRatio="none">
-                <path d="M0,120 C320,180 480,40 800,130 C1120,220 1280,70 1440,110 L1440,0 L0,0 Z" fill="rgba(214, 175, 55, 0.4)"></path>
+                <path d="M0,120 C320,180 480,40 800,130 C1120,220 1280,70 1440,110 L1440,0 L0,0 Z"
+                    fill="rgba(214, 175, 55, 0.4)"></path>
                 <path d="M0,110 C300,170 500,50 820,120 C1140,190 1260,80 1440,95 L1440,0 L0,0 Z" fill="#d4af37"></path>
             </svg>
         </div>
@@ -618,9 +656,9 @@
 
             <div id="tone-arm" class="tone-arm">
                 <svg viewBox="0 0 100 100" fill="none">
-                    <circle cx="85" cy="15" r="8" fill="#b8960f" stroke="#d4af37" stroke-width="1.5"/>
-                    <path d="M80 20 L20 60" stroke="#d4af37" stroke-width="3" stroke-linecap="round"/>
-                    <circle cx="20" cy="60" r="4" fill="#d4af37" stroke="#f1ebd9" stroke-width="1"/>
+                    <circle cx="85" cy="15" r="8" fill="#b8960f" stroke="#d4af37" stroke-width="1.5" />
+                    <path d="M80 20 L20 60" stroke="#d4af37" stroke-width="3" stroke-linecap="round" />
+                    <circle cx="20" cy="60" r="4" fill="#d4af37" stroke="#f1ebd9" stroke-width="1" />
                 </svg>
             </div>
         </div>
@@ -629,21 +667,21 @@
         <div id="track-singer" class="track-artist">خواننده</div>
 
         <div class="audio-controls">
-            <button class="control-btn side-btn" onclick="playPrevious()" title="آوای قبلی">
+            <button class="control-btn side-btn" onclick="playPrevious()" title="">
                 <svg viewBox="0 0 24 24">
-                    <path d="M6 6h2v12H6V6zm3.5 6l8.5 6V6l-8.5 6z"/>
+                    <path d="M6 6h2v12H6V6zm3.5 6l8.5 6V6l-8.5 6z" />
                 </svg>
             </button>
 
             <button id="play-btn" class="control-btn play-main" onclick="toggleAudio()">
                 <svg viewBox="0 0 24 24">
-                    <path d="M6 4h4v16H6zM14 4h4v16h-4z"/>
+                    <path d="M6 4h4v16H6zM14 4h4v16h-4z" />
                 </svg>
             </button>
 
-            <button class="control-btn side-btn" onclick="playNext()" title="آوای بعدی">
-                <svg viewBox="0 0 24 24">
-                    <path d="M6 18l8.5-6L6 6v12zm9-12h2v12h-2V6z"/>
+            <button class="control-btn side-btn" onclick="playNext()"">
+                <svg viewBox=" 0 0 24 24">
+                <path d="M6 18l8.5-6L6 6v12zm9-12h2v12h-2V6z" />
                 </svg>
             </button>
         </div>
@@ -661,4 +699,5 @@
 
     <script src="player.js"></script>
 </body>
+
 </html>
