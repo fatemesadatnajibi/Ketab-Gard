@@ -872,3 +872,14 @@ button {
     visibility: visible !important;
     transform: translateY(-5px) !important;
 }
+/* ===== اسکرول ===== */
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background: #030710;
+}
+::-webkit-scrollbar-thumb {
+    background: #d4af37;
+    border-radius: 3px;
+}

@@ -5,107 +5,356 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>آوا و نوا | نغمه قلم</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+    </script>
     <style>
+        /* ===== ریست و فونت ===== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
             background-color: #030710;
             background-image: radial-gradient(circle at 50% 50%, #091224 0%, #030710 100%);
             min-height: 100vh;
             font-family: "B Nazanin", "B Lotus", "Tanha", sans-serif;
-            padding: 0; margin: 0;
+            padding: 0;
+            margin: 0;
+            position: relative;
+            overflow-x: hidden;
         }
 
         /* ===== هدر اسلیمی طلایی ===== */
         .luxury-islamic-header {
-            position: absolute; top: 0; left: 0; width: 100%; height: 160px;
-            overflow: hidden; z-index: 99; pointer-events: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 160px;
+            overflow: hidden;
+            z-index: 99;
+            pointer-events: none;
         }
-        .gold-wave-stripes, .navy-wave-body { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-        .gold-wave-stripes svg, .navy-wave-body svg { width: 100%; height: 100%; display: block; }
-        .gold-wave-stripes svg { filter: drop-shadow(0px 4px 8px rgba(212, 175, 55, 0.4)); }
+        .gold-wave-stripes,
+        .navy-wave-body {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .gold-wave-stripes svg,
+        .navy-wave-body svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        .gold-wave-stripes svg {
+            filter: drop-shadow(0px 4px 8px rgba(212, 175, 55, 0.4));
+        }
 
-        .subpage-back-zone { position: absolute; top: 30px; left: 25px; z-index: 9999; }
+        /* ===== دکمه بازگشت ===== */
+        .subpage-back-zone {
+            position: absolute;
+            top: 30px;
+            left: 25px;
+            z-index: 9999;
+        }
         .btn-mini {
-            background: none; border: 1px solid rgba(212, 175, 55, 0.4); color: #d4af37;
-            padding: 6px 14px; border-radius: 8px; cursor: pointer; font-family: inherit; transition: all 0.3s;
+            background: none;
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            color: #d4af37;
+            padding: 6px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s;
+            font-size: 0.9rem;
         }
-        .btn-mini:hover { background: rgba(212, 175, 55, 0.15); border-color: #d4af37; }
+        .btn-mini:hover {
+            background: rgba(212, 175, 55, 0.15);
+            border-color: #d4af37;
+        }
 
+        /* ===== برند ===== */
         .subpage-brand {
-            position: absolute; top: 15px; right: 35px; z-index: 9999; display: flex; align-items: center; gap: 15px;
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
-        .subpage-brand h2 { font-size: 2rem; color: #d4af37; margin: 0; font-weight: bold; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
-        .subpage-brand span { color: #a0aec0; font-size: 1.1rem; }
-        
+        .subpage-brand h2 {
+            font-size: 2rem;
+            color: #d4af37;
+            margin: 0;
+            font-weight: bold;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+        }
+        .subpage-brand span {
+            color: #a0aec0;
+            font-size: 1.1rem;
+        }
+
         .subpage-shamseh {
-            width: 50px; height: 50px; background-image: url('8.png'); background-size: contain;
-            background-repeat: no-repeat; background-position: center;
+            width: 50px;
+            height: 50px;
+            background-image: url('8.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
             filter: brightness(0) saturate(100%) invert(68%) sepia(85%) saturate(950%) hue-rotate(354deg) brightness(95%) contrast(90%);
             animation: eslimiMiniRotate 12s linear infinite;
         }
-        @keyframes eslimiMiniRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        .shamseh-bg {
-            position: fixed; width: 100%; max-width: 650px; height: auto; aspect-ratio: 1 / 1;
-            background-image: url('Eslimi_Design_Surah.svg.png'); background-size: contain; background-repeat: no-repeat; background-position: center;
-            z-index: 1; pointer-events: none; filter: invert(1) sepia(1) saturate(7) hue-rotate(5deg) brightness(0.9) opacity(0.12);
-            animation: slowRotate 140s linear infinite; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        @keyframes eslimiMiniRotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
         }
-        @keyframes slowRotate { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+        /* ===== شمسه پس‌زمینه (دقیقاً مثل نمونه قبلی) ===== */
+        .shamseh-bg {
+            position: fixed;
+            /* ثابت در پس‌زمینه هنگام اسکرول */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            max-width: 700px;
+            /* مثل نمونه قبلی */
+            height: auto;
+            aspect-ratio: 1 / 1;
+            background-image: url('Eslimi_Design_Surah.svg.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            z-index: 1;
+            pointer-events: none;
+            filter: invert(1) sepia(1) saturate(7) hue-rotate(5deg) brightness(0.9) opacity(0.35);
+            /* شفافیت مثل نمونه */
+            transform-origin: center center;
+            animation: slowRotate 140s linear infinite;
+        }
+
+        @keyframes slowRotate {
+            from {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
 
         /* ===== گرید کتابخانه دیسک‌ها ===== */
         .library-container {
-            position: relative; z-index: 10; margin-top: 180px; width: 90%; max-width: 900px;
-            background-color: #070f1e; padding: 25px 20px; border-radius: 24px; border: 2px solid #d4af37;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8); box-sizing: border-box; margin-left: auto; margin-right: auto;
+            position: relative;
+            z-index: 10;
+            margin-top: 180px;
+            margin-bottom: 40px;
+            /* فاصله از پایین */
+            width: 90%;
+            max-width: 900px;
+            background-color: rgba(7, 15, 30, 0.92);
+            /* کمی شفاف برای دیده شدن شمسه */
+            padding: 25px 20px;
+            border-radius: 24px;
+            border: 2px solid #d4af37;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+            box-sizing: border-box;
+            margin-left: auto;
+            margin-right: auto;
+            backdrop-filter: blur(2px);
+            /* محو کردن پشت کارت برای خوانایی بهتر */
         }
+
         .library-container::before {
-            content: ""; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px;
-            border: 1px solid rgba(212, 175, 55, 0.25); border-radius: 16px; pointer-events: none;
+            content: "";
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            border-radius: 16px;
+            pointer-events: none;
         }
+
         .library-title {
-            color: #d4af37; font-size: 1.6rem; text-align: center; margin-bottom: 25px; font-weight: bold;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.2); padding-bottom: 12px;
+            color: #d4af37;
+            font-size: 1.6rem;
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            padding-bottom: 12px;
+            position: relative;
+            z-index: 2;
         }
-        .vinyl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 25px; justify-items: center; }
-        
+
+        .vinyl-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 25px;
+            justify-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
         /* کارت دیسک گرامافون */
         .vinyl-card {
-            background: rgba(3, 7, 16, 0.6); border: 1px solid rgba(212, 175, 55, 0.15);
-            border-radius: 16px; padding: 18px 12px; text-align: center; cursor: pointer; transition: all 0.4s ease; width: 100%;
+            background: rgba(3, 7, 16, 0.6);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            border-radius: 16px;
+            padding: 18px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            width: 100%;
         }
-        .vinyl-card:hover { border-color: #d4af37; transform: translateY(-6px); box-shadow: 0 12px 30px rgba(212, 175, 55, 0.2); background: rgba(7, 15, 30, 0.85); }
-        
+        .vinyl-card:hover {
+            border-color: #d4af37;
+            transform: translateY(-6px);
+            box-shadow: 0 12px 30px rgba(212, 175, 55, 0.2);
+            background: rgba(7, 15, 30, 0.85);
+        }
+
         .mini-vinyl {
-            width: 100px; height: 100px; margin: 0 auto 12px; border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 12px;
+            border-radius: 50%;
             background: radial-gradient(circle at 30% 30%, #2a2a2a, #0a0a0a 70%, #1a1a1a 100%);
-            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.15), 0 0 0 5px #0a0a0a; position: relative; transition: transform 0.8s ease;
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.15), 0 0 0 5px #0a0a0a;
+            position: relative;
+            transition: transform 0.8s ease;
         }
-        .vinyl-card:hover .mini-vinyl { transform: rotate(180deg); }
+        .vinyl-card:hover .mini-vinyl {
+            transform: rotate(180deg);
+        }
         .mini-label {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 34px; height: 34px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #d4af37, #b8960f);
-            border: 1px solid #f1ebd9; display: flex; align-items: center; justify-content: center;
-            font-size: 0.65rem; color: #030710; font-weight: bold;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 40% 35%, #d4af37, #b8960f);
+            border: 1px solid #f1ebd9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            color: #030710;
+            font-weight: bold;
         }
-        .vinyl-name { font-size: 1rem; color: #f1ebd9; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .vinyl-artist { font-size: 0.8rem; color: #a0aec0; margin-top: 2px; }
-        .play-badge { display: inline-block; margin-top: 10px; background: rgba(212, 175, 55, 0.12); color: #d4af37; padding: 3px 14px; border-radius: 12px; font-size: 0.75rem; border: 1px solid rgba(212, 175, 55, 0.2); }
+        .vinyl-name {
+            font-size: 1rem;
+            color: #f1ebd9;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .vinyl-artist {
+            font-size: 0.8rem;
+            color: #a0aec0;
+            margin-top: 2px;
+        }
+        .play-badge {
+            display: inline-block;
+            margin-top: 10px;
+            background: rgba(212, 175, 55, 0.12);
+            color: #d4af37;
+            padding: 3px 14px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
 
-        .empty-state { text-align: center; padding: 40px 20px; color: #a0aec0; grid-column: 1 / -1; }
-        .empty-state .icon { font-size: 3rem; display: block; margin-bottom: 12px; }
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #a0aec0;
+            grid-column: 1 / -1;
+        }
+        .empty-state .icon {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 12px;
+        }
 
+        /* ===== اسکرول ===== */
+        /* اسکرول کل صفحه به صورت عادی کار می‌کند */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #030710;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d4af37;
+            border-radius: 3px;
+        }
+
+        /* ===== واکنش‌گرایی ===== */
         @media (max-width: 580px) {
-            .library-container { margin-top: 140px; padding: 15px 12px; }
-            .vinyl-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; }
-            .vinyl-card .mini-vinyl { width: 85px; height: 85px; }
-            .subpage-brand h2 { font-size: 1.4rem; }
-            .subpage-brand span { display: none; }
+            .library-container {
+                margin-top: 140px;
+                padding: 15px 12px;
+            }
+            .vinyl-grid {
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+                gap: 15px;
+            }
+            .vinyl-card .mini-vinyl {
+                width: 85px;
+                height: 85px;
+            }
+            .subpage-brand h2 {
+                font-size: 1.4rem;
+            }
+            .subpage-brand span {
+                display: none;
+            }
+            .shamseh-bg {
+                max-width: 90vw;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .vinyl-grid {
+                grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+                gap: 10px;
+            }
+            .vinyl-card {
+                padding: 12px 8px;
+            }
+            .mini-vinyl {
+                width: 70px;
+                height: 70px;
+            }
+            .mini-label {
+                width: 28px;
+                height: 28px;
+                font-size: 0.5rem;
+            }
         }
     </style>
 </head>
 <body>
 
+    <!-- شمسه پس‌زمینه (با تنظیمات نمونه قبلی) -->
+    
+
+    <!-- هدر -->
     <div class="luxury-islamic-header">
         <div class="gold-wave-stripes">
             <svg viewBox="0 0 1440 200" preserveAspectRatio="none">
@@ -120,20 +369,21 @@
         </div>
     </div>
 
-    <div class="shamseh-bg"></div>
-
+    <!-- دکمه بازگشت -->
     <div class="subpage-back-zone">
         <button class="btn-mini" onclick="window.location.href='index.html'">↩ منوی اصلی</button>
     </div>
 
+    <!-- برند -->
     <div class="subpage-brand">
         <div class="subpage-shamseh"></div>
         <h2>آوا و نوا</h2>
         <span>| نغمه قلم</span>
     </div>
 
+    <!-- کتابخانه -->
     <div class="library-container">
-        <div class="library-title">📀 گنجینه صفحه‌های موسیقی</div>
+        <div class="library-title">نغمه خانه</div>
         <div id="vinylGrid" class="vinyl-grid">
             <div class="empty-state">
                 <span class="icon">⏳</span>

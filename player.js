@@ -40,7 +40,11 @@ function renderSong() {
 
     audio.pause();
     isPlaying = false;
-    if(playBtn) playBtn.innerText = '▶';
+    if(playBtn) playBtn.innerHTML = `
+<svg viewBox="0 0 24 24">
+    <path d="M8 5L19 12L8 19V5Z"/>
+</svg>
+`;
     if(vinylDisc) vinylDisc.classList.remove('spinning');
     if(toneArm) toneArm.classList.remove('active');
 
@@ -64,13 +68,21 @@ function toggleAudio() {
 
     if (isPlaying) {
         audio.pause();
-        if(playBtn) playBtn.innerText = '▶';
+        if(playBtn) playBtn.innerHTML = `
+<svg viewBox="0 0 24 24">
+    <path d="M8 5L19 12L8 19V5Z"/>
+</svg>
+`;
         if(vinylDisc) vinylDisc.classList.remove('spinning');
         if(toneArm) toneArm.classList.remove('active');
         isPlaying = false;
     } else {
         audio.play().catch(err => console.error("خطای بارگذاری فایل صوتی:", err.message));
-        if(playBtn) playBtn.innerText = '⏸';
+        if(playBtn) playBtn.innerHTML = `
+<svg viewBox="0 0 24 24">
+    <path d="M6 4h4v16H6zM14 4h4v16h-4z"/>
+</svg>
+`;
         if(vinylDisc) vinylDisc.classList.add('spinning');
         if(toneArm) toneArm.classList.add('active');
         isPlaying = true;

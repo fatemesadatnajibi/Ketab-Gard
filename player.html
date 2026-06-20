@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>پلیر آوا و نوا | نغمه قلم</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         /* ===== ریست و فونت ===== */
         * {
@@ -30,7 +29,7 @@
             overflow-x: hidden;
         }
 
-        /* ===== شمسه پس‌زمینه (دقیقاً مثل نمونه) ===== */
+        /* ===== شمسه پس‌زمینه ===== */
         .shamseh-bg {
             position: absolute;
             width: 100%;
@@ -46,7 +45,6 @@
             filter: invert(1) sepia(1) saturate(7) hue-rotate(5deg) brightness(0.9) opacity(0.35);
             transform-origin: center center;
             animation: slowRotate 140s linear infinite;
-            /* وسط‌تر شدن شمسه */
             top: 60%;
             left: 50%;
             transform: translate(-50%, -50%);
@@ -106,6 +104,7 @@
             cursor: pointer;
             font-family: inherit;
             transition: all 0.3s;
+            font-size: 0.99rem;
         }
         .btn-mini:hover {
             background: rgba(212, 175, 55, 0.15);
@@ -153,7 +152,7 @@
             }
         }
 
-        /* ===== کارت پلیر (دقیقاً مثل نمونه) ===== */
+        /* ===== کارت پلیر ===== */
         .card {
             background-color: #070f1e;
             padding: 40px 30px;
@@ -292,46 +291,206 @@
         .track-artist {
             font-size: 1rem;
             color: #a0aec0;
-            margin-bottom: 18px;
+            margin-bottom: 22px;
         }
 
-        /* ===== دکمه‌ها ===== */
-        .audio-controls {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 18px;
-            margin-bottom: 16px;
-        }
+        /* ============================================
+           دکمه‌های کنترل مدرن و لوکس (بدون دایره)
+           ============================================ */
+.audio-controls{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:16px;
+    margin-bottom:22px;
+
+    direction:ltr; /* مهم */
+}
+
         .control-btn {
-            background: none;
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            color: #f1ebd9;
-            font-size: 1.2rem;
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
+            background: transparent;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 12px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
         }
+
+        .control-btn svg {
+    width:22px;
+    height:22px;
+            fill: #a0aec0;
+            transition: all 0.3s;
+            filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.1));
+        }
+
+        /* هُور (Glow) زیر دکمه‌ها */
+        .control-btn::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #d4af37, transparent);
+            transition: width 0.3s ease;
+            border-radius: 2px;
+        }
+
         .control-btn:hover {
-            background: rgba(212, 175, 55, 0.15);
-            border-color: #d4af37;
+            transform: translateY(-3px);
         }
-        .play-main {
-            width: 56px;
-            height: 56px;
-            font-size: 1.6rem;
-            border-color: #d4af37;
-            background: rgba(212, 175, 55, 0.08);
+
+.play-main:hover{
+      transform: translateY(-2px);  /* تغییر از -4px به -2px */
+    box-shadow:
+        0 4px 12px rgba(212,175,55,.15),  /* کاهش از .25 به .15 */
+        0 0 20px rgba(212,175,55,.08);      /* کاهش از .3 به .15 */
+}
+
+.play-main:hover svg{
+    fill:#091224;
+}
+
+        .control-btn:hover::after {
+            width: 80%;
         }
-        .play-main:hover {
-            background: #d4af37;
-            color: #030710;
+
+        .control-btn:active svg {
+            transform: scale(0.85);
         }
+
+        /* دکمه اصلی پخش (بزرگ‌تر و خاص) */
+.play-main{
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    border:none;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:
+        linear-gradient(145deg,#d4af37,#f5d76e);
+
+    box-shadow:
+        0 6px 15px rgba(212,175,55,.2),   /* کاهش از .35 به .2 */
+        0 0 20px rgba(212,175,55,.1);     /* کاهش از .18 به .1 */
+
+    transition:all .35s ease;
+
+    position:relative;
+    overflow:hidden;
+}
+
+.play-main::before{
+    content:'';
+    position:absolute;
+    inset:-40%;
+    background:
+        linear-gradient(
+            120deg,
+            transparent,
+            rgba(255,255,255,.35),
+            transparent
+        );
+
+    transform:translateX(-120%) rotate(20deg);
+    transition:.8s;
+}
+
+.play-main:hover::before{
+    transform:translateX(120%) rotate(20deg);
+}
+
+.play-main:hover{
+    transform:translateY(-4px);
+
+.play-main:hover::after{
+    border-color: rgba(237, 209, 115, 0.15);  /* کمی پررنگ‌تر در هاور */
+    animation-duration: 2s;  /* تندتر شدن انیمیشن در هاور */
+}
+}
+
+.play-main:active{
+    transform:scale(.95);
+}
+
+.play-main svg{
+    fill:#091224;
+}
+.play-main svg{
+    width:25px !important;
+    height:25px !important;
+     shape-rendering: geometricPrecision;
+}
+
+        /* دکمه‌های کناری (قبلی/بعدی) با طراحی مینیمال */
+.side-btn{
+    width:52px;
+    height:52px;
+
+    border-radius:16px;
+
+    background:
+        rgba(255,255,255,.03);
+
+    border:1px solid rgba(212,175,55,.15);
+
+    backdrop-filter:blur(10px);
+
+    transition:all .3s ease;
+}
+
+.side-btn svg{
+    width:24px;
+    height:24px;
+
+    fill:#d4af37;
+}
+
+.side-btn:hover{
+    transform:translateY(-3px);
+
+    background:
+        rgba(212,175,55,.08);
+
+    border-color:
+        rgba(212,175,55,.6);
+
+    box-shadow:
+        0 0 25px rgba(212,175,55,.15);
+}
+
+.side-btn:active{
+    transform:scale(.92);
+}
+.play-main::after{
+    content:'';
+    position:absolute;
+    inset:-1px;  /* تغییر از -2px یا -3px به -1px */
+    border-radius:50%;
+    border:1px solid rgba(212,175,55,.12);  /* تغییر از .2 به .12 و ضخامت از 1.5 به 1 */
+    animation:pulseRing 3s infinite;  /* تغییر از 2.5s به 3s برای کندتر */
+}
+
+
+@keyframes pulseRing{
+    0%{
+        transform:scale(1);
+        opacity:.3;  /* تغییر از .4 به .3 */
+    }
+    100%{
+        transform:scale(1.08);  /* تغییر از 1.15 به 1.08 */
+        opacity:0;
+    }
+}
 
         /* ===== نوار پیشرفت ===== */
         .progress-container {
@@ -394,15 +553,32 @@
             .subpage-brand span {
                 display: none;
             }
+            .control-btn {
+                padding: 8px 10px;
+            }
+            .control-btn svg {
+                width: 18px;
+                height: 18px;
+            }
+            
+            .play-main {
+                padding: 12px 18px;
+            }
+            .play-main svg {
+                width: 26px;
+                height: 26px;
+            }
+            .control-btn.side-btn svg {
+                width: 17px;
+                height: 17px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- شمسه پس‌زمینه -->
     <div class="shamseh-bg"></div>
 
-    <!-- هدر -->
     <div class="luxury-islamic-header">
         <div class="gold-wave-stripes">
             <svg viewBox="0 0 1440 200" preserveAspectRatio="none">
@@ -417,19 +593,16 @@
         </div>
     </div>
 
-    <!-- دکمه بازگشت -->
     <div class="subpage-back-zone">
-        <button class="btn-mini" onclick="exitPlayer()">بازگشت کتابخانه</button>
+        <button class="btn-mini" onclick="exitPlayer()">بازگشت به کتابخانه</button>
     </div>
 
-    <!-- برند -->
     <div class="subpage-brand">
         <div class="subpage-shamseh"></div>
         <h2>آوا و نوا</h2>
         <span>| نغمه قلم </span>
     </div>
 
-    <!-- کارت پلیر -->
     <div class="card">
         <div class="quote-icon">❝</div>
 
@@ -454,10 +627,28 @@
         <div id="track-name" class="track-title">بارگذاری...</div>
         <div id="track-singer" class="track-artist">خواننده</div>
 
+        <!-- دکمه‌های کنترل مدرن -->
         <div class="audio-controls">
-            <button class="control-btn" onclick="playPrevious()">⏭</button>
-            <button id="play-btn" class="control-btn play-main" onclick="toggleAudio()">▶</button>
-            <button class="control-btn" onclick="playNext()">⏮</button>
+            <!-- قبلی -->
+            <button class="control-btn side-btn" onclick="playPrevious()" title="آوای قبلی">
+                <svg viewBox="0 0 24 24">
+                    <path d="M6 6h2v12H6V6zm3.5 6l8.5 6V6l-8.5 6z"/>
+                </svg>
+            </button>
+
+            <!-- پخش/توقف -->
+            <button id="play-btn" class="control-btn play-main" onclick="toggleAudio()">
+                <svg viewBox="0 0 24 24">
+    <path d="M6 4h4v16H6zM14 4h4v16h-4z"/>
+</svg>
+            </button>
+
+            <!-- بعدی -->
+            <button class="control-btn side-btn" onclick="playNext()" title="آوای بعدی">
+                <svg viewBox="0 0 24 24">
+                    <path d="M6 18l8.5-6L6 6v12zm9-12h2v12h-2V6z"/>
+                </svg>
+            </button>
         </div>
 
         <div class="progress-container">
