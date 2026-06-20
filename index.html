@@ -261,18 +261,31 @@
             transform: translateY(0);
         }
     </style>
+    
+<div class="suggestion-container" style="display: flex; flex-direction: column; align-items: center; gap: 15px;">
+    
+    <div class="floating-btn-wrapper music-wrapper" style="position: relative; display: flex; flex-direction: column; align-items: center;">
+        <div class="ink-tooltip music-tip">
+            شنیدن نغمه‌ها و آثار صوتی <br> ماندگار ادبیات
+        </div>
+        <div class="icon-button" onclick="window.location.href='songs.html'" title="آوا و نوا">
+            <img src="icons8-treble-clef-64.png" alt="آوا و نوا" class="pure-icon" style="width: 55px; height: auto; display: block;">
+        </div>
+    </div>
 
-    <div class="suggestion-container">
-        <div class="ink-tooltip">
+    <div class="floating-btn-wrapper suggestion-wrapper" style="position: relative; display: flex; flex-direction: column; align-items: center;">
+        <div class="ink-tooltip suggestion-tip">
             شاهکار ادبی یا شعر دلخواهتان را به مدیر <br>پیشنهاد دهید.
             منتظر پیشنهادات شما هستیم.
         </div>
-
         <div id="suggestion-floating-btn" class="floating-ink-btn" onclick="toggleSuggestionModal()">
             <img src="icons8-paper-and-ink-66.png" alt="پیشنهاد شعر" style="width: 55px; height: auto; display: block;">
         </div>
     </div>
 
+</div>
+
+</div>
     <div id="suggestion-modal"
         style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(3, 7, 16, 0.85); z-index: 1000; justify-content: center; align-items: center; direction: rtl;">
         <div
@@ -314,9 +327,7 @@
             </div>
         </div>
     </div>
-    <button class="btn" onclick="window.location.href='songs.html'" style="background: rgba(212, 175, 55, 0.15); border: 1px solid #d4af37; color: #f1ebd9;">
-    🎵 آوا و نوا (اشعار آهنگین)
-</button>
+
     <script src="script.js"></script>
 
 </body>

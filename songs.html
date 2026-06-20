@@ -7,199 +7,138 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* استایل‌های اختصاصی صفحه موسیقی در هماهنگی با تم اصلی سایت */
-        .music-container {
-            margin-top: 130px;
-            width: 90%;
-            max-width: 800px;
-            background: rgba(7, 15, 30, 0.7);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 24px;
-            padding: 30px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
+        body {
+            background-color: #030710;
+            background-image: radial-gradient(circle at 50% 50%, #091224 0%, #030710 100%);
+            min-height: 100vh;
+            font-family: "B Nazanin", "B Lotus", "Tanha", sans-serif;
+            padding: 0; margin: 0;
         }
 
-        /* بخش پلیر و کاور آلبوم */
-        .player-card {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 25px;
+        /* ===== هدر اسلیمی طلایی ===== */
+        .luxury-islamic-header {
+            position: absolute; top: 0; left: 0; width: 100%; height: 160px;
+            overflow: hidden; z-index: 99; pointer-events: none;
         }
+        .gold-wave-stripes, .navy-wave-body { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .gold-wave-stripes svg, .navy-wave-body svg { width: 100%; height: 100%; display: block; }
+        .gold-wave-stripes svg { filter: drop-shadow(0px 4px 8px rgba(212, 175, 55, 0.4)); }
 
-        .track-cover-wrapper {
-            position: relative;
-            width: 150px;
-            height: 150px;
-            margin-bottom: 15px;
+        .subpage-back-zone { position: absolute; top: 30px; left: 25px; z-index: 9999; }
+        .btn-mini {
+            background: none; border: 1px solid rgba(212, 175, 55, 0.4); color: #d4af37;
+            padding: 6px 14px; border-radius: 8px; cursor: pointer; font-family: inherit; transition: all 0.3s;
         }
+        .btn-mini:hover { background: rgba(212, 175, 55, 0.15); border-color: #d4af37; }
 
-        .track-cover {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 3px solid #d4af37;
-            object-fit: cover;
-            box-shadow: 0 0 25px rgba(212, 175, 55, 0.4);
-            transition: transform 0.5s ease;
+        .subpage-brand {
+            position: absolute; top: 15px; right: 35px; z-index: 9999; display: flex; align-items: center; gap: 15px;
         }
-
-        /* انیمیشن چرخش کاور هنگام پخش موسیقی */
-        .rotating {
-            animation: spin 15s linear infinite;
+        .subpage-brand h2 { font-size: 2rem; color: #d4af37; margin: 0; font-weight: bold; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
+        .subpage-brand span { color: #a0aec0; font-size: 1.1rem; }
+        
+        .subpage-shamseh {
+            width: 50px; height: 50px; background-image: url('8.png'); background-size: contain;
+            background-repeat: no-repeat; background-position: center;
+            filter: brightness(0) saturate(100%) invert(68%) sepia(85%) saturate(950%) hue-rotate(354deg) brightness(95%) contrast(90%);
+            animation: eslimiMiniRotate 12s linear infinite;
         }
+        @keyframes eslimiMiniRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        @keyframes spin {
-            100% { transform: rotate(360deg); }
+        .shamseh-bg {
+            position: fixed; width: 100%; max-width: 650px; height: auto; aspect-ratio: 1 / 1;
+            background-image: url('Eslimi_Design_Surah.svg.png'); background-size: contain; background-repeat: no-repeat; background-position: center;
+            z-index: 1; pointer-events: none; filter: invert(1) sepia(1) saturate(7) hue-rotate(5deg) brightness(0.9) opacity(0.12);
+            animation: slowRotate 140s linear infinite; top: 50%; left: 50%; transform: translate(-50%, -50%);
         }
+        @keyframes slowRotate { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
 
-        .track-title {
-            font-size: 1.6rem;
-            color: #f1ebd9;
-            margin: 5px 0;
-            font-weight: bold;
+        /* ===== گرید کتابخانه دیسک‌ها ===== */
+        .library-container {
+            position: relative; z-index: 10; margin-top: 180px; width: 90%; max-width: 900px;
+            background-color: #070f1e; padding: 25px 20px; border-radius: 24px; border: 2px solid #d4af37;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8); box-sizing: border-box; margin-left: auto; margin-right: auto;
         }
-
-        .track-artist {
-            font-size: 1.1rem;
-            color: #cbd5e0;
-            margin-bottom: 20px;
+        .library-container::before {
+            content: ""; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px;
+            border: 1px solid rgba(212, 175, 55, 0.25); border-radius: 16px; pointer-events: none;
         }
-
-        /* دکمه‌های کنترلر موزیک مینی‌مال */
-        .audio-controls {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 15px;
+        .library-title {
+            color: #d4af37; font-size: 1.6rem; text-align: center; margin-bottom: 25px; font-weight: bold;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2); padding-bottom: 12px;
         }
-
-        .control-btn {
-            background: none;
-            border: 1px solid rgba(212, 175, 55, 0.5);
-            color: #f1ebd9;
-            font-size: 1.5rem;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
+        .vinyl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 25px; justify-items: center; }
+        
+        /* کارت دیسک گرامافون */
+        .vinyl-card {
+            background: rgba(3, 7, 16, 0.6); border: 1px solid rgba(212, 175, 55, 0.15);
+            border-radius: 16px; padding: 18px 12px; text-align: center; cursor: pointer; transition: all 0.4s ease; width: 100%;
         }
-
-        .control-btn:hover {
-            background: #d4af37;
-            color: #030710;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
-            transform: scale(1.05);
+        .vinyl-card:hover { border-color: #d4af37; transform: translateY(-6px); box-shadow: 0 12px 30px rgba(212, 175, 55, 0.2); background: rgba(7, 15, 30, 0.85); }
+        
+        .mini-vinyl {
+            width: 100px; height: 100px; margin: 0 auto 12px; border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #2a2a2a, #0a0a0a 70%, #1a1a1a 100%);
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.15), 0 0 0 5px #0a0a0a; position: relative; transition: transform 0.8s ease;
         }
-
-        .play-main {
-            width: 65px;
-            height: 65px;
-            font-size: 1.8rem;
-            border-color: #d4af37;
-            background: rgba(212, 175, 55, 0.1);
+        .vinyl-card:hover .mini-vinyl { transform: rotate(180deg); }
+        .mini-label {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 34px; height: 34px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #d4af37, #b8960f);
+            border: 1px solid #f1ebd9; display: flex; align-items: center; justify-content: center;
+            font-size: 0.65rem; color: #030710; font-weight: bold;
         }
+        .vinyl-name { font-size: 1rem; color: #f1ebd9; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .vinyl-artist { font-size: 0.8rem; color: #a0aec0; margin-top: 2px; }
+        .play-badge { display: inline-block; margin-top: 10px; background: rgba(212, 175, 55, 0.12); color: #d4af37; padding: 3px 14px; border-radius: 12px; font-size: 0.75rem; border: 1px solid rgba(212, 175, 55, 0.2); }
 
-        /* نوار زمان آهنگ */
-        .progress-container {
-            width: 100%;
-            max-width: 400px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #cbd5e0;
-            font-size: 0.85rem;
-        }
+        .empty-state { text-align: center; padding: 40px 20px; color: #a0aec0; grid-column: 1 / -1; }
+        .empty-state .icon { font-size: 3rem; display: block; margin-bottom: 12px; }
 
-        .progress-bar {
-            flex-grow: 1;
-            -webkit-appearance: none;
-            appearance: none;
-            height: 6px;
-            border-radius: 3px;
-            background: rgba(255, 255, 255, 0.1);
-            outline: none;
-            cursor: pointer;
-        }
-
-        .progress-bar::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background: #d4af37;
-            cursor: pointer;
-            box-shadow: 0 0 10px #d4af37;
-        }
-
-        /* باکس متن کامل شعر آهنگ */
-        .lyrics-box {
-            width: 100%;
-            max-height: 300px;
-            overflow-y: auto;
-            border-top: 1px solid rgba(212, 175, 55, 0.2);
-            padding-top: 25px;
-            margin-top: 15px;
-            font-size: 1.25rem;
-            line-height: 2.2;
-            color: #f1ebd9;
-            white-space: pre-line;
-        }
-
-        /* دکمه بازگشت به صفحه اصلی */
-        .back-home-btn {
-            position: absolute;
-            top: 30px;
-            right: 30px;
-            z-index: 10;
+        @media (max-width: 580px) {
+            .library-container { margin-top: 140px; padding: 15px 12px; }
+            .vinyl-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; }
+            .vinyl-card .mini-vinyl { width: 85px; height: 85px; }
+            .subpage-brand h2 { font-size: 1.4rem; }
+            .subpage-brand span { display: none; }
         }
     </style>
 </head>
 <body>
+
     <div class="luxury-islamic-header">
         <div class="gold-wave-stripes">
             <svg viewBox="0 0 1440 200" preserveAspectRatio="none">
                 <path d="M0,120 C320,180 480,40 800,130 C1120,220 1280,70 1440,110 L1440,0 L0,0 Z" fill="rgba(214, 175, 55, 0.4)"></path>
+                <path d="M0,110 C300,170 500,50 820,120 C1140,190 1260,80 1440,95 L1440,0 L0,0 Z" fill="#d4af37"></path>
+            </svg>
+        </div>
+        <div class="navy-wave-body">
+            <svg viewBox="0 0 1440 200" preserveAspectRatio="none">
+                <path d="M0,100 C280,160 520,60 840,110 C1160,160 1240,90 1440,80 L1440,0 L0,0 Z" fill="#040914"></path>
             </svg>
         </div>
     </div>
 
-    <button class="btn btn-secondary back-home-btn" onclick="window.location.href='index.html'">↩ بازگشت به گنجینه</button>
+    <div class="shamseh-bg"></div>
 
-    <div class="music-container">
-        <div class="player-card">
-            <div class="track-cover-wrapper">
-                <img id="track-img" class="track-cover" src="Icons8/icons8-heart-50.png" alt="کاور اثر">
+    <div class="subpage-back-zone">
+        <button class="btn-mini" onclick="window.location.href='index.html'">↩ منوی اصلی</button>
+    </div>
+
+    <div class="subpage-brand">
+        <div class="subpage-shamseh"></div>
+        <h2>آوا و نوا</h2>
+        <span>| نغمه قلم</span>
+    </div>
+
+    <div class="library-container">
+        <div class="library-title">📀 گنجینه صفحه‌های موسیقی</div>
+        <div id="vinylGrid" class="vinyl-grid">
+            <div class="empty-state">
+                <span class="icon">⏳</span>
+                <p>در حال فراخوانی صفحه‌ها از سرور...</p>
             </div>
-            <div id="track-name" class="track-title">در حال بارگذاری...</div>
-            <div id="track-singer" class="track-artist">نام خواننده</div>
-
-            <div class="audio-controls">
-                <button class="control-btn" onclick="playPreviousSong()">⏮</button>
-                <button id="play-btn" class="control-btn play-main" onclick="toggleAudio()">▶</button>
-                <button class="control-btn" onclick="playNextSong()">⏭</button>
-            </div>
-
-            <div class="progress-container">
-                <span id="current-time">0:00</span>
-                <input type="range" id="progress" class="progress-bar" value="0" min="0" max="100">
-                <span id="duration-time">0:00</span>
-            </div>
-        </div>
-
-        <div id="lyrics-content" class="lyrics-box">
-            متن شعر صوتی در این بخش بارگذاری می‌شود...
         </div>
     </div>
 

@@ -814,3 +814,61 @@ button {
     border-color: #d4af37 !important;
     outline: none !important;
 }
+/* ابتدا حالت نمایش پیش‌فرض تولتیپ‌ها را مخفی می‌کنیم */
+.floating-btn-wrapper .ink-tooltip {
+    opacity: 0;
+    visibility: hidden;
+    position: absolute;
+    bottom: 70px; /* تنظیم ارتفاع بالا آمدن پیام */
+    white-space: nowrap;
+    transition: all 0.3s ease;
+    z-index: 1001;
+}
+
+/* 🌟 بخش اصلی: فقط وقتی موس روی رپیرِ موسیقی می‌رود، تولتیپ موسیقی باز شود */
+.music-wrapper:hover .music-tip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-5px);
+}
+
+/* 🌟 فقط وقتی موس روی رپیرِ پیشنهاد می‌رود، تولتیپ پیشنهاد باز شود */
+.suggestion-wrapper:hover .suggestion-tip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-5px);
+}
+
+/* تمیزکاری استایل دکمه گرامافون */
+.icon-button {
+    background: none !important;
+    border: none !important;
+    outline: none !important;
+    padding: 0 !important;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.icon-button:hover {
+    transform: scale(1.1) rotate(15deg);
+    filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.6));
+}
+/* ۱. با زور تمام، در حالت عادی همه تولتیپ‌ها را مخفی کن تا قانون قدیمی خنثی شود */
+.suggestion-container .ink-tooltip {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transition: all 0.3s ease !important;
+}
+
+/* ۲. حالا به صورت کاملاً تفکیک شده، فقط با هاور روی هر دکمه، تولتیپ خودش را باز کن */
+.music-wrapper:hover .music-tip {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(-5px) !important;
+}
+
+.suggestion-wrapper:hover .suggestion-tip {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(-5px) !important;
+}
