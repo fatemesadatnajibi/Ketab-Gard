@@ -215,10 +215,12 @@
 
     <div id="custom-alert" class="custom-alert"></div>
 
-    <div style="margin-top: 15px; margin-bottom: 20px; width: 100%; padding: 0 20px; box-sizing: border-box; display: flex; justify-content: flex-start; align-items: center; direction: rtl;">
+    <div
+        style="margin-top: 15px; margin-bottom: 20px; width: 100%; padding: 0 20px; box-sizing: border-box; display: flex; justify-content: flex-start; align-items: center; direction: rtl;">
         <div id="auth-user" style="display: none; align-items: center; margin-right: auto;">
             <span id="admin-username" style="color: #cbd5e0; margin-left: 10px; font-size: 1.05rem;"></span>
-            <button class="btn btn-secondary style-mini" onclick="logoutAdmin()" style="margin: 0 !important;">خروج</button>
+            <button class="btn btn-secondary style-mini" onclick="logoutAdmin()"
+                style="margin: 0 !important;">خروج</button>
         </div>
     </div>
 
@@ -233,7 +235,7 @@
 
         <div class="form-group">
             <label for="quoteText">متن شعر یا کتاب :</label>
-       <textarea id="quoteText" rows="4" placeholder="متن اثر را اینجا بنویسید..." dir="rtl"></textarea>
+            <textarea id="quoteText" rows="4" placeholder="متن اثر را اینجا بنویسید..." dir="rtl"></textarea>
         </div>
 
         <div class="form-group">
@@ -264,15 +266,18 @@
 
         <div class="form-group">
             <label for="quoteLink">لینک منبع:</label>
-            <input type="url" id="quoteLink" placeholder="https://ganjoor.net/..." style="text-align: left; direction: ltr;">
+            <input type="url" id="quoteLink" placeholder="https://ganjoor.net/..."
+                style="text-align: left; direction: ltr;">
         </div>
 
         <div class="audio-section">
             <h4 style="color: #d4af37; margin-top: 0; margin-bottom: 12px; font-size: 1.05rem;">تنظیمات فایل صوتی </h4>
-            
+
             <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
-                <label for="quoteHasAudio" style="margin-bottom: 0; cursor: pointer;">این اثر دارای فایل صوتی است؟</label>
-                <select id="quoteHasAudio" style="width: auto; padding: 6px 12px; margin-right: auto;" onchange="toggleAudioInputs()">
+                <label for="quoteHasAudio" style="margin-bottom: 0; cursor: pointer;">این اثر دارای فایل صوتی
+                    است؟</label>
+                <select id="quoteHasAudio" style="width: auto; padding: 6px 12px; margin-right: auto;"
+                    onchange="toggleAudioInputs()">
                     <option value="false">خیر</option>
                     <option value="true">بله</option>
                 </select>
@@ -291,12 +296,21 @@
 
                 <div class="form-group" style="margin-bottom: 0;">
                     <label for="quoteAudioUrl">لینک فایل صوتی :</label>
-                    <input type="url" id="quoteAudioUrl" placeholder="https://site.com/music.mp3" style="text-align: left; direction: ltr;">
+                    <input type="url" id="quoteAudioUrl" placeholder="https://site.com/music.mp3"
+                        style="text-align: left; direction: ltr;">
+                </div>
+
+
+                <div class="form-group">
+                    <label>متن کامل شعر : </label>
+                    <textarea id="quoteFullLyrics" rows="6"
+                        placeholder="متن کامل یا ابیات طولانی را در این بخش وارد کنید..."></textarea>
                 </div>
             </div>
         </div>
 
-        <button class="btn" onclick="sendQuote()" style="width: 100%; padding: 12px; font-size: 1.1rem; margin-top: 10px;">ذخیره در سرور ابری</button>
+        <button class="btn" onclick="sendQuote()"
+            style="width: 100%; padding: 12px; font-size: 1.1rem; margin-top: 10px;">ذخیره در پایگاه داده</button>
     </div>
 
     <div id="content-review" class="admin-form" style="display: none;">
@@ -310,7 +324,8 @@
         <h2 style="color: #d4af37; text-align: center; margin-top: 0; margin-bottom: 25px;">لیست کل آثار ثبت شده</h2>
 
         <div class="form-group" style="margin-bottom: 25px;">
-            <input type="text" id="searchQuotes" placeholder="جستجو در متن اثر یا نام شاعر..." oninput="filterQuotes()" style="width: 100%;">
+            <input type="text" id="searchQuotes" placeholder="جستجو در متن اثر یا نام شاعر..." oninput="filterQuotes()"
+                style="width: 100%;">
         </div>
 
         <div id="quotes-list">
@@ -323,9 +338,9 @@
         const SUPABASE_ANON_KEY = 'sb_publishable_Lih64HUZIiKkxniY28yOPA_NL7Hz7km';
         const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        let allQuotesCache = []; 
-        let editingQuoteId = null; 
-        let currentSuggestionCard = null; 
+        let allQuotesCache = [];
+        let editingQuoteId = null;
+        let currentSuggestionCard = null;
 
         function showMessage(msg) {
             const alertBox = document.getElementById('custom-alert');
@@ -403,34 +418,36 @@
             window.location.replace('index.html');
         }
 
+        // ۱. تابع ثبت شاهکار جدید
         async function sendQuote() {
             let text = document.getElementById('quoteText').value.trim();
             let source = document.getElementById('quoteSource').value.trim();
             let genre = document.getElementById('quoteGenre').value;
             let info = document.getElementById('quoteInfo').value.trim();
             let link = document.getElementById('quoteLink').value.trim();
-            
-            // متغیرهای بخش صوتی همراه با audio_name
+
             let has_audio = document.getElementById('quoteHasAudio').value === 'true';
             let audio_name = has_audio ? document.getElementById('quoteAudioName').value.trim() : '';
             let singer = has_audio ? document.getElementById('quoteSinger').value.trim() : '';
             let audio_url = has_audio ? document.getElementById('quoteAudioUrl').value.trim() : '';
+            let full_lyrics = has_audio ? document.getElementById('quoteFullLyrics').value.trim() : '';
 
             if (!text) { showMessage('لطفاً متن شعر یا اثر را وارد کنید.'); return; }
             if (!source) { showMessage('لطفاً نام شاعر یا نویسنده را وارد کنید.'); return; }
             if (!info) { showMessage('لطفاً بخش درباره اثر را وارد کنید.'); return; }
             if (!link) { showMessage('لطفاً لینک منبع اثر را وارد کنید.'); return; }
-            
+
             if (has_audio) {
                 if (!audio_name) { showMessage('لطفاً نام آهنگ یا دکلمه را وارد کنید.'); return; }
                 if (!singer) { showMessage('لطفاً نام خواننده یا دکلماتور را وارد کنید.'); return; }
                 if (!audio_url) { showMessage('لطفاً لینک مستقیم فایل صوتی را وارد کنید.'); return; }
+                if (!full_lyrics) { showMessage('لطفاً متن کامل شعر را برای صفحه پخش وارد کنید.'); return; }
             }
 
             try {
                 const { data, error } = await client
                     .from('quotes')
-                    .insert([{ text, source, genre, info, link, has_audio, audio_name, singer, audio_url }]);
+                    .insert([{ text, source, genre, info, link, has_audio, audio_name, singer, audio_url, full_lyrics }]);
 
                 if (error) throw error;
 
@@ -442,6 +459,48 @@
                 resetFormToInsertMode();
             } catch (err) {
                 showMessage('خطا در ثبت اطلاعات: ' + err.message);
+            }
+        }
+
+        // ۲. تابع اعمال تغییرات ویرایش شده در دیتابیس
+        async function updateQuote() {
+            let text = document.getElementById('quoteText').value.trim();
+            let source = document.getElementById('quoteSource').value.trim();
+            let genre = document.getElementById('quoteGenre').value;
+            let info = document.getElementById('quoteInfo').value.trim();
+            let link = document.getElementById('quoteLink').value.trim();
+
+            let has_audio = document.getElementById('quoteHasAudio').value === 'true';
+            let audio_name = has_audio ? document.getElementById('quoteAudioName').value.trim() : '';
+            let singer = has_audio ? document.getElementById('quoteSinger').value.trim() : '';
+            let audio_url = has_audio ? document.getElementById('quoteAudioUrl').value.trim() : '';
+            let full_lyrics = has_audio ? document.getElementById('quoteFullLyrics').value.trim() : '';
+
+            if (!text) { showMessage('لطفاً متن شعر یا اثر را وارد کنید.'); return; }
+            if (!source) { showMessage('لطفاً نام شاعر یا نویسنده را وارد کنید.'); return; }
+            if (!info) { showMessage('لطفاً بخش «درباره اثر» را وارد کنید.'); return; }
+            if (!link) { showMessage('لطفاً لینک منبع اثر را وارد کنید.'); return; }
+
+            if (has_audio) {
+                if (!audio_name) { showMessage('لطفاً نام آهنگ یا دکلمه را وارد کنید.'); return; }
+                if (!singer) { showMessage('لطفاً نام خواننده یا دکلماتور را وارد کنید.'); return; }
+                if (!audio_url) { showMessage('لطفاً لینک مستقیم فایل صوتی را وارد کنید.'); return; }
+                if (!full_lyrics) { showMessage('لطفاً متن کامل شعر را برای صفحه پخش وارد کنید.'); return; }
+            }
+
+            try {
+                const { error } = await client
+                    .from('quotes')
+                    .update({ text, source, genre, info, link, has_audio, audio_name, singer, audio_url, full_lyrics })
+                    .eq('id', editingQuoteId);
+
+                if (error) throw error;
+
+                showMessage('تغییرات اثر با موفقیت در دیتابیس ابری اعمال شد!');
+                resetFormToInsertMode();
+                switchTab('manage');
+            } catch (err) {
+                showMessage('خطا در بروزرسانی: ' + err.message);
             }
         }
 
@@ -490,14 +549,14 @@
 
         async function sendToInsertForm(id, text, source, genre) {
             currentSuggestionCard = { id, text, source, genre };
-            editingQuoteId = null; 
+            editingQuoteId = null;
 
             document.getElementById('quoteText').value = text;
             document.getElementById('quoteSource').value = source;
             document.getElementById('quoteGenre').value = genre || 'عاشقانه';
             document.getElementById('quoteInfo').value = '';
             document.getElementById('quoteLink').value = '';
-            
+
             document.getElementById('quoteHasAudio').value = "false";
             toggleAudioInputs();
 
@@ -528,7 +587,7 @@
 
             cancelBtn.onclick = function () {
                 resetFormToInsertMode();
-                switchTab('review'); 
+                switchTab('review');
                 showMessage('بررسی پیشنهاد کاربر لغو شد.');
             };
 
@@ -600,8 +659,8 @@
             overlay.appendChild(box);
             document.body.appendChild(overlay);
 
-            overlay.querySelector('.id-confirm').onclick = function () { overlay.remove(); if(typeof onConfirm === 'function') onConfirm(); };
-            overlay.querySelector('.id-cancel').onclick = function () { overlay.remove(); if(typeof onCancel === 'function') onCancel(); };
+            overlay.querySelector('.id-confirm').onclick = function () { overlay.remove(); if (typeof onConfirm === 'function') onConfirm(); };
+            overlay.querySelector('.id-cancel').onclick = function () { overlay.remove(); if (typeof onCancel === 'function') onCancel(); };
         }
 
         const confirmStyle = document.createElement('style');
@@ -620,10 +679,10 @@
 
                 if (error) throw error;
 
-                allQuotesCache = data; 
+                allQuotesCache = data;
                 renderQuotesList(allQuotesCache);
             } catch (err) {
-                document.getElementById('quotes-list').innerHTML = `<p style="color: #ff6b6b; text-align: center;">خطا در دریافت اشعار: ${err.message}</p>';`;
+                document.getElementById('quotes-list').innerHTML = `<p style="color: #ff6b6b; text-align: center;">خطا در دریافت اشعار: ${err.message}</p>`;
             }
         }
 
@@ -637,7 +696,7 @@
             container.innerHTML = '';
             quotesArray.forEach(quote => {
                 const card = document.createElement('div');
-                card.className = 'suggestion-card'; 
+                card.className = 'suggestion-card';
                 card.style.borderLeft = '4px solid #d4af37';
 
                 const escText = quote.text ? quote.text.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/`/g, '\\`').replace(/\$/g, '\\$') : '';
@@ -646,8 +705,8 @@
                 const escAudioName = quote.audio_name ? quote.audio_name.replace(/'/g, "\\'") : '';
                 const escSinger = quote.singer ? quote.singer.replace(/'/g, "\\'") : '';
                 const escAudioUrl = quote.audio_url ? quote.audio_url.replace(/'/g, "\\'") : '';
+                const escFullLyrics = quote.full_lyrics ? quote.full_lyrics.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/`/g, '\\`').replace(/\$/g, '\\$') : '';
 
-                // برچسب صوتی شامل اسم آهنگ و نام خواننده
                 const audioBadge = quote.has_audio ? `<span style="background: #0a2a1a; color: #4ecdc4; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-right: 10px;">🎵 ${quote.audio_name || 'آهنگ'} (${quote.singer})</span>` : '';
 
                 card.innerHTML = `
@@ -660,7 +719,7 @@
                         <span>دسته‌بندی: <em style="color: #cbd5e0;">${quote.genre}</em></span>
                     </div>
                     <div class="suggestion-actions" style="margin-top: 15px;">
-                        <button class="btn-transfer" onclick="editQuoteInForm('${quote.id}', \`${escText}\`, '${escSource}', '${quote.genre}', \`${escInfo}\`, '${quote.link}', ${quote.has_audio}, \`${escAudioName}\`, '${escSinger}', '${escAudioUrl}')"> ویرایش اثر</button>
+                        <button class="btn-transfer" onclick="editQuoteInForm('${quote.id}', \`${escText}\`, '${escSource}', '${quote.genre}', \`${escInfo}\`, '${quote.link}', ${quote.has_audio}, \`${escAudioName}\`, '${escSinger}', '${escAudioUrl}', \`${escFullLyrics}\`)"> ویرایش اثر</button>
                         <button class="btn-reject" onclick="deleteQuote('${quote.id}')"> حذف قطعی</button>
                     </div>
                 `;
@@ -693,7 +752,7 @@
 
                         if (error) throw error;
                         showMessage('اثر با موفقیت از دیتابیس حذف شد.');
-                        loadAllQuotes(); 
+                        loadAllQuotes();
                     } catch (err) {
                         showMessage('خطا در حذف: ' + err.message);
                     }
@@ -704,25 +763,38 @@
             );
         }
 
-        function editQuoteInForm(id, text, source, genre, info, link, has_audio, audio_name, singer, audio_url) {
+        // ۳. تابع کاملاً اصلاح شده برای باز کردن اطلاعات قدیمی در فرم ویرایش
+        function editQuoteInForm(id, text, source, genre, info, link, hasAudio, audioName, singer, audioUrl, fullLyrics) {
             editingQuoteId = id;
+            currentSuggestionCard = null;
 
             document.getElementById('quoteText').value = text;
             document.getElementById('quoteSource').value = source;
             document.getElementById('quoteGenre').value = genre;
             document.getElementById('quoteInfo').value = info;
             document.getElementById('quoteLink').value = link;
-            
-            // بارگذاری فیلد جدید صوتی
-            document.getElementById('quoteHasAudio').value = has_audio ? "true" : "false";
-            document.getElementById('quoteAudioName').value = audio_name || '';
-            document.getElementById('quoteSinger').value = singer || '';
-            document.getElementById('quoteAudioUrl').value = audio_url || '';
+
+            document.getElementById('quoteHasAudio').value = hasAudio ? "true" : "false";
             toggleAudioInputs();
+
+            if (hasAudio) {
+                document.getElementById('quoteAudioName').value = audioName || '';
+                document.getElementById('quoteSinger').value = singer || '';
+                document.getElementById('quoteAudioUrl').value = audioUrl || '';
+                document.getElementById('quoteFullLyrics').value = fullLyrics || '';
+            } else {
+                document.getElementById('quoteAudioName').value = '';
+                document.getElementById('quoteSinger').value = '';
+                document.getElementById('quoteAudioUrl').value = '';
+                document.getElementById('quoteFullLyrics').value = '';
+            }
+
+            const headerTitle = document.querySelector("#content-insert h2");
+            if (headerTitle) headerTitle.innerText = "ویرایش و بروزرسانی شاهکار ادبی";
 
             const submitBtn = document.querySelector("#content-insert .btn");
             if (submitBtn) {
-                submitBtn.innerText = "بروزرسانی اثر";
+                submitBtn.innerText = "اعمال تغییرات";
                 submitBtn.setAttribute("onclick", "updateQuote()");
                 submitBtn.style.width = "calc(50% - 6px)";
                 submitBtn.style.display = "inline-block";
@@ -747,7 +819,8 @@
 
             cancelBtn.onclick = function () {
                 resetFormToInsertMode();
-                showMessage('عملیات ویرایش لغو شد.');
+                switchTab('manage');
+                showMessage('ویرایش اثر لغو شد.');
             };
 
             const clearfix = document.createElement('div');
@@ -762,66 +835,29 @@
             showMessage('اطلاعات اثر برای ویرایش بارگذاری شد.');
         }
 
-        async function updateQuote() {
-            let text = document.getElementById('quoteText').value.trim();
-            let source = document.getElementById('quoteSource').value.trim();
-            let genre = document.getElementById('quoteGenre').value;
-            let info = document.getElementById('quoteInfo').value.trim();
-            let link = document.getElementById('quoteLink').value.trim();
-            
-            // دریافت مقدار فیلد جدید صوتی در دیتابیس
-            let has_audio = document.getElementById('quoteHasAudio').value === 'true';
-            let audio_name = has_audio ? document.getElementById('quoteAudioName').value.trim() : '';
-            let singer = has_audio ? document.getElementById('quoteSinger').value.trim() : '';
-            let audio_url = has_audio ? document.getElementById('quoteAudioUrl').value.trim() : '';
-
-            if (!text) { showMessage('لطفاً متن شعر یا اثر را وارد کنید.'); return; }
-            if (!source) { showMessage('لطفاً نام شاعر یا نویسنده را وارد کنید.'); return; }
-            if (!info) { showMessage('لطفاً بخش «درباره اثر» را وارد کنید.'); return; }
-            if (!link) { showMessage('لطفاً لینک منبع اثر را وارد کنید.'); return; }
-            
-            if (has_audio) {
-                if (!audio_name) { showMessage('لطفاً نام آهنگ یا دکلمه را وارد کنید.'); return; }
-                if (!singer) { showMessage('لطفاً نام خواننده یا دکلماتور را وارد کنید.'); return; }
-                if (!audio_url) { showMessage('لطفاً لینک مستقیم فایل صوتی را وارد کنید.'); return; }
-            }
-
-            try {
-                const { error } = await client
-                    .from('quotes')
-                    .update({ text, source, genre, info, link, has_audio, audio_name, singer, audio_url })
-                    .eq('id', editingQuoteId);
-
-                if (error) throw error;
-
-                showMessage('تغییرات اثر با موفقیت در دیتابیس ابری اعمال شد!');
-                resetFormToInsertMode();
-                switchTab('manage');
-            } catch (err) {
-                showMessage('خطا در بروزرسانی: ' + err.message);
-            }
-        }
-
         function resetFormToInsertMode() {
             editingQuoteId = null;
-            currentSuggestionCard = null; 
+            currentSuggestionCard = null;
 
             document.getElementById('quoteText').value = '';
             document.getElementById('quoteSource').value = '';
+            document.getElementById('quoteGenre').value = 'عاشقانه';
             document.getElementById('quoteInfo').value = '';
             document.getElementById('quoteLink').value = '';
-            
-            // ریست دقیق فیلدها شامل audio_name
-            document.getElementById('quoteHasAudio').value = "false";
+
+            document.getElementById('quoteHasAudio').value = 'false';
             document.getElementById('quoteAudioName').value = '';
             document.getElementById('quoteSinger').value = '';
             document.getElementById('quoteAudioUrl').value = '';
+            document.getElementById('quoteFullLyrics').value = '';
             toggleAudioInputs();
+
+            const headerTitle = document.querySelector("#content-insert h2");
+            if (headerTitle) headerTitle.innerText = "افزودن شاهکار ادبی جدید";
 
             const submitBtn = document.querySelector("#content-insert .btn");
             if (submitBtn) {
                 submitBtn.innerText = "ذخیره در سرور ابری";
-                submitBtn.style.background = "";
                 submitBtn.setAttribute("onclick", "sendQuote()");
                 submitBtn.style.width = "100%";
                 submitBtn.style.display = "block";
@@ -835,4 +871,5 @@
         }
     </script>
 </body>
+
 </html>

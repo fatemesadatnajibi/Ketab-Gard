@@ -30,16 +30,18 @@ async function loadLibrary() {
         let html = '';
 
         data.forEach((song, index) => {
-            const labelChar = song.source ? song.source.substring(0, 1) : '🎧';
+            // استفاده از حرف اول نام آهنگ یا منبع برای لیبل وسط گرامافون
+            const labelChar = song.audio_name ? song.audio_name.substring(0, 1) : (song.source ? song.source.substring(0, 1) : '🎧');
+            
             html += `
-                <div class="vinyl-card" onclick="playSong(${index})">
+                <div class="vinyl-card" onclick=\"playSong(${index})\">
                     <div class="mini-vinyl">
                         <div class="mini-label">
                             <span>${labelChar}</span>
                         </div>
                     </div>
-                    <div class="vinyl-name">${song.source || 'اثر صوتی'}</div>
-                    <div class="vinyl-artist">${song.singer || 'خواننده نامشخص'}</div>
+                    <div class="vinyl-name">${song.audio_name || 'آوای بی‌نام'}</div>
+                    <div class="vinyl-artist">${song.singer || 'خواننده نامشخص'} | ${song.source || 'منبع'}</div>
                     <span class="play-badge">▶ شنیدن آوا</span>
                 </div>
             `;

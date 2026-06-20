@@ -36,31 +36,38 @@ function initPlayer() {
 
 function renderSong() {
     if (allSongs.length === 0) return;
+
     const song = allSongs[currentIndex];
 
-    audio.pause();
-    isPlaying = false;
-    if(playBtn) playBtn.innerHTML = `
-<svg viewBox="0 0 24 24">
-    <path d="M8 5L19 12L8 19V5Z"/>
-</svg>
-`;
-    if(vinylDisc) vinylDisc.classList.remove('spinning');
-    if(toneArm) toneArm.classList.remove('active');
-
-    if(trackName) trackName.innerText = song.source || 'اثر صوتی';
-    if(trackSinger) trackSinger.innerText = song.singer || 'خواننده نامشخص';
-    if(labelTitle) labelTitle.innerText = song.source || 'نغمه قلم';
-    if(labelArtist) labelArtist.innerText = song.singer || 'آوا';
-    if(lyricsContent) lyricsContent.innerHTML = (song.text || 'متنی برای این اثر صوتی ثبت نشده است.').replace(/\n/g, '<br>');
-
+    // قرار دادن لینک مستقیم فایل صوتی در المان audio
     if (song.audio_url) {
         audio.src = song.audio_url;
+    } else {
+        audio.src = '';
     }
 
-    if(progressBar) progressBar.value = 0;
-    if(currentTimeEl) currentTimeEl.innerText = '0:00';
-    if(durationTimeEl) durationTimeEl.innerText = '0:00';
+    // ۱. نمایش نام آهنگ و خواننده در بخش متون اصلی پلیر
+    if (trackName) trackName.innerText = song.audio_name || 'آوای بی‌نام';
+    if (trackSinger) trackSinger.innerText = `${song.singer || 'خواننده نامشخص'} (اثر ${song.source || 'نامشخص'})`;
+
+    // 🌟 نمایش متن کامل شعر از ستون اختصاصی جدید 🌟
+    if (lyricsContent) {
+        if (song.full_lyrics) {
+            // تبدیل اینترها به تگ br برای نمایش بیت‌به‌بیت
+            lyricsContent.innerHTML = song.full_lyrics.replace(/\n/g, '<br>');
+        } else {
+            lyricsContent.innerText = 'متن مکتوبی برای این اثر ثبت نشده است.';
+        }
+    }
+
+    // ۳. بروزرسانی برچسب‌های متنی وسط صفحه گرامافون (برچسب‌های طلایی دیسک)
+    if (labelTitle) labelTitle.innerText = song.audio_name || 'شاهکار ادبی';
+    if (labelArtist) labelArtist.innerText = song.singer || song.source || 'نغمه قلم';
+
+    // ریست کردن نوار پیشرفت زمان
+    if (progressBar) progressBar.value = 0;
+    if (currentTimeEl) currentTimeEl.innerText = '0:00';
+    if (durationTimeEl) durationTimeEl.innerText = '0:00';
 }
 
 function toggleAudio() {
@@ -136,3 +143,41 @@ function exitPlayer() {
 }
 
 window.onload = initPlayer;
+
+// تابع دانلود آوای در حال پخش
+async function downloadCurrentSong() {
+    if (allSongs.length === 0) return;
+    const song = allSongs[currentIndex];
+    
+    if (!song.audio_url) {
+        alert('فایل صوتی برای این اثر وجود ندارد یا بارگذاری نشده است.');
+        return;
+    }
+
+    try {
+        const fileName = `${song.audio_name || 'آوای نغمه قلم'} - ${song.singer || 'هنرمند'}.mp3`;
+        const response = await fetch(song.audio_url);
+        if (!response.ok) throw new Error('خطا در دریافت فایل');
+        
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        
+        const tempLink = document.createElement('a');
+        tempLink.href = blobUrl;
+        tempLink.download = fileName;
+        
+        document.body.appendChild(tempLink);
+        tempLink.click();
+        
+        document.body.removeChild(tempLink);
+        URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+        console.error('خطا در دانلود:', error);
+        // راهکار پشتیبان در صورت محدودیت مرورگر
+        const fallbackLink = document.createElement('a');
+        fallbackLink.href = song.audio_url;
+        fallbackLink.target = '_blank';
+        fallbackLink.download = `${song.audio_name || 'audio'}.mp3`;
+        fallbackLink.click();
+    }
+}
