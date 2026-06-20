@@ -113,6 +113,15 @@
             box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
         }
 
+        .audio-section {
+            background: rgba(212, 175, 55, 0.03);
+            border: 1px dashed rgba(212, 175, 55, 0.3);
+            padding: 18px;
+            border-radius: 12px;
+            margin-top: 15px;
+            margin-bottom: 20px;
+        }
+
         .suggestion-card {
             background: #030710;
             border: 1px solid rgba(212, 175, 55, 0.2);
@@ -158,17 +167,17 @@
             opacity: 1;
         }
 
-        .btn-approve {
-            background: #0a2a1a;
-            color: #4ecdc4;
-            border: 1px solid #4ecdc4;
+        .btn-transfer {
+            background: #102a45;
+            color: #d4af37;
+            border: 1px solid #d4af37;
             padding: 6px 14px;
             border-radius: 8px;
             cursor: pointer;
         }
 
-        .btn-approve:hover {
-            background: #4ecdc4;
+        .btn-transfer:hover {
+            background: #d4af37;
             color: #030710;
         }
 
@@ -183,20 +192,6 @@
 
         .btn-reject:hover {
             background: #ff6b6b;
-            color: #030710;
-        }
-
-        .btn-transfer {
-            background: #102a45;
-            color: #d4af37;
-            border: 1px solid #d4af37;
-            padding: 6px 14px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .btn-transfer:hover {
-            background: #d4af37;
             color: #030710;
         }
 
@@ -220,12 +215,10 @@
 
     <div id="custom-alert" class="custom-alert"></div>
 
-    <div
-        style="margin-top: 15px; margin-bottom: 20px; width: 100%; padding: 0 20px; box-sizing: border-box; display: flex; justify-content: flex-start; align-items: center; direction: rtl;">
+    <div style="margin-top: 15px; margin-bottom: 20px; width: 100%; padding: 0 20px; box-sizing: border-box; display: flex; justify-content: flex-start; align-items: center; direction: rtl;">
         <div id="auth-user" style="display: none; align-items: center; margin-right: auto;">
             <span id="admin-username" style="color: #cbd5e0; margin-left: 10px; font-size: 1.05rem;"></span>
-            <button class="btn btn-secondary style-mini" onclick="logoutAdmin()"
-                style="margin: 0 !important;">خروج</button>
+            <button class="btn btn-secondary style-mini" onclick="logoutAdmin()" style="margin: 0 !important;">خروج</button>
         </div>
     </div>
 
@@ -239,7 +232,7 @@
         <h2 style="color: #d4af37; text-align: center; margin-top: 0; margin-bottom: 25px;">افزودن شاهکار ادبی جدید</h2>
 
         <div class="form-group">
-            <label for="quoteText">متن شعر یا کتاب (برای رفتن به خط بعد از Enter استفاده کنید):</label>
+            <label for="quoteText">متن شعر یا کتاب :</label>
             <textarea id="quoteText" rows="4" placeholder="متن اثر را اینجا بنویسید..."></textarea>
         </div>
 
@@ -259,6 +252,7 @@
                 <option value="طنز">طنز و انتقادی</option>
                 <option value="مذهبی">مذهبی</option>
                 <option value="ادبیات جهان">ادبیات جهان</option>
+                <option value="حماسی">حماسی</option>
             </select>
         </div>
 
@@ -269,12 +263,39 @@
 
         <div class="form-group">
             <label for="quoteLink">لینک منبع:</label>
-            <input type="url" id="quoteLink" placeholder="https://ganjoor.net/..."
-                style="text-align: left; direction: ltr;">
+            <input type="url" id="quoteLink" placeholder="https://ganjoor.net/..." style="text-align: left; direction: ltr;">
         </div>
 
-        <button class="btn" onclick="sendQuote()"
-            style="width: 100%; padding: 12px; font-size: 1.1rem; margin-top: 10px;">ذخیره در سرور ابری</button>
+        <div class="audio-section">
+            <h4 style="color: #d4af37; margin-top: 0; margin-bottom: 12px; font-size: 1.05rem;">تنظیمات فایل صوتی </h4>
+            
+            <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                <label for="quoteHasAudio" style="margin-bottom: 0; cursor: pointer;">این اثر دارای فایل صوتی است؟</label>
+                <select id="quoteHasAudio" style="width: auto; padding: 6px 12px; margin-right: auto;" onchange="toggleAudioInputs()">
+                    <option value="false">خیر</option>
+                    <option value="true">بله</option>
+                </select>
+            </div>
+
+            <div id="audio-fields" style="display: none;">
+                <div class="form-group">
+                    <label for="quoteAudioName">نام اهنگ :</label>
+                    <input type="text" id="quoteAudioName" placeholder="مثال: تصنیف مرغ سحر یا دکلمه هوشنگ ابتهاج">
+                </div>
+
+                <div class="form-group">
+                    <label for="quoteSinger">نام خواننده :</label>
+                    <input type="text" id="quoteSinger" placeholder="مثال: استاد محمدرضا شجریان">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="quoteAudioUrl">لینک فایل صوتی :</label>
+                    <input type="url" id="quoteAudioUrl" placeholder="https://site.com/music.mp3" style="text-align: left; direction: ltr;">
+                </div>
+            </div>
+        </div>
+
+        <button class="btn" onclick="sendQuote()" style="width: 100%; padding: 12px; font-size: 1.1rem; margin-top: 10px;">ذخیره در سرور ابری</button>
     </div>
 
     <div id="content-review" class="admin-form" style="display: none;">
@@ -288,8 +309,7 @@
         <h2 style="color: #d4af37; text-align: center; margin-top: 0; margin-bottom: 25px;">لیست کل آثار ثبت شده</h2>
 
         <div class="form-group" style="margin-bottom: 25px;">
-            <input type="text" id="searchQuotes" placeholder="جستجو در متن اثر یا نام شاعر..." oninput="filterQuotes()"
-                style="width: 100%;">
+            <input type="text" id="searchQuotes" placeholder="جستجو در متن اثر یا نام شاعر..." oninput="filterQuotes()" style="width: 100%;">
         </div>
 
         <div id="quotes-list">
@@ -302,6 +322,10 @@
         const SUPABASE_ANON_KEY = 'sb_publishable_Lih64HUZIiKkxniY28yOPA_NL7Hz7km';
         const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        let allQuotesCache = []; 
+        let editingQuoteId = null; 
+        let currentSuggestionCard = null; 
+
         function showMessage(msg) {
             const alertBox = document.getElementById('custom-alert');
             alertBox.innerText = msg;
@@ -309,6 +333,11 @@
             setTimeout(() => {
                 alertBox.classList.remove('show');
             }, 3500);
+        }
+
+        function toggleAudioInputs() {
+            const hasAudio = document.getElementById('quoteHasAudio').value === 'true';
+            document.getElementById('audio-fields').style.display = hasAudio ? 'block' : 'none';
         }
 
         async function checkAdminAccess() {
@@ -346,17 +375,14 @@
         window.onload = checkAdminAccess;
 
         function switchTab(tabName) {
-            // غیرفعال کردن همه تب‌ها
             document.getElementById('tab-insert').classList.remove('active-tab');
             document.getElementById('tab-review').classList.remove('active-tab');
-            document.getElementById('tab-manage').classList.remove('active-tab'); // جدید
+            document.getElementById('tab-manage').classList.remove('active-tab');
 
-            // مخفی کردن همه محتواها
             document.getElementById('content-insert').style.display = 'none';
             document.getElementById('content-review').style.display = 'none';
-            document.getElementById('content-manage').style.display = 'none'; // جدید
+            document.getElementById('content-manage').style.display = 'none';
 
-            // فعال‌سازی تب انتخاب شده
             if (tabName === 'insert') {
                 document.getElementById('tab-insert').classList.add('active-tab');
                 document.getElementById('content-insert').style.display = 'block';
@@ -367,7 +393,7 @@
             } else if (tabName === 'manage') {
                 document.getElementById('tab-manage').classList.add('active-tab');
                 document.getElementById('content-manage').style.display = 'block';
-                loadAllQuotes(); // فراخوانی تابع لود اشعار
+                loadAllQuotes();
             }
         }
 
@@ -382,27 +408,37 @@
             let genre = document.getElementById('quoteGenre').value;
             let info = document.getElementById('quoteInfo').value.trim();
             let link = document.getElementById('quoteLink').value.trim();
+            
+            // متغیرهای بخش صوتی همراه با audio_name
+            let has_audio = document.getElementById('quoteHasAudio').value === 'true';
+            let audio_name = has_audio ? document.getElementById('quoteAudioName').value.trim() : '';
+            let singer = has_audio ? document.getElementById('quoteSinger').value.trim() : '';
+            let audio_url = has_audio ? document.getElementById('quoteAudioUrl').value.trim() : '';
 
-            // 🔴 بررسی اجباری بودن تمام فیلدها بدون استثنا
             if (!text) { showMessage('لطفاً متن شعر یا اثر را وارد کنید.'); return; }
             if (!source) { showMessage('لطفاً نام شاعر یا نویسنده را وارد کنید.'); return; }
             if (!info) { showMessage('لطفاً بخش درباره اثر را وارد کنید.'); return; }
             if (!link) { showMessage('لطفاً لینک منبع اثر را وارد کنید.'); return; }
+            
+            if (has_audio) {
+                if (!audio_name) { showMessage('لطفاً نام آهنگ یا دکلمه را وارد کنید.'); return; }
+                if (!singer) { showMessage('لطفاً نام خواننده یا دکلماتور را وارد کنید.'); return; }
+                if (!audio_url) { showMessage('لطفاً لینک مستقیم فایل صوتی را وارد کنید.'); return; }
+            }
 
             try {
                 const { data, error } = await client
                     .from('quotes')
-                    .insert([{ text, source, genre, info, link }]);
+                    .insert([{ text, source, genre, info, link, has_audio, audio_name, singer, audio_url }]);
 
                 if (error) throw error;
 
-                // 🌟 بخش جدید: اگر این ثبت مربوط به یک پیشنهاد کاربر بوده، آن را تایید و خوانده شده کن
                 if (currentSuggestionCard && currentSuggestionCard.id) {
                     await client.from('admin_notifications').update({ is_read: true }).eq('id', currentSuggestionCard.id);
                 }
 
                 showMessage('با موفقیت در سرور ابری ثبت شد!');
-                resetFormToInsertMode(); // ریست کردن فرم پس از ثبت موفقیت‌آمیز
+                resetFormToInsertMode();
             } catch (err) {
                 showMessage('خطا در ثبت اطلاعات: ' + err.message);
             }
@@ -425,7 +461,6 @@
                 }
 
                 container.innerHTML = '';
-                // بخشی از تابع loadSuggestions در فایل admin.html که کارت‌ها را رندر می‌کند
                 data.forEach(sugg => {
                     const card = document.createElement('div');
                     card.className = 'suggestion-card';
@@ -435,15 +470,15 @@
                     const cleanGenre = (sugg.genre || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"');
 
                     card.innerHTML = `
-        <p style="color: #f1ebd9; font-size: 1.1rem; line-height: 1.6; white-space: pre-line;">${sugg.text || ''}</p>
-        <div style="color: #cbd5e0; font-size: 0.95rem; margin-top: 8px;">
-            کاربر : <strong style="color: #4ecdc4; margin-left: 10px; font-size: 0.95rem;">${sugg.sender_username || 'ثبت نشده'}</strong> | نویسنده : <strong style="color: #d4af37;">${sugg.source || 'نامشخص'}</strong>
-        </div>
-        <div class="suggestion-actions">
-            <button class="btn-transfer" onclick="sendToInsertForm('${sugg.id}', '${cleanText}', '${cleanSource}', '${cleanGenre}')">ویرایش</button>
-            <button class="btn-delete-suggestion" onclick="deleteNotification('${sugg.id}')">حذف</button>
-        </div>
-    `;
+                        <p style="color: #f1ebd9; font-size: 1.1rem; line-height: 1.6; white-space: pre-line;">${sugg.text || ''}</p>
+                        <div style="color: #cbd5e0; font-size: 0.95rem; margin-top: 8px;">
+                            نویسنده پیشنهادی کاربر : <strong style="color: #d4af37;">${sugg.source || 'نامشخص'}</strong> | دسته‌بندی: <span style="color: #4ecdc4;">${sugg.genre || 'نامشخص'}</span>
+                        </div>
+                        <div class="suggestion-actions">
+                            <button class="btn-transfer" onclick="sendToInsertForm('${sugg.id}', '${cleanText}', '${cleanSource}', '${cleanGenre}')">بررسی و ویرایش</button>
+                            <button class="btn-delete-suggestion" onclick="deleteNotification('${sugg.id}')">حذف</button>
+                        </div>
+                    `;
                     container.appendChild(card);
                 });
             } catch (err) {
@@ -453,70 +488,53 @@
         }
 
         async function sendToInsertForm(id, text, source, genre) {
-            // ذخیره وضعیت پیشنهاد جاری برای ردیابی در زمان انصراف
             currentSuggestionCard = { id, text, source, genre };
-            editingQuoteId = null; // چون ویرایش اثر نیست، این را null می‌کنیم
+            editingQuoteId = null; 
 
             document.getElementById('quoteText').value = text;
             document.getElementById('quoteSource').value = source;
-            document.getElementById('quoteGenre').value = genre;
+            document.getElementById('quoteGenre').value = genre || 'عاشقانه';
             document.getElementById('quoteInfo').value = '';
             document.getElementById('quoteLink').value = '';
+            
+            document.getElementById('quoteHasAudio').value = "false";
+            toggleAudioInputs();
 
-            // پیدا کردن دکمه اصلی و تغییر ظاهر آن برای تایید پیشنهاد
             const submitBtn = document.querySelector("#content-insert .btn");
             if (submitBtn) {
                 submitBtn.innerText = "تایید و ذخیره پیشنهاد";
-                submitBtn.style.background = "##d4af37";
                 submitBtn.setAttribute("onclick", "sendQuote()");
-
-                // تنظیم اندازه دکمه اصلی به ۵۰٪
                 submitBtn.style.width = "calc(50% - 6px)";
                 submitBtn.style.display = "inline-block";
                 submitBtn.style.float = "right";
                 submitBtn.style.boxSizing = "border-box";
             }
 
-            // حذف دکمه انصراف و المان‌های ترازکننده قبلی در صورت وجود
             const oldCancelBtn = document.getElementById('inlineCancelBtn');
             if (oldCancelBtn) oldCancelBtn.remove();
             const oldClearfix = document.getElementById('btnClearfix');
             if (oldClearfix) oldClearfix.remove();
 
-            // ساخت دکمه انصراف بیضی شکل مخصوص بازگشت به لیست پیشنهادها
             const cancelBtn = document.createElement('button');
             cancelBtn.id = 'inlineCancelBtn';
             cancelBtn.innerText = 'انصراف و بازگشت';
             cancelBtn.style.cssText = `
-                width: calc(50% - 6px);
-                display: inline-block;
-                float: left;
-                padding: 12px;
-                font-size: 1.1rem;
-                margin-top: 10px;
-                background: #bd3a3a;
-                color: white;
-                border: none;
-                border-radius: 50px; /* 👈 بیضی شکل طبق خواسته شما */
-                cursor: pointer;
-                font-family: inherit;
-                font-weight: bold;
-                box-sizing: border-box;
+                width: calc(50% - 6px); display: inline-block; float: left; padding: 12px;
+                font-size: 1.1rem; margin-top: 10px; background: #bd3a3a; color: white;
+                border: none; border-radius: 50px; cursor: pointer; font-family: inherit;
+                font-weight: bold; box-sizing: border-box;
             `;
 
-            // رفتار دکمه انصراف: بازگشت به تب پیشنهادها بدون حذف آن
             cancelBtn.onclick = function () {
                 resetFormToInsertMode();
-                switchTab('review'); // 👈 برگشت به تب بررسی پیشنهادها
+                switchTab('review'); 
                 showMessage('بررسی پیشنهاد کاربر لغو شد.');
             };
 
-            // ساخت المان کمکی ترازکننده
             const clearfix = document.createElement('div');
             clearfix.id = 'btnClearfix';
             clearfix.style.cssText = "clear: both; display: block; height: 1px;";
 
-            // تزریق دکمه انصراف و المان کمکی به فرم
             submitBtn.parentNode.insertBefore(cancelBtn, submitBtn.nextSibling);
             submitBtn.parentNode.insertBefore(clearfix, cancelBtn.nextSibling);
 
@@ -525,13 +543,10 @@
             showMessage('متن پیشنهادی به فرم انتقال یافت.');
         }
 
-        // ===== حذف پیشنهاد با تایید سفارشی =====
         async function deleteNotification(id) {
-            // نمایش پیام تایید سفارشی به جای confirm
             showConfirmMessage(
                 'آیا از حذف این پیشنهاد مطمئن هستید؟',
                 async function () {
-                    // اجرا در صورت تایید
                     try {
                         const { error } = await client
                             .from('admin_notifications')
@@ -539,7 +554,6 @@
                             .eq('id', id);
 
                         if (error) throw error;
-
                         showMessage('پیشنهاد با موفقیت حذف شد.');
                         loadSuggestions();
                     } catch (err) {
@@ -547,99 +561,52 @@
                     }
                 },
                 function () {
-                    // اجرا در صورت انصراف
                     showMessage('عملیات حذف لغو شد.');
                 }
             );
         }
-        // ===== نمایش پیام تایید سفارشی (جایگزین confirm) =====
+
         function showConfirmMessage(message, onConfirm, onCancel) {
-            // حذف تایید قبلی اگر وجود داشته باشد
-            const oldConfirm = document.querySelector('.custom-confirm');
+            const oldConfirm = document.querySelector('.custom-confirm-overlay');
             if (oldConfirm) oldConfirm.remove();
 
             const overlay = document.createElement('div');
             overlay.className = 'custom-confirm-overlay';
             overlay.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.7);
-        z-index: 99999;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        backdrop-filter: blur(4px);
-    `;
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0, 0, 0, 0.7); z-index: 99999;
+                display: flex; justify-content: center; align-items: center; backdrop-filter: blur(4px);
+            `;
 
             const box = document.createElement('div');
             box.className = 'custom-confirm';
             box.style.cssText = `
-        background: linear-gradient(135deg, #070f1e, #0a1628);
-        border: 2px solid #d4af37;
-        border-radius: 20px;
-        padding: 30px 35px;
-        max-width: 400px;
-        width: 90%;
-        text-align: center;
-        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.9);
-        animation: confirmSlideIn 0.4s ease forwards;
-        direction: rtl;
-    `;
+                background: linear-gradient(135deg, #070f1e, #0a1628);
+                border: 2px solid #d4af37; border-radius: 20px; padding: 30px 35px;
+                max-width: 400px; width: 90%; text-align: center;
+                box-shadow: 0 30px 70px rgba(0, 0, 0, 0.9); animation: confirmSlideIn 0.4s ease forwards; direction: rtl;
+            `;
 
             box.innerHTML = `
-<div style="color: #ff4757; font-size: 2.5rem; margin-bottom: 8px; line-height: 1; text-shadow: 0 0 30px rgba(255, 71, 87, 0.4);">
-    ⚠
-</div>
-        <p style="color: #f1ebd9; font-size: 1.1rem; margin-bottom: 25px; font-family: 'B Nazanin', 'Tanha', sans-serif; line-height: 1.6;">
-            ${message}
-        </p>
-        <div style="display: flex; gap: 12px; justify-content: center;">
-            <button class="btn" onclick="this.closest('.custom-confirm-overlay').remove(); if(typeof onConfirm === 'function') onConfirm();" 
-                    style="flex: 1; padding: 10px 20px; font-size: 1.05rem;">
-                بله، مطمئنم
-            </button>
-            <button class="btn btn-secondary" onclick="this.closest('.custom-confirm-overlay').remove(); if(typeof onCancel === 'function') onCancel();" 
-                    style="flex: 1; padding: 10px 20px; font-size: 1.05rem;">
-                انصراف
-            </button>
-        </div>
-    `;
+                <div style="color: #ff4757; font-size: 2.5rem; margin-bottom: 8px; line-height: 1;">⚠</div>
+                <p style="color: #f1ebd9; font-size: 1.1rem; margin-bottom: 25px; font-family: 'B Nazanin', 'Tanha', sans-serif; line-height: 1.6;">${message}</p>
+                <div style="display: flex; gap: 12px; justify-content: center;">
+                    <button class="btn id-confirm" style="flex: 1; padding: 10px 20px; font-size: 1.05rem;">بله، مطمئنم</button>
+                    <button class="btn btn-secondary id-cancel" style="flex: 1; padding: 10px 20px; font-size: 1.05rem;">انصراف</button>
+                </div>
+            `;
 
             overlay.appendChild(box);
             document.body.appendChild(overlay);
 
-            // ذخیره توابع در خود المان برای استفاده در دکمه‌ها
-            overlay._onConfirm = onConfirm || function () { };
-            overlay._onCancel = onCancel || function () { };
-
-            // بازنویسی دکمه‌ها برای استفاده از توابع ذخیره شده
-            const buttons = overlay.querySelectorAll('.btn');
-            buttons[0].onclick = function () {
-                overlay.remove();
-                if (overlay._onConfirm) overlay._onConfirm();
-            };
-            buttons[1].onclick = function () {
-                overlay.remove();
-                if (overlay._onCancel) overlay._onCancel();
-            };
+            overlay.querySelector('.id-confirm').onclick = function () { overlay.remove(); if(typeof onConfirm === 'function') onConfirm(); };
+            overlay.querySelector('.id-cancel').onclick = function () { overlay.remove(); if(typeof onCancel === 'function') onCancel(); };
         }
 
-        // اضافه کردن انیمیشن به استایل
         const confirmStyle = document.createElement('style');
-        confirmStyle.textContent = `
-    @keyframes confirmSlideIn {
-        0% { opacity: 0; transform: scale(0.9) translateY(-20px); }
-        100% { opacity: 1; transform: scale(1) translateY(0); }
-    }
-`;
+        confirmStyle.textContent = `@keyframes confirmSlideIn { 0% { opacity: 0; transform: scale(0.9) translateY(-20px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }`;
         document.head.appendChild(confirmStyle);
 
-        let allQuotesCache = []; // ذخیره اشعار برای فیلتر و جستجوی سریع
-
-        // ۱. دریافت تمام اشعار از جدول quotes در سوپابیس
         async function loadAllQuotes() {
             try {
                 const container = document.getElementById('quotes-list');
@@ -652,15 +619,13 @@
 
                 if (error) throw error;
 
-                allQuotesCache = data; // ذخیره در کش
+                allQuotesCache = data; 
                 renderQuotesList(allQuotesCache);
-
             } catch (err) {
-                document.getElementById('quotes-list').innerHTML = `<p style="color: #ff6b6b; text-align: center;">خطا در دریافت اشعار: ${err.message}</p>`;
+                document.getElementById('quotes-list').innerHTML = `<p style="color: #ff6b6b; text-align: center;">خطا در دریافت اشعار: ${err.message}</p>';`;
             }
         }
 
-        // ۲. رندر کردن و نمایش لیست اشعار در قالب کارت‌های مدیریت
         function renderQuotesList(quotesArray) {
             const container = document.getElementById('quotes-list');
             if (!quotesArray || quotesArray.length === 0) {
@@ -671,25 +636,37 @@
             container.innerHTML = '';
             quotesArray.forEach(quote => {
                 const card = document.createElement('div');
-                card.className = 'suggestion-card'; // استفاده از استایل‌های زیبای موجود خودت
+                card.className = 'suggestion-card'; 
                 card.style.borderLeft = '4px solid #d4af37';
 
+                const escText = quote.text ? quote.text.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/`/g, '\\`').replace(/\$/g, '\\$') : '';
+                const escInfo = quote.info ? quote.info.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/`/g, '\\`').replace(/\$/g, '\\$') : '';
+                const escSource = quote.source ? quote.source.replace(/'/g, "\\'") : '';
+                const escAudioName = quote.audio_name ? quote.audio_name.replace(/'/g, "\\'") : '';
+                const escSinger = quote.singer ? quote.singer.replace(/'/g, "\\'") : '';
+                const escAudioUrl = quote.audio_url ? quote.audio_url.replace(/'/g, "\\'") : '';
+
+                // برچسب صوتی شامل اسم آهنگ و نام خواننده
+                const audioBadge = quote.has_audio ? `<span style="background: #0a2a1a; color: #4ecdc4; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin-right: 10px;">🎵 ${quote.audio_name || 'آهنگ'} (${quote.singer})</span>` : '';
+
                 card.innerHTML = `
-            <p style="color: #f1ebd9; font-size: 1.1rem; line-height: 1.6; white-space: pre-line;">${quote.text}</p>
-            <div style="color: #cbd5e0; font-size: 0.95rem; margin-top: 8px; display: flex; justify-content: space-between; direction: rtl;">
-                <span>شاعر/نویسنده: <strong style="color: #d4af37;">${quote.source}</strong></span>
-                <span>دسته‌بندی: <em style="color: #cbd5e0;">${quote.genre}</em></span>
-            </div>
-            <div class="suggestion-actions" style="margin-top: 15px;">
-                <button class="btn-transfer" onclick="editQuoteInForm('${quote.id}', \`${quote.text.replace(/\n/g, '\\n')}\`, '${quote.source}', '${quote.genre}', \`${quote.info ? quote.info.replace(/\n/g, '\\n') : ''}\`, '${quote.link}')"> ویرایش اثر</button>
-                <button class="btn-reject" onclick="deleteQuote('${quote.id}')"> حذف قطعی</button>
-            </div>
-        `;
+                    <p style="color: #f1ebd9; font-size: 1.1rem; line-height: 1.6; white-space: pre-line;">${quote.text}</p>
+                    <div style="color: #cbd5e0; font-size: 0.95rem; margin-top: 8px; display: flex; justify-content: space-between; direction: rtl; align-items: center;">
+                        <div>
+                            <span>شاعر / نویسنده : <strong style="color: #d4af37;">${quote.source}</strong></span>
+                            ${audioBadge}
+                        </div>
+                        <span>دسته‌بندی: <em style="color: #cbd5e0;">${quote.genre}</em></span>
+                    </div>
+                    <div class="suggestion-actions" style="margin-top: 15px;">
+                        <button class="btn-transfer" onclick="editQuoteInForm('${quote.id}', \`${escText}\`, '${escSource}', '${quote.genre}', \`${escInfo}\`, '${quote.link}', ${quote.has_audio}, \`${escAudioName}\`, '${escSinger}', '${escAudioUrl}')"> ویرایش اثر</button>
+                        <button class="btn-reject" onclick="deleteQuote('${quote.id}')"> حذف قطعی</button>
+                    </div>
+                `;
                 container.appendChild(card);
             });
         }
 
-        // ۳. فیلتر کردن و جستجو در لیست اشعار بدون ریلود صفحه
         function filterQuotes() {
             const query = document.getElementById('searchQuotes').value.toLowerCase().trim();
             if (!query) {
@@ -703,7 +680,6 @@
             renderQuotesList(filtered);
         }
 
-        // ۴. حذف شعر با استفاده از کامپوننت تایید سفارشی خوشگل خودت
         async function deleteQuote(id) {
             showConfirmMessage(
                 'آیا از حذف کاملا قطعی این شاهکار ادبی از سرور ابری مطمئن هستید؟ (این عملیات غیرقابل بازگشت است)',
@@ -715,9 +691,8 @@
                             .eq('id', id);
 
                         if (error) throw error;
-
                         showMessage('اثر با موفقیت از دیتابیس حذف شد.');
-                        loadAllQuotes(); // ریلود لیست اشعار
+                        loadAllQuotes(); 
                     } catch (err) {
                         showMessage('خطا در حذف: ' + err.message);
                     }
@@ -728,11 +703,7 @@
             );
         }
 
-        // ۵. سیستم ویرایش: انتقال اطلاعات به فرم ثبت اثر اصلی برای ویرایش و تغییر دکمه ذخیره به حالت آپدیت
-        let editingQuoteId = null; // برای ردیابی اینکه در حال ویرایش هستیم یا ثبت جدید
-        let currentSuggestionCard = null; // برای ذخیره و ردیابی پیشنهادی که در حال انتقال به فرم است
-
-        function editQuoteInForm(id, text, source, genre, info, link) {
+        function editQuoteInForm(id, text, source, genre, info, link, has_audio, audio_name, singer, audio_url) {
             editingQuoteId = id;
 
             document.getElementById('quoteText').value = text;
@@ -740,59 +711,48 @@
             document.getElementById('quoteGenre').value = genre;
             document.getElementById('quoteInfo').value = info;
             document.getElementById('quoteLink').value = link;
+            
+            // بارگذاری فیلد جدید صوتی
+            document.getElementById('quoteHasAudio').value = has_audio ? "true" : "false";
+            document.getElementById('quoteAudioName').value = audio_name || '';
+            document.getElementById('quoteSinger').value = singer || '';
+            document.getElementById('quoteAudioUrl').value = audio_url || '';
+            toggleAudioInputs();
 
-            // پیدا کردن دکمه اصلی ثبت اثر برای کوچک کردن آن
             const submitBtn = document.querySelector("#content-insert .btn");
             if (submitBtn) {
                 submitBtn.innerText = "بروزرسانی اثر";
-                submitBtn.style.background = "##d4af37";
                 submitBtn.setAttribute("onclick", "updateQuote()");
-
-                // تنظیم اندازه دکمه اصلی به ۵۰٪ و اعمال ویژگی باکسینگ برای جلوگیری از بیرون‌زدگی
                 submitBtn.style.width = "calc(50% - 6px)";
                 submitBtn.style.display = "inline-block";
                 submitBtn.style.float = "right";
                 submitBtn.style.boxSizing = "border-box";
             }
 
-            // حذف دکمه انصراف و المان‌های ترازکننده قبلی در صورت وجود داشتن
             const oldCancelBtn = document.getElementById('inlineCancelBtn');
             if (oldCancelBtn) oldCancelBtn.remove();
             const oldClearfix = document.getElementById('btnClearfix');
             if (oldClearfix) oldClearfix.remove();
 
-            // ساخت دکمه انصراف جدید به صورت مستطیل شیک هم‌اندازه با دکمه اصلی
             const cancelBtn = document.createElement('button');
             cancelBtn.id = 'inlineCancelBtn';
             cancelBtn.innerText = 'انصراف از ویرایش';
             cancelBtn.style.cssText = `
-        width: calc(50% - 6px);
-        display: inline-block;
-        float: left;
-        padding: 12px;
-        font-size: 1.1rem;
-        margin-top: 10px;
-        background: #bd3a3a;
-        color: white;
-        border: none;
-        border-radius: 50px; /* تغییر از بیضی به مستطیل با گوشه‌های نرم مثل بقیه فیلدها */
-        cursor: pointer;
-        font-family: inherit;
-        font-weight: bold;
-        box-sizing: border-box; /* جلوگیری از بیرون زدن دکمه از کارت */
-    `;
+                width: calc(50% - 6px); display: inline-block; float: left; padding: 12px;
+                font-size: 1.1rem; margin-top: 10px; background: #bd3a3a; color: white;
+                border: none; border-radius: 50px; cursor: pointer; font-family: inherit;
+                font-weight: bold; box-sizing: border-box;
+            `;
 
             cancelBtn.onclick = function () {
                 resetFormToInsertMode();
                 showMessage('عملیات ویرایش لغو شد.');
             };
 
-            // ساخت یک المان کمکی برای اینکه کارت متوجه ارتفاع دکمه‌ها بشود و دکمه‌ها بیرون نزنند
             const clearfix = document.createElement('div');
             clearfix.id = 'btnClearfix';
             clearfix.style.cssText = "clear: both; display: block; height: 1px;";
 
-            // اضافه کردن دکمه انصراف و المان کمکی بعد از دکمه اصلی
             submitBtn.parentNode.insertBefore(cancelBtn, submitBtn.nextSibling);
             submitBtn.parentNode.insertBefore(clearfix, cancelBtn.nextSibling);
 
@@ -807,61 +767,71 @@
             let genre = document.getElementById('quoteGenre').value;
             let info = document.getElementById('quoteInfo').value.trim();
             let link = document.getElementById('quoteLink').value.trim();
+            
+            // دریافت مقدار فیلد جدید صوتی در دیتابیس
+            let has_audio = document.getElementById('quoteHasAudio').value === 'true';
+            let audio_name = has_audio ? document.getElementById('quoteAudioName').value.trim() : '';
+            let singer = has_audio ? document.getElementById('quoteSinger').value.trim() : '';
+            let audio_url = has_audio ? document.getElementById('quoteAudioUrl').value.trim() : '';
 
-            // 🔴 بررسی اجباری بودن تمام فیلدها در زمان ویرایش و آپدیت
             if (!text) { showMessage('لطفاً متن شعر یا اثر را وارد کنید.'); return; }
             if (!source) { showMessage('لطفاً نام شاعر یا نویسنده را وارد کنید.'); return; }
             if (!info) { showMessage('لطفاً بخش «درباره اثر» را وارد کنید.'); return; }
             if (!link) { showMessage('لطفاً لینک منبع اثر را وارد کنید.'); return; }
+            
+            if (has_audio) {
+                if (!audio_name) { showMessage('لطفاً نام آهنگ یا دکلمه را وارد کنید.'); return; }
+                if (!singer) { showMessage('لطفاً نام خواننده یا دکلماتور را وارد کنید.'); return; }
+                if (!audio_url) { showMessage('لطفاً لینک مستقیم فایل صوتی را وارد کنید.'); return; }
+            }
 
-            const { error } = await client
-                .from('quotes')
-                .update({ text, source, genre, info, link })
-                .eq('id', editingQuoteId);
+            try {
+                const { error } = await client
+                    .from('quotes')
+                    .update({ text, source, genre, info, link, has_audio, audio_name, singer, audio_url })
+                    .eq('id', editingQuoteId);
 
-            if (error) { showMessage('خطا در بروزرسانی: ' + error.message); return; }
+                if (error) throw error;
 
-            showMessage('تغییرات اثر با موفقیت در دیتابیس ابری اعمال شد!');
-
-            // بازگرداندن فرم به حالت ثبت جدید و پاکسازی فیلدها
-            resetFormToInsertMode();
+                showMessage('تغییرات اثر با موفقیت در دیتابیس ابری اعمال شد!');
+                resetFormToInsertMode();
+                switchTab('manage');
+            } catch (err) {
+                showMessage('خطا در بروزرسانی: ' + err.message);
+            }
         }
 
         function resetFormToInsertMode() {
             editingQuoteId = null;
-            currentSuggestionCard = null; // 👈 اضافه شدن ریست وضعیت پیشنهاد کاربران
+            currentSuggestionCard = null; 
 
             document.getElementById('quoteText').value = '';
             document.getElementById('quoteSource').value = '';
             document.getElementById('quoteInfo').value = '';
             document.getElementById('quoteLink').value = '';
+            
+            // ریست دقیق فیلدها شامل audio_name
+            document.getElementById('quoteHasAudio').value = "false";
+            document.getElementById('quoteAudioName').value = '';
+            document.getElementById('quoteSinger').value = '';
+            document.getElementById('quoteAudioUrl').value = '';
+            toggleAudioInputs();
 
             const submitBtn = document.querySelector("#content-insert .btn");
             if (submitBtn) {
                 submitBtn.innerText = "ذخیره در سرور ابری";
                 submitBtn.style.background = "";
                 submitBtn.setAttribute("onclick", "sendQuote()");
-
-                // برگرداندن دکمه اصلی به حالت ۱۰۰٪ تمام عرض و حذف استایل‌های شناور
                 submitBtn.style.width = "100%";
                 submitBtn.style.display = "block";
                 submitBtn.style.float = "none";
             }
 
-            // حذف کامل دکمه انصراف
             const cancelBtn = document.getElementById('inlineCancelBtn');
-            if (cancelBtn) {
-                cancelBtn.remove();
-            }
-
-            // حذف المان کمکی ترازکننده
+            if (cancelBtn) cancelBtn.remove();
             const clearfix = document.getElementById('btnClearfix');
-            if (clearfix) {
-                clearfix.remove();
-            }
+            if (clearfix) clearfix.remove();
         }
     </script>
-
 </body>
-
 </html>
