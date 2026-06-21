@@ -6,6 +6,12 @@
 /* ============================================
    بدنه اصلی
    ============================================ */
+   html, body {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    margin: 0;
+    padding: 0;
+}
 body {
     margin: 0;
     padding: 0;
@@ -115,6 +121,8 @@ body {
     animation: eslimiMiniRotate 10s linear infinite;
     will-change: transform;
     flex-shrink: 0 !important;
+    box-sizing: border-box !important;
+
 }
 
 @keyframes eslimiMiniRotate {
@@ -280,6 +288,7 @@ body {
     border: 1px solid rgba(212, 175, 55, 0.25);
     border-radius: 16px;
     pointer-events: none;
+    box-sizing: border-box !important;
 }
 
 .quote-icon {
@@ -623,56 +632,185 @@ button {
 /* ============================================
    ریسپانسیو (موبایل)
    ============================================ */
-@media (max-width: 600px) {
-    .genre-container {
-        justify-content: flex-start;
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        white-space: nowrap;
-        -webkit-overflow-scrolling: touch;
-    }
-    .genre-container::-webkit-scrollbar {
-        display: none;
-    }
-}
-
 @media (max-width: 580px) {
+    /* جلوگیری از خروج هدر از کادر */
     .luxury-islamic-header {
         height: 120px;
     }
 
     .auth-bar {
         top: 15px !important;
-        left: 20px !important;
+        left: 15px !important;
     }
 
+    /* 🌟 اصلاح نوار دسته‌بندی: فعال شدن اسکرول افقی برای تمام گوشی‌ها */
     .genre-container {
         margin-top: 115px !important;
+        padding: 5px 10px;
+        justify-content: flex-start !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        white-space: nowrap !important;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* مخفی کردن اسکرول‌بار نوار ژانر در موبایل */
+    .genre-container::-webkit-scrollbar {
+        display: none !important;
     }
 
+    /* بهینه‌سازی ابعاد کارت شعر برای عرض صفحه موبایل */
     .card {
-        padding: 30px 20px;
+        padding: 25px 15px;
+        width: 92% !important;
+        margin: 0 auto;
     }
 
     .text {
-        font-size: 1.45rem;
-        line-height: 1.8;
+        font-size: 1.35rem;
+        line-height: 1.7;
     }
 
     .btn {
-        padding: 10px 20px;
-        font-size: 1rem;
+        padding: 10px 18px;
+        font-size: 0.95rem;
     }
 
+    /* مهار جابه‌جایی لوگو و اسلیمی گردان در موبایل */
     .site-name {
-        top: 10px;
+        top: -45px;
         right: 15px;
-        gap: 10px;
+        gap: 5px;
+        max-width: 35%; /* مانع برخورد با دکمه ورود می‌شود */
+    }
+    /* ===== قرار دادن این کدها داخل بلاک @media (max-width: 580px) ===== */
+
+/* ۱. مهار پاپ‌آپ‌ها (مودال‌ها) برای جا شدن کامل در کادر موبایل */
+#auth-modal > div, #suggestion-modal > div, #custom-about-modal > div {
+    width: 90% !important;
+    max-width: 380px !important;
+    max-height: 85vh !important; /* جلوگیری از بیرون زدن از ارتفاع گوشی */
+    overflow-y: auto !important; /* ایجاد اسکرول داخلی در صورت بلند بودن فرم */
+    padding: 20px 15px !important;
+    box-sizing: border-box !important;
+}
+
+/* ۲. اصلاح پس‌زمینه تیره و شیشه‌ای مودال‌ها برای پوشش کامل صفحه */
+#auth-modal, #suggestion-modal, #custom-about-modal {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: rgba(3, 7, 16, 0.9) !important; /* تیره کردن پس‌زمینه برای خوانایی */
+    backdrop-filter: blur(4px) !important; /* افکت شیشه‌ای بلور */
+    -webkit-backdrop-filter: blur(4px) !important;
+    z-index: 99999 !important; /* بالاترین لایه برای بالا آمدن نسبت به همه چیز */
+    display: none; /* این خط تداخلی با منطق جاوااسکریپت شما ندارد و در حالت flex فعال می‌شود */
+}
+
+/* ۳. فرستادن دکمه‌های شناور (آوا و نوا / پیشنهاد) به لایه زیرین هنگام باز شدن مودال */
+.suggestion-container {
+    z-index: 998 !important; /* یک واحد کمتر از مودال‌ها تا زیر پاپ‌آپ پنهان شوند */
+}
+
+/* ۴. اصلاح دکمه‌های فرم داخل موبایل تا از کادر بیرون نزنند */
+#suggestion-modal .btn, #auth-modal .btn {
+    padding: 8px 12px !important;
+    font-size: 0.9rem !important;
+}
+
+    /* کنترل المان اسلیمی برای عدم خروج از صفحه */
+    .site-name::before {
+        width: 25px !important;
+        height: 25px !important;
+        background-size: 28px !important;
+        margin-left: -50px !important;
+        box-sizing: border-box !important; /* مقدار منفی تعدیل شد تا صفحه را پهن نکند */
     }
 
     .logo-img {
-        height: 35px;
+        width: 100% !important;
+        max-width: 450px !important;
+        height: auto !important;
     }
+    
+    /* مهار پاپ‌آپ‌ها و نوتیفیکیشن‌ها در صفحه نمایش کوچک */
+    #auth-modal .card, #suggestion-modal .card {
+        width: 92% !important;
+        padding: 25px 20px !important;
+    }
+    
+}
+/* 📱 تنظیمات اختصاصی و مینیاتوری برای گوشی‌های هوشمند (زیر ۴۰۰ پیکسل) */
+@media (max-width: 400px) {
+    
+    /* ۱. کوچکت‌ر کردن دکمه‌های ورود و خروج برای جلوگیری از شلوغی هدر */
+    .auth-bar {
+        top: 10px !important;
+        left: 10px !important;
+    }
+    
+    .auth-bar .btn.style-mini {
+        padding: 6px 12px !important;
+        font-size: 0.8rem !important;
+    }
+
+    /* ۲. تنظیم دقیق‌تر لوگو در سایدبار هدر گوشی */
+    .site-name {
+        top: -62px !important;
+        right: 10px !important;
+        max-width: 40% !important;
+    }
+    
+    .logo-img {
+        max-width: 110px !important; /* کنترل دقیق اندازه متن لوگو */
+    }
+
+    /* ۳. جمع‌وجورتر شدن کارت شعر اصلی برای ایجاد فضای تنفس در کناره‌ها */
+    .card {
+        padding: 20px 12px !important;
+        width: 94% !important;
+    }
+
+    .text {
+        font-size: 1.2rem !important; /* کمی کوچک‌تر شدن دست‌خط شعر برای جا شدن ابیات بلند */
+        line-height: 1.6 !important;
+    }
+
+    /* ۴. بهینه‌سازی دکمه‌های ناوبری (بعدی/قبلی) تا در یک خط جا شوند و زیر هم نروند */
+    .actions {
+        display: flex !important;
+        gap: 6px !important;
+        justify-content: center !important;
+        width: 100% !important;
+    }
+
+    .actions .btn {
+        padding: 8px 12px !important;
+        font-size: 0.85rem !important;
+        flex: 1 !important; /* تقسیم مساوی فضا بین دکمه‌ها */
+        text-align: center;
+    }
+
+    /* ۵. مهار نهایی ابعاد مودال‌ها (پیشنهاد و ورود) در نمایشگرهای کوچک */
+    #auth-modal .card, #suggestion-modal .card, #custom-about-modal .card {
+        width: 95% !important;
+        padding: 20px 15px !important;
+    }
+    
+    /* کوچک‌تر شدن عنوان فرم‌ها در گوشی */
+    #suggestion-modal h3, #auth-modal h3 {
+        font-size: 1.15rem !important;
+        margin-bottom: 15px !important;
+    }
+    
+    /* متناسب‌سازی دکمه‌های شناور در گوشه پایین */
+    .suggestion-container {
+        bottom: 15px !important;
+        right: 15px !important;
+    }
+    
 }
 /* ============================================
    سیستم پیام‌های سفارشی (Notification) - نسخه نهایی و بی‌نقص
@@ -727,6 +865,7 @@ button {
 .notification::after {
     display: none !important;
     content: none !important;
+    box-sizing: border-box !important;
 }
 
 @keyframes slideDown {
