@@ -454,7 +454,7 @@
                     await client.from('admin_notifications').update({ is_read: true }).eq('id', currentSuggestionCard.id);
                 }
 
-                showMessage('با موفقیت در سرور ابری ثبت شد!');
+                showMessage('با موفقیت ثبت شد!');
                 resetFormToInsertMode();
             } catch (err) {
                 showMessage('خطا در ثبت اطلاعات: ' + err.message);
